@@ -33,18 +33,27 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      # above is ignored by dc up and dc run (only when deploy to swarm with docker stack deploy)
     depends_on:
       - eventstore.db
-    # env_file:
-    #   - './.env'
+      # service wont be started before this service is running
+    env_file:
+      - './development.env'
     environment:
       - EVENT_STORE_HOSTNAME=eventstore
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:7070']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     ports:
       - '7070:3000'
     volumes:
       - './src:/app/src'
     links:
       - eventstore.db
+      # by default, any service can reach any other service at that service’s name.
     networks:
       - backend
 
