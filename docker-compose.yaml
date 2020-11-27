@@ -13,8 +13,8 @@ services:
       - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
       - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
-      - "1113:1113"
-      - "2113:2113"
+      - '1113:1113'
+      - '2113:2113'
     volumes:
       - type: volume
         source: eventstore-volume-data
@@ -22,6 +22,29 @@ services:
       - type: volume
         source: eventstore-volume-logs
         target: /var/log/eventstore
+    networks:
+      - backend
+
+  hangman-ddd-events:
+    build:
+      context: '.'
+    command: npm run start:dev
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - eventstore.db
+    # env_file:
+    #   - './.env'
+    environment:
+      - EVENT_STORE_HOSTNAME=eventstore
+    ports:
+      - '7070:3000'
+    volumes:
+      - './src:/app/src'
+    links:
+      - eventstore.db
     networks:
       - backend
 
