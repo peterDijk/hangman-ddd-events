@@ -40,7 +40,7 @@ services:
     env_file:
       - './development.env'
     environment:
-      - EVENT_STORE_HOSTNAME=eventstore
+      - EVENT_STORE_HOSTNAME=eventstore.db
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']
       interval: 30s
