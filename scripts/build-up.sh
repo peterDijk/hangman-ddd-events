@@ -6,4 +6,4 @@ export CONTAINER_COMMAND="npm run start:dev"
 export CONTAINER_SCALE="1"
 export CONTAINER_PORT="7070"
 
-docker-compose up
+docker-compose up --build
