@@ -23,13 +23,16 @@
   "dependencies": {
     "@nestjs/common": "^7.5.1",
     "@nestjs/core": "^7.5.1",
+    "@nestjs/cqrs": "^7.0.1",
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/swagger": "^4.7.5",
     "dotenv": "^8.2.0",
+    "geteventstore-promise": "^3.2.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
-    "swagger-ui-express": "^4.1.5"
+    "swagger-ui-express": "^4.1.5",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.5.1",
