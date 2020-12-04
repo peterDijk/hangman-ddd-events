@@ -3,6 +3,7 @@ import {
   Inject,
   OnModuleDestroy,
   OnModuleInit,
+  Logger,
 } from '@nestjs/common';
 import { IEventPublisher } from '@nestjs/cqrs/dist/interfaces/events/event-publisher.interface';
 import { IMessageSource } from '@nestjs/cqrs/dist/interfaces/events/message-source.interface';
@@ -40,6 +41,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
   }
 
   async publish<T extends IEvent>(event: T) {
+    Logger.log(event, 'error in publish fn');
     const message = JSON.parse(JSON.stringify(event));
     const gameId = message.gameId || message.gameDto.gameId; // QUESTION_PVD: hardcoded stuff
     const streamName = `${this.category}-${gameId}`; // QUESTION_PVD: hardcoded stuff

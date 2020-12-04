@@ -15,6 +15,8 @@ export class GamesController {
     if (!wordToGuess || !maxGuesses) {
       throw new BadRequestException('missing parameters');
     }
-    return this.gameService.createGame(gameDto);
+    const gameId = Math.floor(Math.random() * (999 - 100 + 1) + 100);
+
+    return this.gameService.createGame({ ...{ gameId }, ...gameDto });
   }
 }
