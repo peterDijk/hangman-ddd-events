@@ -3,9 +3,9 @@ import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { Logger } from '@nestjs/common';
 
 @EventsHandler(NewGameStartedEvent)
-export class NewGameStartedHandler
+export class NewGameStartedEventHandler
   implements IEventHandler<NewGameStartedEvent> {
   handle(event: NewGameStartedEvent) {
-    Logger.log(event, 'new game started event');
+    Logger.log(event, 'NewGameStartedEventHandler');
   }
 }

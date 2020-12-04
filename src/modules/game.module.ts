@@ -4,7 +4,7 @@ import { GamesController } from 'src/controllers/game.controller';
 import { GamesService } from 'src/Hangman/Application/Services/games.service';
 import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
 import { StartNewGameCommandHandler } from 'src/Hangman/Application/CommandHandlers/StartNewGame.handler';
-import { NewGameStartedHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
+import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
 import { ModuleRef } from '@nestjs/core';
 
 @Module({
@@ -17,7 +17,7 @@ import { ModuleRef } from '@nestjs/core';
     GamesService,
     GamesRepository,
     StartNewGameCommandHandler,
-    NewGameStartedHandler,
+    NewGameStartedEventHandler,
   ],
 })
 export class GamesModule implements OnModuleInit {
@@ -35,7 +35,7 @@ export class GamesModule implements OnModuleInit {
     // this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
     // this.event$.publisher = this.eventStore;
     /** ------------ */
-    this.event$.register([NewGameStartedHandler]);
+    this.event$.register([NewGameStartedEventHandler]);
     this.command$.register([StartNewGameCommandHandler]);
     // this.event$.combineSagas([this.usersSagas.userCreated]);
   }
