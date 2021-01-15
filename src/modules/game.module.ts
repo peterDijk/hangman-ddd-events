@@ -31,7 +31,7 @@ const CommandHandlers = [StartNewGameCommandHandler];
         },
       ],
       eventHandlers: {
-        NewGameStartedEvent: (data) => new NewGameStartedEvent(data),
+        NewGameStartedEvent: (data) => new NewGameStartedEvent(data), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
       },
     }),
   ],
