@@ -41,7 +41,7 @@ export class EventStore implements IEventPublisher, IMessageSource {
   }
 
   async publish<T extends IEvent>(event: T) {
-    Logger.log(event, 'publish');
+    Logger.log(JSON.stringify(event), 'publish');
 
     // const message = JSON.parse(JSON.stringify(event)).gameDto;
 
@@ -66,7 +66,6 @@ export class EventStore implements IEventPublisher, IMessageSource {
 
     const onEvent = async (event) => {
       // Logger.log(JSON.stringify(event), 'bridgeEventsTo');
-      console.log(event);
 
       const eventUrl =
         eventStoreHostUrl + `${event.metadata.$o}/${event.data.split('@')[0]}`;

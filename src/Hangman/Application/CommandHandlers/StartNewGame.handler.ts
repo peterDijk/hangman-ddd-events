@@ -12,7 +12,7 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute(command: StartNewGameCommand) {
-    Logger.log(command, 'StartNewGameCommandHandler');
+    Logger.log(JSON.stringify(command), 'StartNewGameCommandHandler');
 
     const { gameDto } = command;
     const game = this.publisher.mergeObjectContext(

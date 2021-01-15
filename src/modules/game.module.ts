@@ -1,5 +1,5 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs';
+import { CQRSModule, CommandBus, EventBus } from '@nestjs/cqrs';
 import { EventStoreModule } from 'src/core/event-store/event-store.module';
 
 import { GamesController } from 'src/controllers/game.controller';
@@ -15,7 +15,7 @@ const CommandHandlers = [StartNewGameCommandHandler];
 const EventHandlers = [NewGameStartedEventHandler];
 
 @Module({
-  imports: [CqrsModule, EventStoreModule.forFeature()],
+  imports: [CQRSModule, EventStoreModule.forFeature()],
   controllers: [GamesController],
   providers: [
     GamesService,
@@ -24,30 +24,29 @@ const EventHandlers = [NewGameStartedEventHandler];
     GamesRepository,
   ],
 })
-export class GamesModule {}
-// export class GamesModule implements OnModuleInit {
-//   constructor(
-//     private readonly moduleRef: ModuleRef,
-//     private readonly command$: CommandBus,
-//     private readonly event$: EventBus,
-//     // private readonly usersSagas: unknown,
-//     private readonly eventStore: EventStore,
-//   ) {}
+export class GamesModule implements OnModuleInit {
+  constructor(
+    private readonly moduleRef: ModuleRef,
+    private readonly command$: CommandBus,
+    private readonly event$: EventBus,
+    // private readonly usersSagas: unknown,
+    private readonly eventStore: EventStore,
+  ) {}
 
-//   onModuleInit() {
-//     // this.command$.setModuleRef(this.moduleRef);
-//     // this.event$.setModuleRef(this.moduleRef);
-//     /** ------------ */
-//     this.eventStore.setEventHandlers(this.eventHandlers);
-//     this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
-//     this.event$.publisher = this.eventStore;
-//     /** ------------ */
-//     this.event$.register([NewGameStartedEventHandler]);
-//     this.command$.register([StartNewGameCommandHandler]);
-//     // this.event$.combineSagas([this.usersSagas.userCreated]);
-//   }
+  onModuleInit() {
+    this.command$.setModuleRef(this.moduleRef);
+    this.event$.setModuleRef(this.moduleRef);
+    /** ------------ */
+    this.eventStore.setEventHandlers(this.eventHandlers);
+    this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
+    this.event$.publisher = this.eventStore;
+    /** ------------ */
+    this.event$.register([NewGameStartedEventHandler]);
+    this.command$.register([StartNewGameCommandHandler]);
+    // this.event$.combineSagas([this.usersSagas.userCreated]);
+  }
 
-//   eventHandlers = {
-//     NewGameStartedEvent: (data) => new NewGameStartedEvent(data),
-//   };
-// }
+  eventHandlers = {
+    NewGameStartedEvent: (data) => new NewGameStartedEvent(data),
+  };
+}
