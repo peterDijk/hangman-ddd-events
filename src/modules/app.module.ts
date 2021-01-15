@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { EventStoreModule } from '@juicycleff/nestjs-event-store';
 
 import { AppController } from '../controllers/app.controller';
@@ -6,13 +6,15 @@ import { AppService } from '../Hangman/Application/Services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../config';
 
+Logger.log(JSON.stringify(config), 'config object');
+
 @Module({
   imports: [
     EventStoreModule.register({
       type: 'event-store',
       tcpEndpoint: {
-        host: config.config.base.EVENT_STORE_SETTINGS.hostname,
-        port: config.config.base.EVENT_STORE_SETTINGS.tcpPort,
+        host: config.EVENT_STORE_SETTINGS.hostname,
+        port: config.EVENT_STORE_SETTINGS.tcpPort,
       },
       options: {
         maxRetries: 1000, // Optional
@@ -21,10 +23,8 @@ import { config } from '../../config';
         heartbeatInterval: 1000, // Optional
         heartbeatTimeout: 1000, // Optional
         defaultUserCredentials: {
-          password:
-            config.config.base.EVENT_STORE_SETTINGS.credentials.username,
-          username:
-            config.config.base.EVENT_STORE_SETTINGS.credentials.password,
+          password: config.EVENT_STORE_SETTINGS.credentials.username,
+          username: config.EVENT_STORE_SETTINGS.credentials.password,
         },
       },
     }),
