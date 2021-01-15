@@ -26,8 +26,8 @@ const CommandHandlers = [StartNewGameCommandHandler];
         {
           type: EventStoreSubscriptionType.CatchUp,
           stream: '$ce-game',
-          resolveLinkTos: true, // Default is true (Optional)
-          lastCheckpoint: 13, // Default is 0 (Optional)
+          // resolveLinkTos: true, // Default is true (Optional)
+          // lastCheckpoint: 13, // Default is 0 (Optional)
         },
       ],
       eventHandlers: {
