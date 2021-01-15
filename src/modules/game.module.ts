@@ -1,8 +1,7 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs';
+import { Module } from '@nestjs/common';
+import { CqrsModule, CommandHandler } from '@nestjs/cqrs';
 import {
   EventStoreModule,
-  EventStore,
   EventStoreSubscriptionType,
 } from '@juicycleff/nestjs-event-store';
 
@@ -12,6 +11,9 @@ import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository
 import { StartNewGameCommandHandler } from 'src/Hangman/Application/CommandHandlers/StartNewGame.handler';
 import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
 import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
+
+const EventHandlers = [NewGameStartedEventHandler];
+const CommandHandlers = [StartNewGameCommandHandler];
 
 @Module({
   imports: [
@@ -37,28 +39,8 @@ import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.ev
   providers: [
     GamesService,
     GamesRepository,
-    StartNewGameCommandHandler,
-    NewGameStartedEventHandler,
+    ...CommandHandlers,
+    ...EventHandlers,
   ],
 })
 export class GamesModule {}
-// export class GamesModule implements OnModuleInit {
-//   constructor(
-//     private readonly moduleRef: ModuleRef,
-//     private readonly command$: CommandBus,
-//     private readonly event$: EventBus, // private readonly eventStore: EventStore,
-//   ) {}
-
-//   onModuleInit() {
-//     // this.command$(this.moduleRef);
-//     // this.event$.setModuleRef(this.moduleRef);
-//     /** ------------ */
-//     // this.eventStore.setEventHandlers(this.eventHandlers);
-//     // this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
-//     // this.event$.publisher = this.eventStore;
-//     /** ------------ */
-//     this.event$.register([NewGameStartedEventHandler]);
-//     this.command$.register([StartNewGameCommandHandler]);
-//     // this.event$.combineSagas([this.usersSagas.userCreated]);
-//   }
-// }
