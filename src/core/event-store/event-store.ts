@@ -41,7 +41,6 @@ export class EventStore implements IEventPublisher, IMessageSource {
   }
 
   async publish<T extends IEvent>(event: T) {
-    Logger.log(event, 'error in publish fn');
     const message = JSON.parse(JSON.stringify(event));
     const gameId = message.gameId || message.gameDto.gameId; // QUESTION_PVD: hardcoded stuff
     const streamName = `${this.category}-${gameId}`; // QUESTION_PVD: hardcoded stuff
@@ -61,6 +60,8 @@ export class EventStore implements IEventPublisher, IMessageSource {
     const streamName = `$ce-${this.category}`;
 
     const onEvent = async (event) => {
+      Logger.log(event, 'bridgeEventsTo');
+
       const eventUrl =
         eventStoreHostUrl + `${event.metadata.$o}/${event.data.split('@')[0]}`;
       http.get(eventUrl, (res) => {
