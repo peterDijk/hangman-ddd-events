@@ -15,15 +15,19 @@ export class StartNewGameCommandHandler
     Logger.log(command, 'StartNewGameCommandHandler');
 
     const { gameId, playerId, wordToGuess, maxGuesses } = command;
-    const game = this.publisher.mergeObjectContext(
-      // returned een aggregate met daarin applied NewGameStartedEvent
-      await this.repository.startNewGame(
-        gameId,
-        playerId,
-        wordToGuess,
-        maxGuesses,
-      ),
-    );
-    game.commit(); // hier wordt het event naar de publisher gestuurd, volgende stap is event handler
+    try {
+      const game = this.publisher.mergeObjectContext(
+        // returned een aggregate met daarin applied NewGameStartedEvent
+        await this.repository.startNewGame(
+          gameId,
+          playerId,
+          wordToGuess,
+          maxGuesses,
+        ),
+      );
+      game.commit(); // hier wordt het event naar de publisher gestuurd, volgende stap is event handler
+    } catch (err) {
+      throw new Error('cant start new game');
+    }
   }
 }

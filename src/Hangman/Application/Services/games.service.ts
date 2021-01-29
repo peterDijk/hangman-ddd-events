@@ -12,12 +12,8 @@ export class GamesService {
     wordToGuess: string,
     maxGuesses: number,
   ) {
-    // try {
     return await this.commandBus.execute(
       new StartNewGameCommand(gameId, playerId, wordToGuess, maxGuesses),
     );
-    // } catch (err) {
-    //   throw new Error('Error generating command');
-    // }
   }
 }

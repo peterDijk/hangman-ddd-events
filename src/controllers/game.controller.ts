@@ -1,4 +1,10 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { GamesService } from 'src/Hangman/Application/Services/games.service';
 
@@ -7,9 +13,9 @@ import { GamesService } from 'src/Hangman/Application/Services/games.service';
 export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
-  // @ApiResponse({ status: 201, description: 'Game created' })
+  @ApiResponse({ status: 201, description: 'Game created' })
   @Post()
-  async createGame(
+  async startNewGame(
     @Body()
     {
       gameId,
@@ -31,7 +37,8 @@ export class GamesController {
         parseInt(maxGuesses),
       );
     } catch (err) {
-      throw new BadRequestException(err, 'missing parameters');
+      Logger.log('caught error: ', JSON.stringify(err));
+      throw new BadRequestException(err, 'missing parameters pvd');
     }
   }
 }

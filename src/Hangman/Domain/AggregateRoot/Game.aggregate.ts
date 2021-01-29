@@ -12,6 +12,8 @@ export class Game extends AggregateRoot {
   }
 
   startNewGame() {
+    // validate met class-validators?
+
     this.apply(
       new NewGameStartedEvent(
         this.gameId,

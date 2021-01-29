@@ -14,18 +14,18 @@ import { Logger } from '@nestjs/common';
 export class StartNewGameCommand implements ICommand {
   @IsString()
   @MinLength(4)
-  public gameId: string;
+  gameId: string;
 
   @IsString()
   @MinLength(2)
-  public playerId: string;
+  playerId: string;
 
   @IsString()
-  public wordToGuess: string;
+  wordToGuess: string;
 
   @IsNumber()
   @Min(1)
-  public maxGuesses: number;
+  maxGuesses: number;
 
   constructor(
     gameId: string,
@@ -38,6 +38,7 @@ export class StartNewGameCommand implements ICommand {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
 
+    // TODO: make class-validator work (= promise)
     // validateOrReject(this).catch((err) => {
     //   Logger.log('validation error', JSON.stringify(err));
     //   throw new InvalidCommandException('InvalidCommandException');
@@ -45,14 +46,15 @@ export class StartNewGameCommand implements ICommand {
 
     if (
       !gameId ||
-      gameId !== '' ||
+      gameId === '' ||
       !playerId ||
-      playerId !== '' ||
+      playerId === '' ||
       !wordToGuess ||
-      wordToGuess !== '' ||
-      maxGuesses ||
-      maxGuesses > 0
+      wordToGuess === '' ||
+      !maxGuesses ||
+      maxGuesses < 1
     ) {
+      console.log({ gameId, playerId, wordToGuess, maxGuesses });
       Logger.log('validation error');
 
       throw new InvalidCommandException();
