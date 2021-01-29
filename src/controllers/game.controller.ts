@@ -20,7 +20,7 @@ export class GamesController {
       gameId: string;
       playerId: string;
       wordToGuess: string;
-      maxGuesses: number;
+      maxGuesses: string;
     },
   ) {
     try {
@@ -28,7 +28,7 @@ export class GamesController {
         gameId,
         playerId,
         wordToGuess,
-        maxGuesses,
+        parseInt(maxGuesses),
       );
     } catch (err) {
       throw new BadRequestException(err, 'missing parameters');
