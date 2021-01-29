@@ -38,26 +38,28 @@ export class StartNewGameCommand implements ICommand {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
 
-    // TODO: make class-validator work (= promise)
+    // TODO: make class-validator work (= promise, so cant wait for it in constructor)
     // validateOrReject(this).catch((err) => {
     //   Logger.log('validation error', JSON.stringify(err));
     //   throw new InvalidCommandException('InvalidCommandException');
     // });
 
-    if (
-      !gameId ||
-      gameId === '' ||
-      !playerId ||
-      playerId === '' ||
-      !wordToGuess ||
-      wordToGuess === '' ||
-      !maxGuesses ||
-      maxGuesses < 1
-    ) {
-      console.log({ gameId, playerId, wordToGuess, maxGuesses });
-      Logger.log('validation error');
+    // if (
+    //   !gameId ||
+    //   gameId === '' ||
+    //   !playerId ||
+    //   playerId === '' ||
+    //   !wordToGuess ||
+    //   wordToGuess === '' ||
+    //   !maxGuesses ||
+    //   maxGuesses < 1
+    // ) {
+    //   Logger.log(
+    //     { gameId, playerId, wordToGuess, maxGuesses },
+    //     'validation error',
+    //   );
 
-      throw new InvalidCommandException();
-    }
+    //   throw new InvalidCommandException();
+    // }
   }
 }

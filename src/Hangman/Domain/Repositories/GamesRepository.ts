@@ -11,7 +11,7 @@ export class GamesRepository {
     maxGuesses: number,
   ) {
     const game = new Game(gameId, playerId, wordToGuess, maxGuesses);
-    game.startNewGame();
+    await game.startNewGame();
     return game;
   }
 }
