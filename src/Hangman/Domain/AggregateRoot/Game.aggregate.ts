@@ -1,7 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import {
   IsString,
-  validate,
   validateOrReject,
   IsNumber,
   MinLength,
