@@ -10,8 +10,7 @@ export class GamesRepository {
     wordToGuess: string,
     maxGuesses: number,
   ) {
-    const game = new Game(gameId);
-    game.setData(playerId, wordToGuess, maxGuesses); // waarom in method, en niet dit gewoon doen in de constructor?
+    const game = new Game(gameId, playerId, wordToGuess, maxGuesses);
     game.startNewGame();
     return game;
   }
