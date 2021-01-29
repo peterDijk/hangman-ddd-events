@@ -24,7 +24,7 @@ export class GamesController {
     },
   ) {
     try {
-      return this.gameService.startNewGame(
+      return await this.gameService.startNewGame(
         gameId,
         playerId,
         wordToGuess,
