@@ -38,10 +38,10 @@ export class StartNewGameCommand implements ICommand {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
 
-    validateOrReject(this).catch((err) => {
-      Logger.log('validation error', JSON.stringify(err));
-      throw new InvalidCommandException();
-    });
+    // validateOrReject(this).catch((err) => {
+    //   Logger.log('validation error', JSON.stringify(err));
+    //   throw new InvalidCommandException('InvalidCommandException');
+    // });
 
     // validate(this).then((err) => {
     //   Logger.log('validation error', JSON.stringify(err));
@@ -58,7 +58,10 @@ export class StartNewGameCommand implements ICommand {
     //   maxGuesses &&
     //   maxGuesses > 0
     // ) {
+    //   Logger.log('validation error');
+
     //   throw new InvalidCommandException();
     // }
+    throw new InvalidCommandException();
   }
 }

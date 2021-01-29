@@ -7,7 +7,7 @@ import { GamesService } from 'src/Hangman/Application/Services/games.service';
 export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
-  @ApiResponse({ status: 201, description: 'Game created' })
+  // @ApiResponse({ status: 201, description: 'Game created' })
   @Post()
   async createGame(
     @Body()
