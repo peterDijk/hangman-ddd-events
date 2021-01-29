@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
+import { MethodNotAllowedException } from '@nestjs/common';
 
 export class Game extends AggregateRoot {
   @IsString()
@@ -53,7 +54,7 @@ export class Game extends AggregateRoot {
         ),
       );
     } catch (err) {
-      throw new Error('validation error');
+      throw new MethodNotAllowedException('invalid game data');
     }
   }
 }
