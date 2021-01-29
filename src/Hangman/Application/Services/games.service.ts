@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { GameDto } from 'src/Hangman/Domain/AggregateRoot/GameDto';
 import { CommandBus } from '@nestjs/cqrs';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 
@@ -7,7 +6,14 @@ import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 export class GamesService {
   constructor(private readonly commandBus: CommandBus) {}
 
-  async createGame(gameDto: GameDto) {
-    return await this.commandBus.execute(new StartNewGameCommand(gameDto));
+  async startNewGame(
+    gameId: string,
+    playerId: string,
+    wordToGuess: string,
+    maxGuesses: number,
+  ) {
+    return await this.commandBus.execute(
+      new StartNewGameCommand(gameId, playerId, wordToGuess, maxGuesses),
+    );
   }
 }

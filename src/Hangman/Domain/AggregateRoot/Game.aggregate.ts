@@ -1,19 +1,29 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
-import { GameDto } from './GameDto';
 
 export class Game extends AggregateRoot {
-  data: GameDto; // interface?
+  playerId: string;
+  wordToGuess: string;
+  maxGuesses: number;
 
-  constructor(private readonly gameId: string | undefined) {
+  constructor(private readonly gameId: string) {
     super();
   }
 
-  setData(data: GameDto) {
-    this.data = data;
+  setData(playerId: string, wordToGuess: string, maxGuesses: number) {
+    this.playerId = playerId;
+    this.wordToGuess = wordToGuess;
+    this.maxGuesses = maxGuesses;
   }
 
-  startGame() {
-    this.apply(new NewGameStartedEvent(this.data));
+  startNewGame() {
+    this.apply(
+      new NewGameStartedEvent(
+        this.gameId,
+        this.playerId,
+        this.wordToGuess,
+        this.maxGuesses,
+      ),
+    );
   }
 }
