@@ -43,11 +43,6 @@ export class StartNewGameCommand implements ICommand {
     //   throw new InvalidCommandException('InvalidCommandException');
     // });
 
-    // validate(this).then((err) => {
-    //   Logger.log('validation error', JSON.stringify(err));
-    //   throw new InvalidCommandException();
-    // });
-
     if (
       !gameId ||
       gameId !== '' ||
@@ -62,6 +57,5 @@ export class StartNewGameCommand implements ICommand {
 
       throw new InvalidCommandException();
     }
-    // throw new InvalidCommandException();
   }
 }
