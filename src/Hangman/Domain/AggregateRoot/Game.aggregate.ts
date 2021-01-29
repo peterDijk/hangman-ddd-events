@@ -54,7 +54,7 @@ export class Game extends AggregateRoot {
         ),
       );
     } catch (err) {
-      throw new MethodNotAllowedException('invalid game data');
+      throw new Error('invalid game data');
     }
   }
 }

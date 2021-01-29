@@ -37,7 +37,7 @@ export class GamesController {
         parseInt(maxGuesses),
       );
     } catch (err) {
-      Logger.log(err, 'caught error');
+      // Logger.log(err, 'caught error');
       throw new BadRequestException(err, 'missing parameters pvd');
     }
   }
