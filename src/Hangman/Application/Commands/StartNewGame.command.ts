@@ -48,20 +48,20 @@ export class StartNewGameCommand implements ICommand {
     //   throw new InvalidCommandException();
     // });
 
-    // if (
-    //   !gameId &&
-    //   gameId !== '' &&
-    //   !playerId &&
-    //   playerId !== '' &&
-    //   !wordToGuess &&
-    //   wordToGuess !== '' &&
-    //   maxGuesses &&
-    //   maxGuesses > 0
-    // ) {
-    //   Logger.log('validation error');
+    if (
+      !gameId ||
+      gameId !== '' ||
+      !playerId ||
+      playerId !== '' ||
+      !wordToGuess ||
+      wordToGuess !== '' ||
+      maxGuesses ||
+      maxGuesses > 0
+    ) {
+      Logger.log('validation error');
 
-    //   throw new InvalidCommandException();
-    // }
-    throw new InvalidCommandException();
+      throw new InvalidCommandException();
+    }
+    // throw new InvalidCommandException();
   }
 }
