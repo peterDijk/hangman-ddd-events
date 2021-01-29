@@ -17,7 +17,7 @@ export class GamesController {
 
   @ApiResponse({ status: 201, description: 'Game created' })
   @Post()
-  @UseFilters(HttpExceptionFilter)
+  // @UseFilters(HttpExceptionFilter)
   async startNewGame(
     @Body()
     {
@@ -40,7 +40,7 @@ export class GamesController {
         parseInt(maxGuesses),
       );
     } catch (err) {
-      // Logger.log(JSON.stringify(err), 'caught error');
+      Logger.log(JSON.stringify(err), 'caught error');
       throw new BadRequestException(err, 'missing parameters pvd');
     }
   }

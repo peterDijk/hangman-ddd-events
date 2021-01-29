@@ -4,10 +4,12 @@ import { Logger } from '@nestjs/common';
 
 import { AppModule } from './modules/app.module';
 import { config } from '../config';
+import { HttpExceptionFilter } from './Hangman/Exceptions/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix(config.PREFIX);
+  app.useGlobalFilters(new HttpExceptionFilter());
   const documentOptions = new DocumentBuilder()
     .setTitle(config.TITLE)
     .setDescription(config.DESCRIPTION)
