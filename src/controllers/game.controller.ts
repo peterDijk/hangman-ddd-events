@@ -40,6 +40,7 @@ export class GamesController {
       );
     } catch (err) {
       this.logger.error('startNewGame', err);
+      console.log(err);
 
       throw new BadRequestException("Can't start a new game");
     }
