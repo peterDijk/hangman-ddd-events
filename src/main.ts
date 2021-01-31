@@ -9,7 +9,7 @@ import { AllExceptionsFilter } from './Hangman/Exceptions/all-exceptions.filter'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix(config.PREFIX);
-  app.useGlobalFilters(new AllExceptionsFilter());
+  // app.useGlobalFilters(new AllExceptionsFilter());
   const documentOptions = new DocumentBuilder()
     .setTitle(config.TITLE)
     .setDescription(config.DESCRIPTION)
