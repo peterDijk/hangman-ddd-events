@@ -11,6 +11,8 @@ import { GamesService } from 'src/Hangman/Application/Services/games.service';
 @Controller('games')
 @ApiTags('Games')
 export class GamesController {
+  private readonly logger = new Logger(GamesController.name);
+
   constructor(private readonly gameService: GamesService) {}
 
   @ApiResponse({ status: 201, description: 'Game created' })
@@ -37,7 +39,9 @@ export class GamesController {
         parseInt(maxGuesses),
       );
     } catch (err) {
-      throw new BadRequestException(err);
+      this.logger.error('startNewGame', err);
+
+      throw new BadRequestException("Can't start a new game");
     }
   }
 }

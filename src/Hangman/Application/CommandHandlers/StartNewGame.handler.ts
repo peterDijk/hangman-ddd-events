@@ -12,8 +12,6 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute(command: StartNewGameCommand) {
-    Logger.log(command, 'StartNewGameCommandHandler');
-
     const { gameId, playerId, wordToGuess, maxGuesses } = command;
 
     const game = this.publisher.mergeObjectContext(
