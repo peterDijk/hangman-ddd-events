@@ -54,7 +54,7 @@ export class Game extends AggregateRoot {
         ),
       );
     } catch (err) {
-      throw new InvalidGameException();
+      throw new InvalidGameException(err);
     }
   }
 }
