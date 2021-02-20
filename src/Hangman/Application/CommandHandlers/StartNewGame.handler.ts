@@ -23,6 +23,6 @@ export class StartNewGameCommandHandler
         maxGuesses,
       ),
     );
-    game.commit(); // hier wordt het event naar de publisher gestuurd, volgende stap is event handler
+    game.commit(); // hier wordt het event naar de publisher (eventstore) gestuurd, volgende stap is event handler
   }
 }
