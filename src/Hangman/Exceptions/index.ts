@@ -7,7 +7,7 @@ export class InvalidCommandException extends Error {
 
 export class InvalidGameException extends Error {
   constructor(message?: string) {
-    super(`Invalid game data ${message ? `- ${message}` : ''}`);
+    super(`Invalid game data ${message ? `: ${message}` : ''}`);
     this.name = 'InvalidGameException';
   }
 }
