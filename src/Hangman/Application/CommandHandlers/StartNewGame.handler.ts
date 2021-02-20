@@ -12,12 +12,17 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute(command: StartNewGameCommand) {
-    Logger.log(command, 'StartNewGameCommandHandler');
+    const { gameId, playerId, wordToGuess, maxGuesses } = command;
 
-    const { gameDto } = command;
     const game = this.publisher.mergeObjectContext(
-      await this.repository.startGame(gameDto),
+      // returned een aggregate met daarin applied NewGameStartedEvent
+      await this.repository.startNewGame(
+        gameId,
+        playerId,
+        wordToGuess,
+        maxGuesses,
+      ),
     );
-    game.commit();
+    game.commit(); // hier wordt het event naar de publisher (eventstore) gestuurd, volgende stap is event handler
   }
 }
