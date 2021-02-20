@@ -2,12 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app.module';
 import { config } from '../config';
+import { AllExceptionsFilter } from './Hangman/Exceptions/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix(config.PREFIX);
+  // app.useGlobalFilters(new AllExceptionsFilter());
   const documentOptions = new DocumentBuilder()
     .setTitle(config.TITLE)
     .setDescription(config.DESCRIPTION)
