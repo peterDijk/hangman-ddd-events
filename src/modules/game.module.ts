@@ -27,11 +27,12 @@ const CommandHandlers = [StartNewGameCommandHandler];
           type: EventStoreSubscriptionType.CatchUp,
           stream: '$ce-game',
           // resolveLinkTos: true, // Default is true (Optional)
-          // lastCheckpoint: 13, // Default is 0 (Optional)
+          // lastCheckpoint: 13, // Default is 0 (Optional) why would this be set to any number?
         },
       ],
       eventHandlers: {
-        NewGameStartedEvent: (data) => new NewGameStartedEvent(data), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
+        NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
+          new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
       },
     }),
   ],
