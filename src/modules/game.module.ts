@@ -21,10 +21,9 @@ const CommandHandlers = [StartNewGameCommandHandler];
     EventStoreModule.registerFeature({
       featureStreamName: '$ce-game',
       type: 'event-store',
-      // store: MongoStore, // Optional mongo store for persisting catchup events position for microservices to mitigate failures. Must implement IAdapterStore
       subscriptions: [
         {
-          type: EventStoreSubscriptionType.CatchUp,
+          type: EventStoreSubscriptionType.CatchUp, // research various types
           stream: '$ce-game',
           // resolveLinkTos: true, // Default is true (Optional)
           // lastCheckpoint: 13, // Default is 0 (Optional) why would this be set to any number?
