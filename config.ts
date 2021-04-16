@@ -48,6 +48,4 @@ const configs = {
 };
 const config = { ...configs.base, ...configs[env] };
 
-console.log(config.EXT_PORT);
-
 export { config };

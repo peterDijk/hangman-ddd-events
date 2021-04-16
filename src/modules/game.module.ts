@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CqrsModule, CommandHandler } from '@nestjs/cqrs';
+import { CqrsModule } from '@nestjs/cqrs';
 import {
   EventStoreModule,
   EventStoreSubscriptionType,
@@ -8,12 +8,10 @@ import {
 import { GamesController } from 'src/controllers/game.controller';
 import { GamesService } from 'src/Hangman/Application/Services/games.service';
 import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
-import { StartNewGameCommandHandler } from 'src/Hangman/Application/CommandHandlers/StartNewGame.handler';
 import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
 import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
-
-const EventHandlers = [NewGameStartedEventHandler];
-const CommandHandlers = [StartNewGameCommandHandler];
+import CommandHandlers from 'src/Hangman/Application/CommandHandlers';
+import EventHandlers from 'src/Hangman/Domain/EventHandlers';
 
 @Module({
   imports: [
