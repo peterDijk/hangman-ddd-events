@@ -3,15 +3,6 @@ version: '3.4'
 services:
   eventstore.db:
     image: eventstore/eventstore:20.6.1-buster-slim
-    environment:
-      - EVENTSTORE_CLUSTER_SIZE=1
-      - EVENTSTORE_RUN_PROJECTIONS=All
-      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
-      - EVENTSTORE_EXT_TCP_PORT=1113
-      - EVENTSTORE_EXT_HTTP_PORT=2113
-      - EVENTSTORE_INSECURE=true
-      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
-      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
       - '1113:1113'
       - '2113:2113'
@@ -37,11 +28,6 @@ services:
     depends_on:
       - eventstore.db
       # service wont be started before this service is running
-    env_file:
-      - './development.env'
-    environment:
-      - EVENT_STORE_HOSTNAME=eventstore.db
-      - CONTAINER_PORT=${CONTAINER_PORT}
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']
       interval: 30s

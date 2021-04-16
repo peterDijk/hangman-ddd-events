@@ -19,9 +19,9 @@ async function bootstrap() {
   SwaggerModule.setup(config.API_EXPLORER_PATH, app, document);
 
   await app.listen(config.PORT, config.HOST);
-  Logger.log(`Server listening on port ${config.PORT}`, 'Bootstrap');
+  Logger.log(`Server listening on port ${config.EXT_PORT}`, 'Bootstrap');
   Logger.log(
-    `API Explorer available on port ${config.PORT}${config.API_EXPLORER_PATH}`,
+    `API Explorer available on port ${config.EXT_PORT}${config.API_EXPLORER_PATH}`,
   );
 }
 bootstrap();
