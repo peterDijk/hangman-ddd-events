@@ -20,12 +20,10 @@ export class GamesController {
   async startNewGame(
     @Body()
     {
-      gameId,
       playerId,
       wordToGuess,
       maxGuesses,
     }: {
-      gameId: string;
       playerId: string;
       wordToGuess: string;
       maxGuesses: string;
@@ -33,7 +31,6 @@ export class GamesController {
   ) {
     try {
       return await this.gameService.startNewGame(
-        gameId,
         playerId,
         wordToGuess,
         parseInt(maxGuesses),

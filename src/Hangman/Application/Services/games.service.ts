@@ -7,13 +7,12 @@ export class GamesService {
   constructor(private readonly commandBus: CommandBus) {}
 
   async startNewGame(
-    gameId: string,
     playerId: string,
     wordToGuess: string,
     maxGuesses: number,
   ) {
     return await this.commandBus.execute(
-      new StartNewGameCommand(gameId, playerId, wordToGuess, maxGuesses),
+      new StartNewGameCommand(playerId, wordToGuess, maxGuesses),
     );
   }
 }

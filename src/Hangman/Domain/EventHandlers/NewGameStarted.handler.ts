@@ -5,7 +5,10 @@ import { Logger } from '@nestjs/common';
 @EventsHandler(NewGameStartedEvent)
 export class NewGameStartedEventHandler
   implements IEventHandler<NewGameStartedEvent> {
+  private readonly logger = new Logger(NewGameStartedEventHandler.name);
+
   handle(event: NewGameStartedEvent) {
-    Logger.log(event, 'NewGameStartedEventHandler');
+    // write to projection database?
+    this.logger.log(event);
   }
 }
