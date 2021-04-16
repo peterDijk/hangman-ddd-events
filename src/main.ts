@@ -8,6 +8,7 @@ import { AllExceptionsFilter } from './Hangman/Exceptions/all-exceptions.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  console.log({ config });
   app.setGlobalPrefix(config.PREFIX);
   // app.useGlobalFilters(new AllExceptionsFilter());
   const documentOptions = new DocumentBuilder()
@@ -19,9 +20,9 @@ async function bootstrap() {
   SwaggerModule.setup(config.API_EXPLORER_PATH, app, document);
 
   await app.listen(config.PORT, config.HOST);
-  Logger.log(`Server listening on port ${config.PORT}`, 'Bootstrap');
+  Logger.log(`Server listening on port ${config.EXT_PORT}`, 'Bdootstrap');
   Logger.log(
-    `API Explorer available on port ${config.PORT}${config.API_EXPLORER_PATH}`,
+    `API Explorer available on port ${config.EXT_PORT}${config.API_EXPLORER_PATH}`,
   );
 }
 bootstrap();

@@ -21,6 +21,7 @@ const configs = {
     // Server
     HOST: process.env.APP_HOST || '0.0.0.0',
     PORT: process.env.CONTAINER_PORT || 3000, // internal container port
+    EXT_PORT: process.env.APP_PORT,
     // Event Store
     EVENT_STORE_SETTINGS: {
       protocol: process.env.EVENT_STORE_PROTOCOL || 'http',
@@ -46,5 +47,7 @@ const configs = {
   },
 };
 const config = { ...configs.base, ...configs[env] };
+
+console.log(config.EXT_PORT);
 
 export { config };

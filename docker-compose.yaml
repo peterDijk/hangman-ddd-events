@@ -42,6 +42,10 @@ services:
     environment:
       - EVENT_STORE_HOSTNAME=eventstore.db
       - CONTAINER_PORT=${CONTAINER_PORT}
+      - CONTAINER_COMMAND=${CONTAINER_COMMAND}
+      - CONTAINER_SCALE=${CONTAINER_SCALE}
+      - APP_PORT=${APP_PORT}
+      - DIR_DATA_PATH=${DIR_DATA_PATH}
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']
       interval: 30s
