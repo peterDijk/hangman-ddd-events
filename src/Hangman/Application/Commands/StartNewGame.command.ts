@@ -1,9 +1,6 @@
 import { ICommand } from '@nestjs/cqrs';
+import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
 
 export class StartNewGameCommand implements ICommand {
-  constructor(
-    public playerId: string,
-    public wordToGuess: string,
-    public maxGuesses: number,
-  ) {}
+  constructor(public data: GameDto) {}
 }

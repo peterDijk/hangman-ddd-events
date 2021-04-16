@@ -30,11 +30,11 @@ export class GamesController {
     },
   ) {
     try {
-      return await this.gameService.startNewGame(
+      return await this.gameService.startNewGame({
         playerId,
         wordToGuess,
-        parseInt(maxGuesses),
-      );
+        maxGuesses: parseInt(maxGuesses),
+      });
     } catch (err) {
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
       this.logger.error(err.name, err.stack);

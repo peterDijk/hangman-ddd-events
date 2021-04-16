@@ -13,9 +13,9 @@ export class StartNewGameCommandHandler
     private readonly publisher: EventPublisher,
   ) {}
 
-  async execute(command: StartNewGameCommand) {
-    this.logger.log({ command });
-    const { playerId, wordToGuess, maxGuesses } = command;
+  async execute({ data }: StartNewGameCommand) {
+    this.logger.log({ data });
+    const { playerId, wordToGuess, maxGuesses } = data;
 
     const game = this.publisher.mergeObjectContext(
       // returned een aggregate met daarin applied NewGameStartedEvent
