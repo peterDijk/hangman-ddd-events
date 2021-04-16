@@ -19,7 +19,7 @@ export class StartNewGameCommandHandler
 
     const game = this.publisher.mergeObjectContext(
       // returned een aggregate met daarin applied NewGameStartedEvent
-      await this.repository.startNewGame(playerId, wordToGuess, maxGuesses),
+      await this.repository.startNewGame({ playerId, wordToGuess, maxGuesses }),
     );
     game.commit(); // hier wordt het event naar de publisher (eventstore) gestuurd, volgende stap is event handler
   }
