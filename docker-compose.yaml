@@ -3,6 +3,8 @@ version: '3.4'
 services:
   eventstore.db:
     image: eventstore/eventstore:20.6.1-buster-slim
+    env_file:
+      - ./.env
     ports:
       - '1113:1113'
       - '2113:2113'
@@ -19,6 +21,8 @@ services:
   hangman-ddd-events:
     build:
       context: '.'
+    env_file:
+      - ./.env
     command: ${CONTAINER_COMMAND}
     restart: always
     deploy:
