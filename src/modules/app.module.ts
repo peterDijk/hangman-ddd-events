@@ -14,10 +14,8 @@ Logger.log(JSON.stringify(config), 'config object');
     // AuthModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
-      // introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      // playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      playground: true,
-      introspection: true,
+      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
     }),
     EventStoreModule.register({
