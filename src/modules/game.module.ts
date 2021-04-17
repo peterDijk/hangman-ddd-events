@@ -12,6 +12,7 @@ import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/New
 import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
 import CommandHandlers from 'src/Hangman/Application/CommandHandlers';
 import EventHandlers from 'src/Hangman/Domain/EventHandlers';
+import { GamesResolver } from 'src/resolvers/game.resolver';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import EventHandlers from 'src/Hangman/Domain/EventHandlers';
   ],
   controllers: [GamesController],
   providers: [
+    GamesResolver,
     GamesService,
     GamesRepository,
     ...CommandHandlers,

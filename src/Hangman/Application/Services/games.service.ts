@@ -10,4 +10,8 @@ export class GamesService {
   async startNewGame(data: GameDto) {
     return await this.commandBus.execute(new StartNewGameCommand(data));
   }
+
+  async getAllGames() {
+    return await []; // get records from schema-less db
+  }
 }
