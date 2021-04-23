@@ -18,7 +18,7 @@ $ docker-compose build
 
 ```bash
 # development
-$ ./scripts/build-up.sh
+$ docker-compose up
 ```
 
 ## Test
