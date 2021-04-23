@@ -1,42 +1,44 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs';
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import {
+  EventStoreModule,
+  EventStoreSubscriptionType,
+} from '@juicycleff/nestjs-event-store';
+
 import { GamesController } from 'src/controllers/game.controller';
 import { GamesService } from 'src/Hangman/Application/Services/games.service';
 import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
-import { StartNewGameCommandHandler } from 'src/Hangman/Application/CommandHandlers/StartNewGame.handler';
 import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
-import { ModuleRef } from '@nestjs/core';
+import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
+import CommandHandlers from 'src/Hangman/Application/CommandHandlers';
+import EventHandlers from 'src/Hangman/Domain/EventHandlers';
 
 @Module({
   imports: [
     CqrsModule,
-    /// EventStoreModule.forFeature()
+    EventStoreModule.registerFeature({
+      featureStreamName: '$ce-game',
+      type: 'event-store',
+      subscriptions: [
+        {
+          type: EventStoreSubscriptionType.CatchUp, // research various types
+          stream: '$ce-game',
+          // resolveLinkTos: true, // Default is true (Optional)
+          // lastCheckpoint: 13, // Default is 0 (Optional) why would this be set to any number?
+        },
+      ],
+      eventHandlers: {
+        NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
+          new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
+      },
+    }),
   ],
   controllers: [GamesController],
   providers: [
     GamesService,
     GamesRepository,
-    StartNewGameCommandHandler,
-    NewGameStartedEventHandler,
+    ...CommandHandlers,
+    ...EventHandlers,
   ],
 })
-export class GamesModule implements OnModuleInit {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-    private readonly command$: CommandBus,
-    private readonly event$: EventBus, // private readonly eventStore: EventStore,
-  ) {}
-
-  onModuleInit() {
-    // this.command$(this.moduleRef);
-    // this.event$.setModuleRef(this.moduleRef);
-    /** ------------ */
-    // this.eventStore.setEventHandlers(this.eventHandlers);
-    // this.eventStore.bridgeEventsTo((this.event$ as any).subject$);
-    // this.event$.publisher = this.eventStore;
-    /** ------------ */
-    this.event$.register([NewGameStartedEventHandler]);
-    this.command$.register([StartNewGameCommandHandler]);
-    // this.event$.combineSagas([this.usersSagas.userCreated]);
-  }
-}
+export class GamesModule {}

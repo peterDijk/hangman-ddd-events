@@ -6,12 +6,15 @@ import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
   implements ICommandHandler<StartNewGameCommand> {
+  private readonly logger = new Logger(StartNewGameCommandHandler.name);
+
   constructor(
     private readonly repository: GamesRepository,
     private readonly publisher: EventPublisher,
   ) {}
 
   async execute(command: StartNewGameCommand) {
+    this.logger.log({ command });
     const { gameId, playerId, wordToGuess, maxGuesses } = command;
 
     const game = this.publisher.mergeObjectContext(

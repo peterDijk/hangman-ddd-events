@@ -1,18 +1,19 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+import { v4 as uuidv4 } from 'uuid';
 import {
   IsString,
   validateOrReject,
   IsNumber,
   MinLength,
   Min,
+  IsUUID,
 } from 'class-validator';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from 'src/Hangman/Exceptions';
 
 export class Game extends AggregateRoot {
-  @IsString()
-  @MinLength(4)
+  @IsUUID()
   gameId: string;
 
   @IsString()
@@ -33,7 +34,7 @@ export class Game extends AggregateRoot {
     maxGuesses: number,
   ) {
     super();
-    this.gameId = gameId;
+    this.gameId = gameId; //uuidv4();
     this.playerId = playerId;
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
