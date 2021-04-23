@@ -27,6 +27,7 @@ export class Game extends AggregateRoot {
 
   @Field()
   @IsString()
+  @MinLength(5)
   wordToGuess: string;
 
   @Field()

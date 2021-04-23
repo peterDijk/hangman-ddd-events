@@ -1,6 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiResponse } from 'src/Hangman/Infrastructure/Dto/Api.dto';
 import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,15 +14,11 @@ export class GamesService {
     try {
       await this.commandBus.execute(new StartNewGameCommand(data, gameId));
 
-      return { message: 'success', status: 201, gameId };
+      return { message: 'success', status: 201, gameId, data };
     } catch (err) {
       this.logger.error(err.name, err.stack);
-      // throw new BadRequestException("Can't start a new game");
-      return {
-        message: 'error creating',
-        status: 400,
-        error: err.name,
-      };
+
+      throw new BadRequestException("Can't start a new game");
     }
   }
 
