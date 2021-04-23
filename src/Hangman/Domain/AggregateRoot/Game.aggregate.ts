@@ -12,18 +12,24 @@ import {
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from 'src/Hangman/Exceptions';
 import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 export class Game extends AggregateRoot {
+  @Field()
   @IsUUID()
   gameId: string;
 
+  @Field()
   @IsString()
   @MinLength(2)
   playerId: string;
 
+  @Field()
   @IsString()
   wordToGuess: string;
 
+  @Field()
   @IsNumber()
   @Min(1)
   maxGuesses: number;

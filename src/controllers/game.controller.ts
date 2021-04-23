@@ -29,17 +29,10 @@ export class GamesController {
       maxGuesses: string;
     },
   ) {
-    try {
-      return await this.gameService.startNewGame({
-        playerId,
-        wordToGuess,
-        maxGuesses: parseInt(maxGuesses),
-      });
-    } catch (err) {
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
-      this.logger.error(err.name, err.stack);
-
-      throw new BadRequestException("Can't start a new game");
-    }
+    return await this.gameService.startNewGame({
+      playerId,
+      wordToGuess,
+      maxGuesses: parseInt(maxGuesses),
+    });
   }
 }

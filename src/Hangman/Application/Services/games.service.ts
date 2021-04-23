@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiResponse } from 'src/Hangman/Infrastructure/Dto/Api.dto';
 import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,5 +25,9 @@ export class GamesService {
         error: err.name,
       };
     }
+  }
+
+  async getAllGames() {
+    return await []; // get records from schema-less db
   }
 }

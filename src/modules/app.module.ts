@@ -1,5 +1,6 @@
 import { Module, Logger } from '@nestjs/common';
 import { EventStoreModule } from '@juicycleff/nestjs-event-store';
+import { GraphQLModule } from '@nestjs/graphql';
 
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
@@ -10,6 +11,13 @@ Logger.log(JSON.stringify(config), 'config object');
 
 @Module({
   imports: [
+    // AuthModule,
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      cors: true,
+    }),
     EventStoreModule.register({
       type: 'event-store',
       tcpEndpoint: {
