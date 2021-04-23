@@ -16,20 +16,20 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Game extends AggregateRoot {
-  @Field((type) => String, { nullable: true })
+  @Field()
   @IsUUID()
   gameId: string;
 
-  @Field((type) => String, { nullable: true })
+  @Field()
   @IsString()
   @MinLength(2)
   playerId: string;
 
-  @Field((type) => String, { nullable: true })
+  @Field()
   @IsString()
   wordToGuess: string;
 
-  @Field((type) => Number, { nullable: true })
+  @Field()
   @IsNumber()
   @Min(1)
   maxGuesses: number;
