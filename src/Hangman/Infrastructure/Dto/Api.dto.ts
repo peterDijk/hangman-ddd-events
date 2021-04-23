@@ -6,6 +6,9 @@ export class ApiResponse {
   message: string;
 
   @Field((type) => String, { nullable: true })
+  gameId?: string;
+
+  @Field((type) => String, { nullable: true })
   error?: string;
 
   @Field()

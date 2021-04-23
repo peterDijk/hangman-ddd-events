@@ -34,9 +34,9 @@ export class Game extends AggregateRoot {
   @Min(1)
   maxGuesses: number;
 
-  constructor({ playerId, wordToGuess, maxGuesses }: GameDto) {
+  constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
     super();
-    this.gameId = uuidv4();
+    this.gameId = gameId; //uuidv4();
     this.playerId = playerId;
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
