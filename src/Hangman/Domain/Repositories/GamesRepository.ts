@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
 
 @Injectable()
 export class GamesRepository {
-  async startNewGame(
-    gameId: string,
-    playerId: string,
-    wordToGuess: string,
-    maxGuesses: number,
-  ) {
-    const game = new Game(gameId, playerId, wordToGuess, maxGuesses);
+  async startNewGame(data: GameDto, uuid: string) {
+    const game = new Game(data, uuid);
     await game.startNewGame();
     return game;
   }

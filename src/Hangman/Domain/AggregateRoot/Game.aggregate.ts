@@ -11,6 +11,7 @@ import {
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from 'src/Hangman/Exceptions';
+import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
 
 export class Game extends AggregateRoot {
   @IsUUID()
@@ -27,12 +28,7 @@ export class Game extends AggregateRoot {
   @Min(1)
   maxGuesses: number;
 
-  constructor(
-    gameId: string,
-    playerId: string,
-    wordToGuess: string,
-    maxGuesses: number,
-  ) {
+  constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
     super();
     this.gameId = gameId; //uuidv4();
     this.playerId = playerId;
