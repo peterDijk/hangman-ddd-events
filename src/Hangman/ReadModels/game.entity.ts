@@ -16,5 +16,26 @@ export class Game extends BaseEntity {
     type: 'varchar',
     nullable: false,
   })
-  name: string;
+  playerId: string;
+
+  @Field()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  playerName: string;
+
+  @Field()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  wordToGuess: string;
+
+  @Field()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  maxGuesses: number;
 }

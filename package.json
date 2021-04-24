@@ -35,7 +35,6 @@
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
-    "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
     "node-eventstore-client": "^0.2.18",
     "node-nats-streaming": "^0.3.2",
