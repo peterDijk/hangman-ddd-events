@@ -1,13 +1,13 @@
 import { Module, Logger } from '@nestjs/common';
 import { EventStoreModule } from '@juicycleff/nestjs-event-store';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import TypeOrmConfig from '../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../config';
-
-Logger.log(JSON.stringify(config), 'config object');
 
 @Module({
   imports: [
@@ -35,6 +35,16 @@ Logger.log(JSON.stringify(config), 'config object');
           username: config.EVENT_STORE_SETTINGS.credentials.password,
         },
       },
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'projections.db',
+      port: 3306,
+      username: 'root',
+      password: 'example',
+      database: 'hangman-projections',
+      entities: [],
+      synchronize: true,
     }),
     GamesModule,
   ],
