@@ -8,7 +8,6 @@ import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../config';
-
 @Module({
   imports: [
     // AuthModule,
@@ -36,15 +35,8 @@ import { config } from '../../config';
         },
       },
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'projections.db',
-      port: 3306,
-      username: 'root',
-      password: 'example',
-      database: 'hangman-projections',
-      entities: [],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => TypeOrmConfig as any,
     }),
     GamesModule,
   ],

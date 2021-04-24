@@ -30,6 +30,21 @@ EVENT_STORE_HOSTNAME=eventstore.db
 GQL_PLAYGROUND=enabled
 ```
 
+### Migrations
+
+To be able to run migrations (and have typeorm cli connect to the database) point the internal docker hostname to your localhost in /etc/hosts
+
+```bash
+127.0.0.1 projections.db
+```
+
+```bash
+$ npm run migration:run
+
+# after adding model(s) or make changes to models, generate new migration:
+$ npm run migration:generate -- [migration-name]
+```
+
 ```bash
 $ docker-compose build
 ```

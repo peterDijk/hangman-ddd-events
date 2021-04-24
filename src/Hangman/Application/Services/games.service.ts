@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
+import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { v4 as uuidv4 } from 'uuid';
 
