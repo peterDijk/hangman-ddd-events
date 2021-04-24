@@ -16,7 +16,7 @@ export class NewGameStartedEventHandler
 
   async handle(event: NewGameStartedEvent) {
     // write to projection database?
-    // this.logger.log(event);
+    this.logger.log('saving');
     const newGame = await this.gamesRepository.create({
       gameId: event.gameId,
       playerId: event.playerId,
