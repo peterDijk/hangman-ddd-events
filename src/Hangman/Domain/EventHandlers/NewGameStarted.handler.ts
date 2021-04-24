@@ -9,6 +9,6 @@ export class NewGameStartedEventHandler
 
   handle(event: NewGameStartedEvent) {
     // write to projection database?
-    this.logger.log(event);
+    // this.logger.log(event);
   }
 }

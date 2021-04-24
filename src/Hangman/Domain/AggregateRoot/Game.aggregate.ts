@@ -10,8 +10,8 @@ import {
 } from 'class-validator';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
-import { InvalidGameException } from 'src/Hangman/Exceptions';
-import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
+import { InvalidGameException } from '../../Exceptions';
+import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
@@ -27,6 +27,7 @@ export class Game extends AggregateRoot {
 
   @Field()
   @IsString()
+  @MinLength(5)
   wordToGuess: string;
 
   @Field()

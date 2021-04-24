@@ -4,15 +4,15 @@ import {
   EventStoreModule,
   EventStoreSubscriptionType,
 } from '@juicycleff/nestjs-event-store';
-
-import { GamesController } from 'src/controllers/game.controller';
-import { GamesService } from 'src/Hangman/Application/Services/games.service';
-import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
-import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
-import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
-import CommandHandlers from 'src/Hangman/Application/CommandHandlers';
-import EventHandlers from 'src/Hangman/Domain/EventHandlers';
-import { GamesResolver } from 'src/resolvers/game.resolver';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GamesController } from '../controllers/game.controller';
+import { GamesService } from '../Hangman/Application/Services/games.service';
+import { GamesRepository } from '../Hangman/Domain/Repositories/GamesRepository';
+import { NewGameStartedEvent } from '../Hangman/Domain/Events/NewGameStarted.event';
+import CommandHandlers from '../Hangman/Application/CommandHandlers';
+import EventHandlers from '../Hangman/Domain/EventHandlers';
+import { GamesResolver } from '../resolvers/game.resolver';
+import { Game } from '../Hangman/ReadModels/game.entity';
 
 @Module({
   imports: [
@@ -33,6 +33,7 @@ import { GamesResolver } from 'src/resolvers/game.resolver';
           new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
       },
     }),
+    TypeOrmModule.forFeature([Game]),
   ],
   controllers: [GamesController],
   providers: [
