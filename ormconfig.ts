@@ -33,15 +33,11 @@ const SOURCE_PATH = config.ENV === 'production' ? 'dist/src' : 'src';
 
 export default {
   type: config.PROJECTION_DB_SETTINGS.type,
-  // url:
-  //   process.env.DATABASE_URL ||
-  //   `postgres://${config.DB_USER}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_DATABASE}`,
   host: config.PROJECTION_DB_SETTINGS.hostname,
-  port: 3306, // config.PROJECTION_DB_SETTINGS.port,
+  port: config.PROJECTION_DB_SETTINGS.port,
   username: config.PROJECTION_DB_SETTINGS.credentials.username,
   password: config.PROJECTION_DB_SETTINGS.credentials.password,
   database: config.PROJECTION_DB_SETTINGS.database,
-  // synchronize: true,
   migrationsTableName: 'migration',
   entities: [`${SOURCE_PATH}/**/*.entity{.ts,.js}`],
   migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
