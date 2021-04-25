@@ -17,6 +17,16 @@ export class NewGameStartedEventHandler
   async handle(event: NewGameStartedEvent) {
     // write to projection database?
 
+    const existingGame = await this.gamesRepository.findOne({
+      gameId: event.gameId,
+    });
+
+    if (existingGame) {
+      return;
+    }
+
+    // is querying the projection for every event too expensive on performance?
+
     const newGame = await this.gamesRepository.create({
       gameId: event.gameId,
       playerId: event.playerId,
