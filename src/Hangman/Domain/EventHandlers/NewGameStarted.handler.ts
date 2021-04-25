@@ -28,7 +28,10 @@ export class NewGameStartedEventHandler
      *
      * should command handler check if the new game is allowed to be created?
      * for that the command handler has to access read side - not good?
-     * should be possible somehow to check current state of system in handler to see if the action is allowed. Or go happy path, assume its all ok in command, then if in event handler seems it can't be done, emit event like 'creating failed, not allowed'
+     * should be possible somehow to check current state of system in handler to
+     * see if the action is allowed. Or go happy path, assume its all ok in
+     * command, then if in event handler seems it can't be done, emit event like
+     * 'creating failed, not allowed'
      */
 
     const newGame = await this.gamesRepository.create({
