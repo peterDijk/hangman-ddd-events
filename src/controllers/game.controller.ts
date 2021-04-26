@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { GamesService } from 'src/Hangman/Application/Services/games.service';
+import { GamesService } from '../Hangman/Application/Services/games.service';
 
 @Controller('games')
 @ApiTags('Games')

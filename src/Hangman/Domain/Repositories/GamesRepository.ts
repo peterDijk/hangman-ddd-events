@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
+import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
 
 @Injectable()

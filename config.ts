@@ -37,6 +37,16 @@ const configs = {
         max: process.env.EVENT_STORE_POOLOPTIONS_MAX || 10,
       },
     },
+    PROJECTION_DB_SETTINGS: {
+      hostname: process.env.PROJECTIONS_HOSTNAME,
+      port: process.env.PROJECTIONS_PORT,
+      credentials: {
+        username: process.env.PROJECTIONS_CREDENTIALS_USERNAME,
+        password: process.env.PROJECTIONS_CREDENTIALS_PASSWORD,
+      },
+      type: process.env.PROJECTIONS_DB_TYPE,
+      database: process.env.PROJECTIONS_DATABASE,
+    },
   },
   development: {},
   production: {

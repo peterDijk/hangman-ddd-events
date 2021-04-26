@@ -1,3 +1,3 @@
-import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
+import { NewGameStartedEventHandler } from './NewGameStarted.handler';
 
 export default [NewGameStartedEventHandler];

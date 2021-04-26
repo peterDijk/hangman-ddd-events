@@ -1,9 +1,9 @@
 import { BadRequestException, Inject, Logger } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GamesService } from 'src/Hangman/Application/Services/games.service';
-import { Game } from 'src/Hangman/Domain/AggregateRoot/Game.aggregate';
-import { ApiResponse } from 'src/Hangman/Infrastructure/Dto/Api.dto';
-import { GameDto } from 'src/Hangman/Infrastructure/Dto/Game.dto';
+import { GamesService } from '../Hangman/Application/Services/games.service';
+import { Game } from '../Hangman/Domain/AggregateRoot/Game.aggregate';
+import { ApiResponse } from '../Hangman/Infrastructure/Dto/Api.dto';
+import { GameDto } from '../Hangman/Infrastructure/Dto/Game.dto';
 
 @Resolver((of) => Game)
 export class GamesResolver {
