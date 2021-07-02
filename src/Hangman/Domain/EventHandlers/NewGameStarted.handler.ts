@@ -15,12 +15,10 @@ export class NewGameStartedEventHandler
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
   async handle(event: NewGameStartedEvent) {
-    this.logger.log('handler validates in projection');
     const existingGame = await this.gamesProjectionRepository.findOne({
       gameId: event.gameId,
     });
     if (existingGame) {
-      this.logger.log('already in projection');
       return;
     }
     /*
@@ -33,7 +31,8 @@ export class NewGameStartedEventHandler
      * command, then if in event handler seems it can't be done, emit event like
      * 'creating failed, not allowed'
      */
-    this.logger.log('handler adds to projection');
+    this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
+
     const newGame = this.gamesProjectionRepository.create({
       gameId: event.gameId,
       playerId: event.playerId,
