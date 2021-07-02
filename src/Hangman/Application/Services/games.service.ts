@@ -13,7 +13,7 @@ export class GamesService {
     const gameId = uuidv4();
     try {
       await this.commandBus.execute(new StartNewGameCommand(data, gameId));
-
+      this.logger.log('startcommand sent');
       return { message: 'success', status: 201, gameId, data };
     } catch (err) {
       this.logger.error(err.name, err.stack);

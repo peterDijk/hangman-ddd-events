@@ -10,19 +10,19 @@ export class NewGameStartedEventHandler
   implements IEventHandler<NewGameStartedEvent> {
   constructor(
     @InjectRepository(Game)
-    private gamesRepository: Repository<Game>,
+    private gamesProjectionRepository: Repository<Game>,
   ) {}
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
   async handle(event: NewGameStartedEvent) {
-    const existingGame = await this.gamesRepository.findOne({
+    this.logger.log('handler validates in projection');
+    const existingGame = await this.gamesProjectionRepository.findOne({
       gameId: event.gameId,
     });
-
     if (existingGame) {
+      // this.logger.log('already exists');
       return;
     }
-
     /*
      * is querying the projection for every event too expensive on performance?
      *
@@ -33,14 +33,14 @@ export class NewGameStartedEventHandler
      * command, then if in event handler seems it can't be done, emit event like
      * 'creating failed, not allowed'
      */
-
-    const newGame = await this.gamesRepository.create({
+    this.logger.log('handler adds to projection');
+    const newGame = await this.gamesProjectionRepository.create({
       gameId: event.gameId,
       playerId: event.playerId,
       playerName: '',
       wordToGuess: event.wordToGuess,
       maxGuesses: event.maxGuesses,
     });
-    await this.gamesRepository.save(newGame);
+    await this.gamesProjectionRepository.save(newGame);
   }
 }
