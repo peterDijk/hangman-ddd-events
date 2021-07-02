@@ -2,15 +2,15 @@ import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from '../../ReadModels/game.entity';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { Repository } from 'typeorm';
 
 @EventsHandler(NewGameStartedEvent)
 export class NewGameStartedEventHandler
   implements IEventHandler<NewGameStartedEvent> {
   constructor(
-    @InjectRepository(Game)
-    private gamesProjectionRepository: Repository<Game>,
+    @InjectRepository(GameProjection)
+    private gamesProjectionRepository: Repository<GameProjection>,
   ) {}
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
@@ -20,7 +20,7 @@ export class NewGameStartedEventHandler
       gameId: event.gameId,
     });
     if (existingGame) {
-      // this.logger.log('already exists');
+      this.logger.log('already in projection');
       return;
     }
     /*
@@ -34,7 +34,7 @@ export class NewGameStartedEventHandler
      * 'creating failed, not allowed'
      */
     this.logger.log('handler adds to projection');
-    const newGame = await this.gamesProjectionRepository.create({
+    const newGame = this.gamesProjectionRepository.create({
       gameId: event.gameId,
       playerId: event.playerId,
       playerName: '',
