@@ -14,7 +14,7 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
-    this.logger.log({ data });
+    // this.logger.log({ data });
     const { playerId, wordToGuess, maxGuesses } = data;
 
     const game = this.publisher.mergeObjectContext(

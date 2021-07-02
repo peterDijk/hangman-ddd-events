@@ -18,14 +18,14 @@ import { Game } from '../Hangman/ReadModels/game.entity';
   imports: [
     CqrsModule,
     EventStoreModule.registerFeature({
-      featureStreamName: '$ce-game',
+      featureStreamName: 'game',
       type: 'event-store',
       subscriptions: [
         {
           type: EventStoreSubscriptionType.CatchUp, // research various types
-          stream: '$ce-game',
+          stream: 'game',
           // resolveLinkTos: true, // Default is true (Optional)
-          // lastCheckpoint: 13, // Default is 0 (Optional) why would this be set to any number?
+          // lastCheckpoint: 0, // Default is 0 (Optional) why would this be set to any number?
         },
       ],
       eventHandlers: {
