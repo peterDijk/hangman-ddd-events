@@ -12,28 +12,35 @@ import { NewGameStartedEvent } from '../Hangman/Domain/Events/NewGameStarted.eve
 import CommandHandlers from '../Hangman/Application/CommandHandlers';
 import EventHandlers from '../Hangman/Domain/EventHandlers';
 import { GamesResolver } from '../resolvers/game.resolver';
-import { Game } from '../Hangman/ReadModels/game.entity';
+import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 
 @Module({
   imports: [
     CqrsModule,
-    // EventStoreModule.registerFeature({
-    //   featureStreamName: '$ce-game',
-    //   type: 'event-store',
-    //   subscriptions: [
-    //     {
-    //       type: EventStoreSubscriptionType.CatchUp, // research various types
-    //       stream: 'game',
-    //       // resolveLinkTos: true, // Default is true (Optional)
-    //       lastCheckpoint: 0, // Default is 0 (Optional) why would this be set to any number?
-    //     },
-    //   ],
-    //   eventHandlers: {
-    //     NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
-    //       new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
-    //   },
-    // }),
-    TypeOrmModule.forFeature([Game]),
+    EventStoreModule.registerFeature({
+      featureStreamName: '$ce-game',
+      type: 'event-store',
+      subscriptions: [
+        {
+          type: EventStoreSubscriptionType.CatchUp, // research various types
+          stream: '$ce-game',
+          resolveLinkTos: true, // Default is true (Optional)
+          lastCheckpoint: null,
+          //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+        },
+      ],
+      eventHandlers: {
+        NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) => {
+          return new NewGameStartedEvent(
+            gameId,
+            playerId,
+            wordToGuess,
+            maxGuesses,
+          );
+        }, // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
+      },
+    }),
+    TypeOrmModule.forFeature([GameProjection]),
   ],
   controllers: [GamesController],
   providers: [

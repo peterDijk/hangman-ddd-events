@@ -17,24 +17,24 @@ import { config } from '../../config';
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
     }),
-    // EventStoreModule.register({
-    //   type: 'event-store',
-    //   tcpEndpoint: {
-    //     host: config.EVENT_STORE_SETTINGS.hostname,
-    //     port: config.EVENT_STORE_SETTINGS.tcpPort,
-    //   },
-    //   options: {
-    //     maxRetries: 1000, // Optional
-    //     maxReconnections: 1000, // Optional
-    //     reconnectionDelay: 1000, // Optional
-    //     heartbeatInterval: 1000, // Optional
-    //     heartbeatTimeout: 1000, // Optional
-    //     defaultUserCredentials: {
-    //       password: config.EVENT_STORE_SETTINGS.credentials.username,
-    //       username: config.EVENT_STORE_SETTINGS.credentials.password,
-    //     },
-    //   },
-    // }),
+    EventStoreModule.register({
+      type: 'event-store',
+      tcpEndpoint: {
+        host: config.EVENT_STORE_SETTINGS.hostname,
+        port: config.EVENT_STORE_SETTINGS.tcpPort,
+      },
+      options: {
+        maxRetries: 1000, // Optional
+        maxReconnections: 1000, // Optional
+        reconnectionDelay: 1000, // Optional
+        heartbeatInterval: 1000, // Optional
+        heartbeatTimeout: 1000, // Optional
+        defaultUserCredentials: {
+          password: config.EVENT_STORE_SETTINGS.credentials.username,
+          username: config.EVENT_STORE_SETTINGS.credentials.password,
+        },
+      },
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
     }),
