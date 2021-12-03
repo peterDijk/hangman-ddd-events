@@ -1,12 +1,19 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    @InjectRepository(GameProjection)
+    private gamesProjectionRepository: Repository<GameProjection>,
+  ) {}
   private readonly logger = new Logger(GamesService.name);
 
   async startNewGame(data: GameDto) {
@@ -23,7 +30,12 @@ export class GamesService {
     }
   }
 
-  async getAllGames() {
-    return await []; // get records from schema-less db
+  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
+    this.logger.log('getAllGames');
+    const games = await this.gamesProjectionRepository.find();
+    return {
+      count: games.length,
+      games,
+    };
   }
 }

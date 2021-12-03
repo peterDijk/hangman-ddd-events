@@ -13,6 +13,10 @@ services:
       - backend
     ports:
       - ${PROJECTIONS_PORT}:3306
+    volumes:
+      - type: volume
+        source: projections-volume-data
+        target: /var/lib/projections
 
   eventstore.db:
     container_name: hangman-eventstore
@@ -66,6 +70,7 @@ services:
       - backend
 
 volumes:
+  projections-volume-data:
   eventstore-volume-data:
   eventstore-volume-logs:
 
