@@ -17,22 +17,22 @@ import { Game } from '../Hangman/ReadModels/game.entity';
 @Module({
   imports: [
     CqrsModule,
-    EventStoreModule.registerFeature({
-      featureStreamName: 'game',
-      type: 'event-store',
-      subscriptions: [
-        {
-          type: EventStoreSubscriptionType.CatchUp, // research various types
-          stream: 'game',
-          // resolveLinkTos: true, // Default is true (Optional)
-          // lastCheckpoint: 0, // Default is 0 (Optional) why would this be set to any number?
-        },
-      ],
-      eventHandlers: {
-        NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
-          new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
-      },
-    }),
+    // EventStoreModule.registerFeature({
+    //   featureStreamName: '$ce-game',
+    //   type: 'event-store',
+    //   subscriptions: [
+    //     {
+    //       type: EventStoreSubscriptionType.CatchUp, // research various types
+    //       stream: 'game',
+    //       // resolveLinkTos: true, // Default is true (Optional)
+    //       lastCheckpoint: 0, // Default is 0 (Optional) why would this be set to any number?
+    //     },
+    //   ],
+    //   eventHandlers: {
+    //     NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
+    //       new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
+    //   },
+    // }),
     TypeOrmModule.forFeature([Game]),
   ],
   controllers: [GamesController],

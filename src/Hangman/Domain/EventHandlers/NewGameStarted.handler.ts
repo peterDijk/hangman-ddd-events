@@ -18,8 +18,8 @@ export class NewGameStartedEventHandler
     const existingGame = await this.gamesProjectionRepository.findOne({
       gameId: event.gameId,
     });
-    this.logger.log(`Already exists, ${JSON.stringify(existingGame)}`);
     if (existingGame) {
+      this.logger.log(`Already exists, ${JSON.stringify(existingGame)}`);
       return;
     }
     /*
