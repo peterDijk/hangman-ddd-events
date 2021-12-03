@@ -12,7 +12,7 @@ import CommandHandlers from '../Hangman/Application/CommandHandlers';
 import EventHandlers from '../Hangman/Domain/EventHandlers';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
-import { EventStoreInstanciators } from 'src/event-store';
+import { EventStoreInstanciators } from '../event-store';
 
 @Module({
   imports: [
