@@ -1,5 +1,4 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { v4 as uuidv4 } from 'uuid';
 import {
   IsString,
   validateOrReject,
@@ -37,7 +36,7 @@ export class Game extends AggregateRoot {
 
   constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
     super();
-    this.gameId = gameId; //uuidv4();
+    this.gameId = gameId;
     this.playerId = playerId;
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;

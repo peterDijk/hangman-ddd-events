@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   projections.db:
+    container_name: hangman-projections
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
@@ -12,8 +13,13 @@ services:
       - backend
     ports:
       - ${PROJECTIONS_PORT}:3306
+    volumes:
+      - type: volume
+        source: projections-volume-data
+        target: /var/lib/projections
 
   eventstore.db:
+    container_name: hangman-eventstore
     image: eventstore/eventstore:20.6.1-buster-slim
     env_file:
       - ./.env
@@ -64,6 +70,7 @@ services:
       - backend
 
 volumes:
+  projections-volume-data:
   eventstore-volume-data:
   eventstore-volume-logs:
 

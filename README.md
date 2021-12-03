@@ -14,7 +14,7 @@ in a Docker setup using Eventstore
 
 ```bash
 DIR_DATA_PATH="$PWD"
-CONTAINER_COMMAND="npm run start:dev"
+CONTAINER_COMMAND="npm run start"
 CONTAINER_SCALE="1"
 APP_PORT="7070"
 CONTAINER_PORT="3000"
@@ -61,6 +61,11 @@ $ docker-compose build
 # development
 $ docker-compose up
 ```
+
+## Interfaces
+
+- graphql: https://localhost:7070/graphql
+- eventstore: https://localhost:2113
 
 ## Test
 
