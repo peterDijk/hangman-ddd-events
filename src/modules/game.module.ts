@@ -4,15 +4,15 @@ import {
   EventStoreModule,
   EventStoreSubscriptionType,
 } from '@juicycleff/nestjs-event-store';
-
-import { GamesController } from 'src/controllers/game.controller';
-import { GamesService } from 'src/Hangman/Application/Services/games.service';
-import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
-import { NewGameStartedEventHandler } from 'src/Hangman/Domain/EventHandlers/NewGameStarted.handler';
-import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
-import CommandHandlers from 'src/Hangman/Application/CommandHandlers';
-import EventHandlers from 'src/Hangman/Domain/EventHandlers';
-import { GamesResolver } from 'src/resolvers/game.resolver';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GamesController } from '../controllers/game.controller';
+import { GamesService } from '../Hangman/Application/Services/games.service';
+import { GamesRepository } from '../Hangman/Domain/Repositories/GamesRepository';
+import CommandHandlers from '../Hangman/Application/CommandHandlers';
+import EventHandlers from '../Hangman/Domain/EventHandlers';
+import { GamesResolver } from '../resolvers/game.resolver';
+import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
+import { EventStoreInstanciators } from '../event-store';
 
 @Module({
   imports: [
@@ -24,15 +24,14 @@ import { GamesResolver } from 'src/resolvers/game.resolver';
         {
           type: EventStoreSubscriptionType.CatchUp, // research various types
           stream: '$ce-game',
-          // resolveLinkTos: true, // Default is true (Optional)
-          // lastCheckpoint: 13, // Default is 0 (Optional) why would this be set to any number?
+          resolveLinkTos: true, // Default is true (Optional)
+          lastCheckpoint: null,
+          //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
         },
       ],
-      eventHandlers: {
-        NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) =>
-          new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses), // dit wordt dus een lang handmatig aangevulde lijst als je heel veel soorten events hebt?? onhandig?
-      },
+      eventHandlers: EventStoreInstanciators,
     }),
+    TypeOrmModule.forFeature([GameProjection]),
   ],
   controllers: [GamesController],
   providers: [

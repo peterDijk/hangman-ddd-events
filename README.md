@@ -14,7 +14,7 @@ in a Docker setup using Eventstore
 
 ```bash
 DIR_DATA_PATH="$PWD"
-CONTAINER_COMMAND="npm run start:dev"
+CONTAINER_COMMAND="npm run start"
 CONTAINER_SCALE="1"
 APP_PORT="7070"
 CONTAINER_PORT="3000"
@@ -27,7 +27,28 @@ EVENTSTORE_INSECURE=true
 EVENTSTORE_ENABLE_EXTERNAL_TCP=true
 EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
 EVENT_STORE_HOSTNAME=eventstore.db
+PROJECTIONS_HOSTNAME=projections.db
+PROJECTIONS_PORT=3306
+PROJECTIONS_CREDENTIALS_USERNAME=root
+PROJECTIONS_CREDENTIALS_PASSWORD=example
+PROJECTIONS_DB_TYPE=mysql
+PROJECTIONS_DATABASE=hangman-projections
 GQL_PLAYGROUND=enabled
+```
+
+### Migrations
+
+To be able to run migrations (and have typeorm cli connect to the database) point the internal docker hostname to your localhost in /etc/hosts
+
+```bash
+127.0.0.1 projections.db
+```
+
+```bash
+$ npm run migration:run
+
+# after adding model(s) or make changes to models, generate new migration:
+$ npm run migration:generate -- [migration-name]
 ```
 
 ```bash
@@ -40,6 +61,11 @@ $ docker-compose build
 # development
 $ docker-compose up
 ```
+
+## Interfaces
+
+- graphql: https://localhost:7070/graphql
+- eventstore: https://localhost:2113
 
 ## Test
 

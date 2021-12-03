@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
-import { GamesRepository } from 'src/Hangman/Domain/Repositories/GamesRepository';
+import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -14,7 +14,6 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
-    this.logger.log({ data });
     const { playerId, wordToGuess, maxGuesses } = data;
 
     const game = this.publisher.mergeObjectContext(

@@ -1,7 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Game as GameProjection } from '../../../Hangman/ReadModels/game.entity';
 
 @ObjectType()
-export class ApiResponse {
+export class GameResponse {
   @Field()
   message: string;
 
@@ -13,4 +14,13 @@ export class ApiResponse {
 
   @Field()
   status: number;
+}
+
+@ObjectType()
+export class AllGamesResponse {
+  @Field((type) => Number)
+  count: number;
+
+  @Field((type) => [GameProjection], { nullable: true })
+  games: GameProjection[];
 }
