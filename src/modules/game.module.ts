@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
   EventStoreModule,
@@ -14,32 +14,40 @@ import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventStoreInstanciators } from '../event-store';
 
-@Module({
-  imports: [
-    CqrsModule,
-    EventStoreModule.registerFeature({
-      featureStreamName: '$ce-game',
-      type: 'event-store',
-      subscriptions: [
-        {
-          type: EventStoreSubscriptionType.CatchUp, // research various types
-          stream: '$ce-game',
-          resolveLinkTos: true, // Default is true (Optional)
-          lastCheckpoint: null,
-          //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
-        },
+export interface GameModuleOptions {
+  lastCheckpoint: number;
+}
+@Module({})
+export class GamesModule {
+  static register(options: GameModuleOptions): DynamicModule {
+    return {
+      module: GamesModule,
+      imports: [
+        CqrsModule,
+        EventStoreModule.registerFeature({
+          featureStreamName: '$ce-game',
+          type: 'event-store',
+          subscriptions: [
+            {
+              type: EventStoreSubscriptionType.CatchUp, // research various types
+              stream: '$ce-game',
+              resolveLinkTos: true, // Default is true (Optional)
+              lastCheckpoint: options.lastCheckpoint,
+              //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+            },
+          ],
+          eventHandlers: EventStoreInstanciators,
+        }),
+        TypeOrmModule.forFeature([GameProjection]),
       ],
-      eventHandlers: EventStoreInstanciators,
-    }),
-    TypeOrmModule.forFeature([GameProjection]),
-  ],
-  controllers: [GamesController],
-  providers: [
-    GamesResolver,
-    GamesService,
-    GamesRepository,
-    ...CommandHandlers,
-    ...EventHandlers,
-  ],
-})
-export class GamesModule {}
+      controllers: [GamesController],
+      providers: [
+        GamesResolver,
+        GamesService,
+        GamesRepository,
+        ...CommandHandlers,
+        ...EventHandlers,
+      ],
+    };
+  }
+}

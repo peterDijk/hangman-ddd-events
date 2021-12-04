@@ -38,7 +38,7 @@ import { config } from '../../config';
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
     }),
-    GamesModule,
+    GamesModule.register({ lastCheckpoint: null }),
   ],
   controllers: [AppController],
   providers: [AppService],
