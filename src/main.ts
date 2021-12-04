@@ -8,7 +8,6 @@ import {
 
 import { AppModule } from './modules/app.module';
 import { config } from '../config';
-import { AllExceptionsFilter } from './Hangman/Exceptions/all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

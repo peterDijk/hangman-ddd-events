@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Inject, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
   EventStoreModule,
@@ -13,30 +13,60 @@ import EventHandlers from '../Hangman/Domain/EventHandlers';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventStoreInstanciators } from '../event-store';
+import { EventStoreStateService } from '../Hangman/Application/Services/eventstore.service';
+import { EventStoreStateModule } from './eventstore.module';
 
 export interface GameModuleOptions {
   lastCheckpoint: number;
 }
-@Module({})
+@Module({
+  imports: [EventStoreStateModule],
+})
 export class GamesModule {
-  static register(options: GameModuleOptions): DynamicModule {
+  constructor(
+    @Inject(EventStoreStateService)
+    private readonly eventStoreStateService: EventStoreStateService,
+  ) {}
+  static register(): DynamicModule {
     return {
       module: GamesModule,
       imports: [
         CqrsModule,
-        EventStoreModule.registerFeature({
-          featureStreamName: '$ce-game',
+        EventStoreModule.registerFeatureAsync({
           type: 'event-store',
-          subscriptions: [
-            {
-              type: EventStoreSubscriptionType.CatchUp, // research various types
-              stream: '$ce-game',
-              resolveLinkTos: true, // Default is true (Optional)
-              lastCheckpoint: options.lastCheckpoint,
-              //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+          useFactory: async (...args) => ({
+            featureStreamName: '$ce-game',
+            type: 'event-store',
+            subscriptions: [
+              {
+                type: EventStoreSubscriptionType.CatchUp, // research various types
+                stream: '$ce-game',
+                resolveLinkTos: true, // Default is true (Optional)
+                // lastCheckpoint: options.lastCheckpoint,
+                //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+              },
+            ],
+            eventHandlers: EventStoreInstanciators,
+            store: {
+              storeKey: 'game',
+              write: async (key: string, value: number) => {
+                // const newCheckpoint = await this.eventStoreStateService.updateCheckpoint(
+                //   key,
+                //   value,
+                // );
+                // console.log({ newCheckpoint });
+                return Promise.resolve(1);
+              },
+              read: async (key: string) => {
+                // const streamCheckpoint = await this.eventStoreStateService.getLastCheckpoint(
+                //   key,
+                // );
+                // return streamCheckpoint.lastCheckpoint;
+                return Promise.resolve(16);
+              },
+              clear: () => null,
             },
-          ],
-          eventHandlers: EventStoreInstanciators,
+          }),
         }),
         TypeOrmModule.forFeature([GameProjection]),
       ],
