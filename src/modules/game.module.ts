@@ -23,11 +23,13 @@ export interface GameModuleOptions {
   imports: [EventStoreStateModule],
 })
 export class GamesModule {
-  constructor(
-    @Inject(EventStoreStateService)
-    private readonly eventStoreStateService: EventStoreStateService,
-  ) {}
-  static register(): DynamicModule {
+  // constructor(
+  //   @Inject(EventStoreStateService)
+  //   private readonly eventStoreStateService: EventStoreStateService,
+  // ) {}
+  static register(): // updateCheckpoint: (key: string, value: number) => Promise<number>,
+  // getLastCheckpoint: (key: string) => Promise<number>,
+  DynamicModule {
     return {
       module: GamesModule,
       imports: [
@@ -55,14 +57,14 @@ export class GamesModule {
                 //   value,
                 // );
                 // console.log({ newCheckpoint });
-                return Promise.resolve(1);
+                return updateCheckpoint?.(key, value);
               },
               read: async (key: string) => {
                 // const streamCheckpoint = await this.eventStoreStateService.getLastCheckpoint(
                 //   key,
                 // );
                 // return streamCheckpoint.lastCheckpoint;
-                return Promise.resolve(16);
+                return getLastCheckpoint?.(key);
               },
               clear: () => null,
             },
@@ -72,6 +74,7 @@ export class GamesModule {
       ],
       controllers: [GamesController],
       providers: [
+        EventStoreStateService,
         GamesResolver,
         GamesService,
         GamesRepository,
