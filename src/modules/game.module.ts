@@ -23,10 +23,10 @@ export interface GameModuleOptions {
   imports: [EventStoreStateModule],
 })
 export class GamesModule {
-  // constructor(
-  //   @Inject(EventStoreStateService)
-  //   private readonly eventStoreStateService: EventStoreStateService,
-  // ) {}
+  constructor(
+    @Inject(EventStoreStateService)
+    private readonly eventStoreStateService: EventStoreStateService,
+  ) {}
   static register(): // updateCheckpoint: (key: string, value: number) => Promise<number>,
   // getLastCheckpoint: (key: string) => Promise<number>,
   DynamicModule {
@@ -43,28 +43,29 @@ export class GamesModule {
               {
                 type: EventStoreSubscriptionType.CatchUp, // research various types
                 stream: '$ce-game',
-                resolveLinkTos: true, // Default is true (Optional)
-                // lastCheckpoint: options.lastCheckpoint,
-                //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+                resolveLinkTos: true,
               },
             ],
             eventHandlers: EventStoreInstanciators,
             store: {
               storeKey: 'game',
               write: async (key: string, value: number) => {
+                // TODO: on every new event for stream x this function
+                // is called with the last position number
+                // problem: we need access to the service that connects
+                // to ORM, but it's a static method so no access to whatever
+                // is injected in the constructor
+                //
                 // const newCheckpoint = await this.eventStoreStateService.updateCheckpoint(
                 //   key,
                 //   value,
                 // );
-                // console.log({ newCheckpoint });
-                return updateCheckpoint?.(key, value);
+                return Promise.resolve(0);
               },
               read: async (key: string) => {
-                // const streamCheckpoint = await this.eventStoreStateService.getLastCheckpoint(
-                //   key,
-                // );
-                // return streamCheckpoint.lastCheckpoint;
-                return getLastCheckpoint?.(key);
+                // same as write function
+                //
+                return Promise.resolve(16);
               },
               clear: () => null,
             },
@@ -74,7 +75,6 @@ export class GamesModule {
       ],
       controllers: [GamesController],
       providers: [
-        EventStoreStateService,
         GamesResolver,
         GamesService,
         GamesRepository,
