@@ -6,9 +6,9 @@ export async function updateOneOrCreate(
 ): Promise<IStoreStateDocument> {
   const record = await this.findOne({ streamName });
   if (record) {
-    return record.updateOne({ checkpoint });
+    return record.updateOne({ checkpoint, lastUpdated: new Date() });
   } else {
-    return this.create({ streamName, checkpoint });
+    return await this.create({ streamName, checkpoint });
   }
 }
 export async function findByStream(

@@ -8,11 +8,7 @@ export const connect = () => {
     return;
   }
   Mongoose.connect(uri, {
-    // useNewUrlParser: true,
-    // useFindAndModify: true,
-    // useUnifiedTopology: true,
-    // useCreateIndex: true,
-    dbName: 'store-state',
+    dbName: 'store-state-db',
   });
   database = Mongoose.connection;
   database.once('open', async () => {

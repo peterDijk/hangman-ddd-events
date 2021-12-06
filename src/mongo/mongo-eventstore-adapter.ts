@@ -12,12 +12,11 @@ export function MongoStore(key: string): IAdapterStore {
         streamName,
         checkpoint,
       });
-      // return Promise.resolve(1);
       return updateCheckpoint.checkpoint;
     },
     read: async (streamName: string) => {
       const streamPosition = await StoreStateModel.findByStream({ streamName });
-      return streamPosition.checkpoint;
+      return streamPosition?.checkpoint ?? 0;
     },
     clear: () => null,
   };

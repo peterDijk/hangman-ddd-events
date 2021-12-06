@@ -19,11 +19,11 @@ export class NewGameStartedEventHandler
       gameId: event.gameId,
     });
     if (existingGame) {
-      this.logger.log(`Already exists, ${JSON.stringify(existingGame)}`);
       return;
     }
     /*
      * is querying the projection for every event too expensive on performance?
+     * update: now events are read from last checkpoint, we can skip this
      *
      * should command handler check if the new game is allowed to be created?
      * for that the command handler has to access read side - not good?

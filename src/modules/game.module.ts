@@ -13,7 +13,6 @@ import EventHandlers from '../Hangman/Domain/EventHandlers';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventStoreInstanciators } from '../event-store';
-import { connect } from '../mongo/database';
 import { MongoStore } from '../mongo/mongo-eventstore-adapter';
 
 @Module({
@@ -22,19 +21,16 @@ import { MongoStore } from '../mongo/mongo-eventstore-adapter';
     EventStoreModule.registerFeatureAsync({
       type: 'event-store',
       useFactory: async () => {
-        // connect();
+        const streamName = 'game';
 
         return {
           type: 'event-store',
-          featureStreamName: '$ce-game',
-          store: MongoStore('game'),
+          featureStreamName: `$ce-${streamName}`,
+          store: MongoStore(streamName),
           subscriptions: [
             {
-              type: EventStoreSubscriptionType.CatchUp, // research various types
-              stream: '$ce-game',
-              resolveLinkTos: true, // Default is true (Optional)
-              lastCheckpoint: null,
-              //fetches from the start. in follow-up PR, store the position somewhere, and setup a configservice that can read this position and insert it here
+              type: EventStoreSubscriptionType.CatchUp,
+              stream: `$ce-${streamName}`,
             },
           ],
           eventHandlers: EventStoreInstanciators,
