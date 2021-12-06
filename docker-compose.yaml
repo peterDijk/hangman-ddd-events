@@ -18,6 +18,28 @@ services:
         source: projections-volume-data
         target: /var/lib/projections
 
+  store-state.db:
+    container_name: hangman-store-state
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - backend
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@store-state.db:27017/
+    networks:
+      - backend
+
   eventstore.db:
     container_name: hangman-eventstore
     image: eventstore/eventstore:20.6.1-buster-slim
