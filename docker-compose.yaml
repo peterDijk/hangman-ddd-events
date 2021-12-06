@@ -22,9 +22,11 @@ services:
     container_name: hangman-store-state
     image: mongo
     restart: always
+    ports:
+      - ${STORE_STATE_PORT}:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${STORE_STATE_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${STORE_STATE_PASSWORD}
     networks:
       - backend
 
@@ -34,9 +36,9 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@store-state.db:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${STORE_STATE_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${STORE_STATE_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${STORE_STATE_USERNAME}:${STORE_STATE_PASSWORD}@store-state.db:27017/
     networks:
       - backend
 

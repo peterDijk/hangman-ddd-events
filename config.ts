@@ -47,6 +47,16 @@ const configs = {
       type: process.env.PROJECTIONS_DB_TYPE,
       database: process.env.PROJECTIONS_DATABASE,
     },
+    STORE_STATE_SETTINGS: {
+      hostname: process.env.STORE_STATE_HOSTNAME,
+      port: process.env.STORE_STATE_PORT,
+      credentials: {
+        username: process.env.STORE_STATE_USERNAME,
+        password: process.env.STORE_STATE_PASSWORD,
+      },
+      type: process.env.STORE_STATE_DB_TYPE,
+      database: process.env.STORE_STATE_DB,
+    },
   },
   development: {},
   production: {
