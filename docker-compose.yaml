@@ -75,6 +75,7 @@ services:
     depends_on:
       - eventstore.db
       - projections.db
+      - store-state.db
       # service wont be started before this service is running
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']

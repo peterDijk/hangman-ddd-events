@@ -8,6 +8,7 @@ export function MongoStore(key: string): IAdapterStore {
   return {
     storeKey: key,
     write: async (streamName: string, checkpoint: number) => {
+      console.log('updateOneOrCreate', { streamName, checkpoint });
       const updateCheckpoint = await StoreStateModel.updateOneOrCreate({
         streamName,
         checkpoint,
