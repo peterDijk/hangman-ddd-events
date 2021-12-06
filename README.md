@@ -38,17 +38,15 @@ GQL_PLAYGROUND=enabled
 
 ### Migrations
 
-To be able to run migrations (and have typeorm cli connect to the database) point the internal docker hostname to your localhost in /etc/hosts
+Will be run on start of the container
+
+To run manually:
 
 ```bash
-127.0.0.1 projections.db
-```
-
-```bash
-$ npm run migration:run
+$ docker-compose exec hangman-ddd-events npm run migration:run
 
 # after adding model(s) or make changes to models, generate new migration:
-$ npm run migration:generate -- [migration-name]
+$ docker-compose exec hangman-ddd-events npm run migration:generate -- [migration-name]
 ```
 
 ```bash
