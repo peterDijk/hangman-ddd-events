@@ -17,6 +17,7 @@ import { config } from '../../config';
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
     }),
+    GamesModule.register(),
     EventStoreModule.register({
       type: 'event-store',
       tcpEndpoint: {
@@ -38,7 +39,6 @@ import { config } from '../../config';
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
     }),
-    GamesModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],
