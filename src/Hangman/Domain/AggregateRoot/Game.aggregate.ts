@@ -12,6 +12,7 @@ import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -26,13 +27,16 @@ export class Game extends AggregateRoot {
 
   @Field()
   @IsString()
-  @MinLength(5)
+  @MinLength(3)
   wordToGuess: string;
 
   @Field()
   @IsNumber()
   @Min(1)
   maxGuesses: number;
+
+  @Field()
+  lettersGuessed: string[];
 
   constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
     super();
@@ -59,5 +63,19 @@ export class Game extends AggregateRoot {
     } catch (err) {
       throw new InvalidGameException(err);
     }
+  }
+
+  async guessLetter(letter: string) {
+    // TODO: validate guess
+    const gameOver = true;
+    // better validation of course, quick check to see if this works
+
+    if (this.lettersGuessed.length - 1 === this.maxGuesses && gameOver) {
+      throw new InvalidGameException('max guesses looser');
+    }
+
+    this.lettersGuessed.push(letter[0]);
+
+    this.apply(new LetterGuessedEvent(this.gameId, this.lettersGuessed));
   }
 }

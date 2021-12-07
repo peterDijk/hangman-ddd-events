@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger, Get } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { GamesService } from '../Hangman/Application/Services/games.service';
 
@@ -34,5 +34,19 @@ export class GamesController {
   @Get('list')
   async getAllGames() {
     return await this.gameService.getAllGames();
+  }
+
+  @ApiResponse({ status: 200, description: 'Guess made' })
+  @Post('/:id/guess')
+  async makeGuess(
+    @Param() { id },
+    @Body()
+    {
+      letter,
+    }: {
+      letter: string;
+    },
+  ) {
+    return await this.gameService.makeGuess(id, letter);
   }
 }

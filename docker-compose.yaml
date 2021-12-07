@@ -31,6 +31,7 @@ services:
       - backend
 
   mongo-express:
+    container_name: mongo-express
     image: mongo-express
     restart: always
     ports:

@@ -38,4 +38,11 @@ export class Game extends BaseEntity {
     nullable: false,
   })
   maxGuesses: number;
+
+  @Field()
+  @Column({
+    type: 'json',
+    nullable: false,
+  })
+  lettersGuessed: string[];
 }

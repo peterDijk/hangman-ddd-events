@@ -6,6 +6,7 @@ import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { GuessLetterCommand } from '../Commands/GuessLetter.command';
 
 @Injectable()
 export class GamesService {
@@ -37,5 +38,17 @@ export class GamesService {
       count: games.length,
       games,
     };
+  }
+
+  async makeGuess(gameId: string, letter: string) {
+    try {
+      await this.commandBus.execute(new GuessLetterCommand(gameId, letter));
+
+      return { message: 'success', status: 200, gameId, letter };
+    } catch (err) {
+      this.logger.error(err.name, err.stack);
+
+      throw new BadRequestException('Cant make guess');
+    }
   }
 }

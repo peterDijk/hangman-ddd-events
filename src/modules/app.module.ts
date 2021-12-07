@@ -11,12 +11,12 @@ import { config } from '../../config';
 @Module({
   imports: [
     // AuthModule,
-    GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql',
-      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      cors: true,
-    }),
+    // GraphQLModule.forRoot({
+    //   autoSchemaFile: 'schema.gql',
+    //   introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+    //   playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+    //   cors: true,
+    // }),
     EventStoreModule.register({
       type: 'event-store',
       tcpEndpoint: {

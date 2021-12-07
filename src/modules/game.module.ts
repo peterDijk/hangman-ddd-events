@@ -41,7 +41,7 @@ import { MongoStore } from '../mongo/mongo-eventstore-adapter';
   ],
   controllers: [GamesController],
   providers: [
-    GamesResolver,
+    // GamesResolver,
     GamesService,
     GamesRepository,
     ...CommandHandlers,
