@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { Controller, Post, Body, Logger } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { GamesService } from '../Hangman/Application/Services/games.service';
 

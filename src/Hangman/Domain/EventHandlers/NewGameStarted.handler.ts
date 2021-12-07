@@ -15,32 +15,19 @@ export class NewGameStartedEventHandler
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
   async handle(event: NewGameStartedEvent) {
-    const existingGame = await this.gamesProjectionRepository.findOne({
-      gameId: event.gameId,
-    });
-    if (existingGame) {
-      return;
-    }
-    /*
-     * is querying the projection for every event too expensive on performance?
-     * update: now events are read from last checkpoint, we can skip this
-     *
-     * should command handler check if the new game is allowed to be created?
-     * for that the command handler has to access read side - not good?
-     * should be possible somehow to check current state of system in handler to
-     * see if the action is allowed. Or go happy path, assume its all ok in
-     * command, then if in event handler seems it can't be done, emit event like
-     * 'creating failed, not allowed'
-     */
-    this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
+    try {
+      this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
 
-    const newGame = this.gamesProjectionRepository.create({
-      gameId: event.gameId,
-      playerId: event.playerId,
-      playerName: '',
-      wordToGuess: event.wordToGuess,
-      maxGuesses: event.maxGuesses,
-    });
-    await this.gamesProjectionRepository.save(newGame);
+      const newGame = this.gamesProjectionRepository.create({
+        gameId: event.gameId,
+        playerId: event.playerId,
+        playerName: '',
+        wordToGuess: event.wordToGuess,
+        maxGuesses: event.maxGuesses,
+      });
+      await this.gamesProjectionRepository.save(newGame);
+    } catch (err) {
+      this.logger.log('cant save to projection');
+    }
   }
 }
