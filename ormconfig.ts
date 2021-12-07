@@ -43,7 +43,7 @@ export default {
   migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
   namingStrategy: new CustomNamingStrategy(),
   synchronize: false,
-  logging: true,
+  logging: false,
   ssl: config.ENV === 'production' && {
     rejectUnauthorized: false,
   },

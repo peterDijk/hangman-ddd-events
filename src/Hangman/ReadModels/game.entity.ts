@@ -1,15 +1,11 @@
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, BaseEntity, Column, PrimaryColumn } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
 export class Game extends BaseEntity {
   @Field()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Field()
-  @Column({
+  @PrimaryColumn({
     type: 'varchar',
     nullable: false,
   })
