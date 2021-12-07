@@ -3,6 +3,7 @@ import { NewGameStartedEvent } from './Hangman/Domain/Events/NewGameStarted.even
 
 export const EventStoreInstanciators = {
   NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) => {
+    console.log('NewGameStartedEvent', { gameId });
     return new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses);
   },
   LetterGuessedEvent: (gameId, letter) => {

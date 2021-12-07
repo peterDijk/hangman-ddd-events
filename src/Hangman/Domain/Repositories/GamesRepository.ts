@@ -27,7 +27,7 @@ export class GamesRepository {
   }
 
   async save(game: Game): Promise<Game> {
-    this.aggregates[game.gameId] = game;
+    // this.aggregates[game.gameId] = game;
     return this.aggregates[game.gameId];
   }
 
@@ -35,7 +35,7 @@ export class GamesRepository {
     const game = new Game(data, uuid);
     await game.startNewGame();
 
-    this.aggregates[game.gameId] = game;
+    // this.aggregates[game.gameId] = game;
 
     return game;
   }

@@ -15,6 +15,8 @@ export class NewGameStartedEventHandler
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
   async handle(event: NewGameStartedEvent) {
+    this.logger.log(event);
+
     try {
       this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
 

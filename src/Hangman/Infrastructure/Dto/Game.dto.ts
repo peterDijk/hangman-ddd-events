@@ -3,6 +3,9 @@ import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 export class GameDto {
   @Field()
+  gameId?: string;
+
+  @Field()
   playerId: string;
 
   @Field()
