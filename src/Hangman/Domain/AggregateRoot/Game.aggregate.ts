@@ -44,6 +44,7 @@ export class Game extends AggregateRoot {
     this.playerId = playerId;
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
+    this.lettersGuessed = [];
   }
 
   async startNewGame() {
