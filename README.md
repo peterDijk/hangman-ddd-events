@@ -68,8 +68,10 @@ $ docker-compose up
 
 ## Interfaces
 
-- graphql: https://localhost:7070/graphql
+- graphql: http://localhost:7070/graphql
 - eventstore: https://localhost:2113
+- rest api: http://localhost:7070/v1/games/new
+- rest api: http://localhost:7070/v1/games/list
 
 ## Test
 

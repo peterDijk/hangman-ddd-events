@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Get } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { GamesService } from '../Hangman/Application/Services/games.service';
 
@@ -10,7 +10,7 @@ export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
   @ApiResponse({ status: 201, description: 'Game created' })
-  @Post()
+  @Post('new')
   async startNewGame(
     @Body()
     {
@@ -28,5 +28,11 @@ export class GamesController {
       wordToGuess,
       maxGuesses: parseInt(maxGuesses),
     });
+  }
+
+  @ApiResponse({ status: 200, description: 'List games' })
+  @Get('list')
+  async getAllGames() {
+    return await this.gameService.getAllGames();
   }
 }
