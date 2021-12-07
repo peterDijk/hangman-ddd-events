@@ -38,13 +38,17 @@ export class Game extends AggregateRoot {
   @Field()
   lettersGuessed: string[];
 
-  constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
+  constructor(
+    { playerId, wordToGuess, maxGuesses, lettersGuessed }: GameDto,
+    gameId: string,
+  ) {
     super();
     this.gameId = gameId;
     this.playerId = playerId;
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
-    this.lettersGuessed = [];
+    // TODO parse json
+    this.lettersGuessed = []; //JSON.parse(lettersGuessed);
   }
 
   async startNewGame() {
@@ -71,7 +75,7 @@ export class Game extends AggregateRoot {
     const gameOver = true;
     // better validation of course, quick check to see if this works
 
-    if (this.lettersGuessed.length - 1 === this.maxGuesses && gameOver) {
+    if (this.lettersGuessed?.length - 1 === this.maxGuesses && gameOver) {
       throw new InvalidGameException('max guesses looser');
     }
 

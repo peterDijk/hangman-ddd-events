@@ -10,4 +10,7 @@ export class GameDto {
 
   @Field()
   maxGuesses: number;
+
+  @Field()
+  lettersGuessed?: string[];
 }
