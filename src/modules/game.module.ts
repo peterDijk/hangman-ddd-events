@@ -12,8 +12,6 @@ import CommandHandlers from '../Hangman/Application/CommandHandlers';
 import EventHandlers from '../Hangman/Domain/EventHandlers';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
-import { EventStoreInstanciators } from '../event-store';
-import { MongoStore } from '../mongo/mongo-eventstore-adapter';
 import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
 
 @Module({

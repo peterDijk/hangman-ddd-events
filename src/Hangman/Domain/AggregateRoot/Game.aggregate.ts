@@ -18,10 +18,7 @@ import { Logger } from '@nestjs/common';
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
-
-  @Field()
-  @IsUUID()
-  gameId: string;
+  public readonly version: number;
 
   @Field()
   @IsString()
@@ -53,9 +50,10 @@ export class Game extends AggregateRoot {
   //   // TODO parse json
   //   this.lettersGuessed = lettersGuessed === null ? [] : lettersGuessed;
   // }
-  constructor(id: string) {
+  constructor(id: string, version?: number) {
     super();
     this.id = id;
+    this.version = version;
   }
 
   private logger = new Logger(Game.name);
@@ -70,14 +68,18 @@ export class Game extends AggregateRoot {
     try {
       await validateOrReject(this);
 
-      this.apply(
-        new NewGameStartedEvent(
-          this.gameId,
-          this.playerId,
-          this.wordToGuess,
-          this.maxGuesses,
-        ),
+      this.logger.log(this.id);
+
+      const event = new NewGameStartedEvent(
+        this.id,
+        this.playerId,
+        this.wordToGuess,
+        this.maxGuesses,
       );
+
+      this.logger.log({ event });
+
+      this.apply(event);
     } catch (err) {
       throw new InvalidGameException(err);
     }
@@ -97,6 +99,6 @@ export class Game extends AggregateRoot {
     // this.loadFromHistory()
     this.logger.log(this.lettersGuessed);
 
-    this.apply(new LetterGuessedEvent(this.gameId, this.lettersGuessed));
+    this.apply(new LetterGuessedEvent(this.id, this.lettersGuessed));
   }
 }

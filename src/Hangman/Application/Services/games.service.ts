@@ -18,9 +18,8 @@ export class GamesService {
   private readonly logger = new Logger(GamesService.name);
 
   async startNewGame(data: GameDto) {
-    console.log(data.gameId);
-
     const gameId = uuidv4();
+
     this.logger.log(`generated uuid: ${gameId}`);
 
     try {

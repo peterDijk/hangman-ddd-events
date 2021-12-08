@@ -3,6 +3,7 @@ import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
 import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
+import { StoreEventPublisher } from '@berniemac/event-sourcing-nestjs';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -11,7 +12,7 @@ export class StartNewGameCommandHandler
 
   constructor(
     private readonly repository: GamesRepository,
-    private readonly publisher: EventPublisher,
+    private readonly publisher: StoreEventPublisher,
   ) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
