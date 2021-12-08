@@ -12,9 +12,6 @@ export class GamesRepository {
     @InjectRepository(GameProjection)
     private gamesProjectionRepository: Repository<GameProjection>,
   ) {}
-  // wordt dit niet gigantisch in memory?
-  // database in memory?
-  private aggregates: { [aggregateId: string]: Game } = {};
   private logger = new Logger(GamesRepository.name);
 
   async findOneById(aggregateId: string): Promise<GameProjection> {
@@ -22,26 +19,24 @@ export class GamesRepository {
     this.logger.log(`find One ${JSON.stringify(game)}`);
 
     return game;
-
-    // return Promise.resolve(this.aggregates[aggregateId]);
-  }
-
-  async save(game: Game): Promise<Game> {
-    // this.aggregates[game.gameId] = game;
-    return this.aggregates[game.gameId];
   }
 
   async startNewGameRep(data: GameDto, uuid: string) {
     const game = new Game(data, uuid);
     await game.startNewGame();
 
-    // this.aggregates[game.gameId] = game;
-
     return game;
   }
 
   async guessLetterRep(gameId: string, letter: string) {
     const game = await this.findOneById(gameId);
+    // find game in repository, make a new Game from it
+    // so it is a Aggregate with methods and properties again
+
+    // better solution then find in projection-db ?
+    // query event store ?
+    // redis?
+
     const newGame = new Game(
       {
         playerId: game.playerId,
@@ -53,6 +48,5 @@ export class GamesRepository {
     );
     await newGame.guessLetter(letter);
     return newGame;
-    // return this.save(game);
   }
 }

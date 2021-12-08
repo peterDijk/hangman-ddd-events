@@ -13,6 +13,7 @@ import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
+import { Logger } from '@nestjs/common';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -39,7 +40,7 @@ export class Game extends AggregateRoot {
   lettersGuessed: string[];
 
   constructor(
-    { playerId, wordToGuess, maxGuesses, lettersGuessed }: GameDto,
+    { playerId, wordToGuess, maxGuesses, lettersGuessed = [] }: GameDto,
     gameId: string,
   ) {
     super();
@@ -48,8 +49,10 @@ export class Game extends AggregateRoot {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
     // TODO parse json
-    this.lettersGuessed = [];
+    this.lettersGuessed = lettersGuessed;
   }
+
+  private logger = new Logger(Game.name);
 
   async startNewGame() {
     // if we validate here, we can leave validating in CommandConstructor. double validation is unneeded, and here we can async validate using class-validators
@@ -81,6 +84,9 @@ export class Game extends AggregateRoot {
     }
 
     this.lettersGuessed.push(letter[0]);
+
+    // this.loadFromHistory()
+    this.logger.log(this.lettersGuessed);
 
     this.apply(new LetterGuessedEvent(this.gameId, this.lettersGuessed));
   }

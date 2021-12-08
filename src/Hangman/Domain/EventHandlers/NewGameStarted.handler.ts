@@ -20,7 +20,9 @@ export class NewGameStartedEventHandler
     try {
       this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
 
-      // here the event.gameId is different then in eventstore stream (dashboard)
+      // when gameId is as second argument in the event, its not
+      // manipulated on importing. Now the first argument is "game": "game"
+      // it stays unchanged
       const newGame = this.gamesProjectionRepository.create({
         gameId: event.gameId,
         playerId: event.playerId,
