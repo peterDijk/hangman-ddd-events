@@ -49,7 +49,7 @@ export class Game extends AggregateRoot {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
     // TODO parse json
-    this.lettersGuessed = lettersGuessed;
+    this.lettersGuessed = lettersGuessed === null ? [] : lettersGuessed;
   }
 
   private logger = new Logger(Game.name);
@@ -62,7 +62,7 @@ export class Game extends AggregateRoot {
 
       this.apply(
         new NewGameStartedEvent(
-          'game',
+          `game-${this.gameId}`,
           this.gameId,
           this.playerId,
           this.wordToGuess,

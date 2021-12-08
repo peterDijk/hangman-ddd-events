@@ -3,7 +3,10 @@ import { NewGameStartedEvent } from './Hangman/Domain/Events/NewGameStarted.even
 
 export const EventStoreInstanciators = {
   NewGameStartedEvent: (game, gameId, playerId, wordToGuess, maxGuesses) => {
-    //  WHY IS GAMEID HERE DIFFERENT FROM GAMEID ATTR IN EVENTSTORE EVENT
+    // when op generating of the event pass a uuid as normal string
+    // as the first argument in the event, it's manipulated when
+    // stored in the eventstore
+
     console.log('NewGameStartedEvent from eventstore', { gameId });
     /* 
     Note: if your event broker type is Event Store then featureStreamName should look like '$ce-user', then you should name your domain argument should be user without $ce, for example.
