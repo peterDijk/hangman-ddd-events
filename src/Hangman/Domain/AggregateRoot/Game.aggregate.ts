@@ -59,6 +59,7 @@ export class Game extends AggregateRoot {
 
       this.apply(
         new NewGameStartedEvent(
+          'game',
           this.gameId,
           this.playerId,
           this.wordToGuess,

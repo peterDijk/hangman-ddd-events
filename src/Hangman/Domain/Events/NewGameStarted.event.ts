@@ -2,6 +2,7 @@ import { IEvent } from '@nestjs/cqrs';
 
 export class NewGameStartedEvent implements IEvent {
   constructor(
+    public readonly game: string,
     public readonly gameId: string,
     public readonly playerId: string,
     public readonly wordToGuess: string,

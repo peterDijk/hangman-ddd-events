@@ -2,7 +2,7 @@ import { LetterGuessedEvent } from './Hangman/Domain/Events/LetterGuessed.event'
 import { NewGameStartedEvent } from './Hangman/Domain/Events/NewGameStarted.event';
 
 export const EventStoreInstanciators = {
-  NewGameStartedEvent: (gameId, playerId, wordToGuess, maxGuesses) => {
+  NewGameStartedEvent: (game, gameId, playerId, wordToGuess, maxGuesses) => {
     //  WHY IS GAMEID HERE DIFFERENT FROM GAMEID ATTR IN EVENTSTORE EVENT
     console.log('NewGameStartedEvent from eventstore', { gameId });
     /* 
@@ -18,7 +18,13 @@ The way this works is we group the event based the first argument in the constru
      * DOES THE ID CHANGE HERE. ITS NOT THE OBJECT OF THE EVENT
      * THEY ARE EACH PASSED AS PARAMETERS
      */
-    return new NewGameStartedEvent(gameId, playerId, wordToGuess, maxGuesses);
+    return new NewGameStartedEvent(
+      game,
+      gameId,
+      playerId,
+      wordToGuess,
+      maxGuesses,
+    );
   },
   LetterGuessedEvent: (gameId, letter) => {
     return new LetterGuessedEvent(gameId, letter);
