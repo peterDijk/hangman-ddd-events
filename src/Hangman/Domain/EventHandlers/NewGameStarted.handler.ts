@@ -18,7 +18,7 @@ export class NewGameStartedEventHandler
     this.logger.log(event);
 
     try {
-      this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
+      this.logger.log(`${JSON.stringify(event)}`);
 
       // when gameId is as second argument in the event, its not
       // manipulated on importing. Now the first argument is "game": "game"
