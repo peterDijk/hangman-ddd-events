@@ -14,29 +14,31 @@ import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventStoreInstanciators } from '../event-store';
 import { MongoStore } from '../mongo/mongo-eventstore-adapter';
+import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
 
 @Module({
   imports: [
     CqrsModule,
-    EventStoreModule.registerFeatureAsync({
-      type: 'event-store',
-      useFactory: async () => {
-        const streamName = 'game';
+    EventSourcingModule.forFeature(),
+    // EventStoreModule.registerFeatureAsync({
+    //   type: 'event-store',
+    //   useFactory: async () => {
+    //     const streamName = 'game';
 
-        return {
-          type: 'event-store',
-          featureStreamName: `$ce-${streamName}`,
-          store: MongoStore(streamName),
-          subscriptions: [
-            {
-              type: EventStoreSubscriptionType.CatchUp,
-              stream: `$ce-${streamName}`,
-            },
-          ],
-          eventHandlers: EventStoreInstanciators,
-        };
-      },
-    }),
+    //     return {
+    //       type: 'event-store',
+    //       featureStreamName: `$ce-${streamName}`,
+    //       store: MongoStore(streamName),
+    //       subscriptions: [
+    //         {
+    //           type: EventStoreSubscriptionType.CatchUp,
+    //           stream: `$ce-${streamName}`,
+    //         },
+    //       ],
+    //       eventHandlers: EventStoreInstanciators,
+    //     };
+    //   },
+    // }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
   controllers: [GamesController],

@@ -56,6 +56,7 @@ const configs = {
       },
       type: process.env.STORE_STATE_DB_TYPE,
       database: process.env.STORE_STATE_DB,
+      eventsDb: process.env.STORE_STATE_EVENTS_DB,
     },
   },
   development: {},

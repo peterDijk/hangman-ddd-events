@@ -1,12 +1,13 @@
 import { config } from '../../config';
 import * as Mongoose from 'mongoose';
 let database: Mongoose.Connection;
+export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}/?retryWrites=true&w=majority`;
+
 export const connect = () => {
-  const uri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}/?retryWrites=true&w=majority`;
   if (database) {
     return;
   }
-  Mongoose.connect(uri, {
+  Mongoose.connect(mongoDbUri, {
     dbName: config.STORE_STATE_SETTINGS.database,
   });
   database = Mongoose.connection;
