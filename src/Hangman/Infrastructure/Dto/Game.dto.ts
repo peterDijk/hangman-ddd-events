@@ -6,13 +6,13 @@ export class GameDto {
   gameId?: string;
 
   @Field()
-  playerId: string;
+  playerId?: string;
 
   @Field()
-  wordToGuess: string;
+  wordToGuess?: string;
 
   @Field()
-  maxGuesses: number;
+  maxGuesses?: number;
 
   @Field()
   lettersGuessed?: string[];

@@ -21,6 +21,14 @@ export class GamesRepository {
     return game;
   }
 
+  // https://www.npmjs.com/package/@berniemac/event-sourcing-nestjs the solution
+  //
+  // async _findOneById(id: string): Promise<Game> {
+  //   const game = new Game({}, id);
+  //   game.loadFromHistory(await this.eventStore.getEvents('game', id));
+  //   return game;
+  // }
+
   async startNewGameRep(data: GameDto, uuid: string) {
     const game = new Game(data, uuid);
     await game.startNewGame();
