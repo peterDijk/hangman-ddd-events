@@ -20,6 +20,7 @@ export class NewGameStartedEventHandler
     try {
       this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
 
+      // here the event.gameId is different then in eventstore stream (dashboard)
       const newGame = this.gamesProjectionRepository.create({
         gameId: event.gameId,
         playerId: event.playerId,

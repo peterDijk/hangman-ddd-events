@@ -48,7 +48,7 @@ export class Game extends AggregateRoot {
     this.wordToGuess = wordToGuess;
     this.maxGuesses = maxGuesses;
     // TODO parse json
-    this.lettersGuessed = []; //JSON.parse(lettersGuessed);
+    this.lettersGuessed = [];
   }
 
   async startNewGame() {

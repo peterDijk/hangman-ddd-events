@@ -21,6 +21,7 @@ export class GamesService {
     console.log(data.gameId);
 
     const gameId = uuidv4();
+    this.logger.log(`generated uuid: ${gameId}`);
 
     try {
       await this.commandBus.execute(new StartNewGameCommand(data, gameId));
