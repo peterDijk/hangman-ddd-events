@@ -23,14 +23,14 @@ export class NewGameStartedEventHandler
       // when gameId is as second argument in the event, its not
       // manipulated on importing. Now the first argument is "game": "game"
       // it stays unchanged
-      const newGame = this.gamesProjectionRepository.create({
-        gameId: event.gameId,
-        playerId: event.playerId,
-        playerName: '',
-        wordToGuess: event.wordToGuess,
-        maxGuesses: event.maxGuesses,
-      });
-      await this.gamesProjectionRepository.save(newGame);
+      // const newGame = this.gamesProjectionRepository.create({
+      //   gameId: event.gameId,
+      //   playerId: event.playerId,
+      //   playerName: '',
+      //   wordToGuess: event.wordToGuess,
+      //   maxGuesses: event.maxGuesses,
+      // });
+      // await this.gamesProjectionRepository.save(newGame);
     } catch (err) {
       this.logger.log('cant save to projection');
     }

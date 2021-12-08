@@ -17,12 +17,12 @@ export class LetterGuessedEventHandler
 
   async handle(event: LetterGuessedEvent) {
     try {
-      await this.gamesProjectionRepository.update(
-        {
-          gameId: event.gameId,
-        },
-        { lettersGuessed: event.lettersGuessed },
-      );
+      // await this.gamesProjectionRepository.update(
+      //   {
+      //     gameId: event.gameId,
+      //   },
+      //   { lettersGuessed: event.lettersGuessed },
+      // );
       this.logger.log(
         `LetterGuessedEvent - Updating projection, ${JSON.stringify(event)}`,
       );

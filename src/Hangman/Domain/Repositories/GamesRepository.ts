@@ -5,17 +5,19 @@ import { Game } from '../AggregateRoot/Game.aggregate';
 
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { Repository } from 'typeorm';
+import { EventStore } from '@berniemac/event-sourcing-nestjs';
 
 @Injectable()
 export class GamesRepository {
-  constructor(
-    @InjectRepository(GameProjection)
-    private gamesProjectionRepository: Repository<GameProjection>,
-  ) {}
+  constructor(private readonly eventStore: EventStore) {}
   private logger = new Logger(GamesRepository.name);
 
-  async findOneById(aggregateId: string): Promise<GameProjection> {
-    const game = await this.gamesProjectionRepository.findOne(aggregateId);
+  async findOneById(aggregateId: string): Promise<Game> {
+    const game = new Game(aggregateId);
+    game.loadFromHistory(
+      await (await this.eventStore.getEvents('game', aggregateId)).events,
+    );
+    // const game = await this.gamesProjectionRepository.findOne(aggregateId);
     this.logger.log(`find One ${JSON.stringify(game)}`);
 
     return game;
@@ -30,8 +32,8 @@ export class GamesRepository {
   // }
 
   async startNewGameRep(data: GameDto, uuid: string) {
-    const game = new Game(data, uuid);
-    await game.startNewGame();
+    const game = new Game(uuid);
+    await game.startNewGame(data);
 
     return game;
   }
@@ -45,16 +47,7 @@ export class GamesRepository {
     // query event store ?
     // redis?
 
-    const newGame = new Game(
-      {
-        playerId: game.playerId,
-        wordToGuess: game.wordToGuess,
-        maxGuesses: game.maxGuesses,
-        lettersGuessed: game.lettersGuessed,
-      },
-      game.gameId,
-    );
-    await newGame.guessLetter(letter);
-    return newGame;
+    await game.guessLetter(letter);
+    return game;
   }
 }

@@ -17,6 +17,8 @@ import { Logger } from '@nestjs/common';
 
 @ObjectType()
 export class Game extends AggregateRoot {
+  public readonly id: string;
+
   @Field()
   @IsUUID()
   gameId: string;
@@ -39,22 +41,30 @@ export class Game extends AggregateRoot {
   @Field()
   lettersGuessed: string[];
 
-  constructor(
-    { playerId, wordToGuess, maxGuesses, lettersGuessed = [] }: GameDto,
-    gameId: string,
-  ) {
+  // constructor(
+  //   { playerId, wordToGuess, maxGuesses, lettersGuessed = [] }: GameDto,
+  //   gameId: string,
+  // ) {
+  //   super();
+  //   this.gameId = gameId;
+  //   this.playerId = playerId;
+  //   this.wordToGuess = wordToGuess;
+  //   this.maxGuesses = maxGuesses;
+  //   // TODO parse json
+  //   this.lettersGuessed = lettersGuessed === null ? [] : lettersGuessed;
+  // }
+  constructor(id: string) {
     super();
-    this.gameId = gameId;
-    this.playerId = playerId;
-    this.wordToGuess = wordToGuess;
-    this.maxGuesses = maxGuesses;
-    // TODO parse json
-    this.lettersGuessed = lettersGuessed === null ? [] : lettersGuessed;
+    this.id = id;
   }
 
   private logger = new Logger(Game.name);
 
-  async startNewGame() {
+  async startNewGame(data: GameDto) {
+    this.playerId = data.playerId;
+    this.wordToGuess = data.wordToGuess;
+    this.maxGuesses = data.maxGuesses;
+    this.lettersGuessed = [];
     // if we validate here, we can leave validating in CommandConstructor. double validation is unneeded, and here we can async validate using class-validators
 
     try {
@@ -62,7 +72,6 @@ export class Game extends AggregateRoot {
 
       this.apply(
         new NewGameStartedEvent(
-          `game-${this.gameId}`,
           this.gameId,
           this.playerId,
           this.wordToGuess,
