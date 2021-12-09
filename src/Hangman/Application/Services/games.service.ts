@@ -35,7 +35,9 @@ export class GamesService {
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
     this.logger.log('getAllGames');
-    const games = await this.gamesProjectionRepository.find();
+    const games = await this.gamesProjectionRepository.find({
+      order: { dateModified: 'DESC' },
+    });
     return {
       count: games.length,
       games,

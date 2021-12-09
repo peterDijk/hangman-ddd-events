@@ -23,6 +23,8 @@ export class NewGameStartedUpdater
       playerId: event.playerId,
       wordToGuess: event.wordToGuess,
       playerName: '',
+      dateCreated: event.dateCreated,
+      dateModified: event.dateModified,
     });
     game.save();
   }

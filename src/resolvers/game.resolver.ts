@@ -7,6 +7,7 @@ import {
   GameResponse,
 } from '../Hangman/Infrastructure/Dto/Api.dto';
 import { GameDto } from '../Hangman/Infrastructure/Dto/Game.dto';
+import { GuessDto } from '../Hangman/Infrastructure/Dto/Guess.dto';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 
 @Resolver((of) => Game)
@@ -19,13 +20,18 @@ export class GamesResolver {
     return 'Hello World!';
   }
 
+  @Query((returns) => AllGamesResponse)
+  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
+    return await this.gameService.getAllGames();
+  }
+
   @Mutation((returns) => GameResponse)
   async startNewGame(@Args('input') gameDto: GameDto): Promise<GameResponse> {
     return await this.gameService.startNewGame(gameDto);
   }
 
-  @Query((returns) => AllGamesResponse)
-  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
-    return await this.gameService.getAllGames();
+  @Mutation((returns) => GameResponse)
+  async makeGuess(@Args('input') guesDto: GuessDto): Promise<GameResponse> {
+    return await this.gameService.makeGuess(guesDto.gameId, guesDto.letter);
   }
 }
