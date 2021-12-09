@@ -35,7 +35,7 @@ export class Game extends AggregateRoot {
   @Min(1)
   maxGuesses: number;
 
-  @Field()
+  @Field((type) => [String])
   lettersGuessed: string[];
 
   constructor(id: string, version?: number) {
