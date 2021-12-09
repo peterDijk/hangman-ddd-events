@@ -14,12 +14,12 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
 @Module({
   imports: [
     // AuthModule,
-    // GraphQLModule.forRoot({
-    //   autoSchemaFile: 'schema.gql',
-    //   introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-    //   playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-    //   cors: true,
-    // }),
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      cors: true,
+    }),
     EventSourcingModule.forRoot({
       // mongoURL: `mongodb://${config.STORE_STATE_SETTINGS.hostname}:27017/eventstore`,
       mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,

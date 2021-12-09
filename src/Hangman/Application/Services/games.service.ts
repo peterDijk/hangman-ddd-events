@@ -21,8 +21,6 @@ export class GamesService {
   async startNewGame(data: GameDto) {
     const gameId = uuidv4();
 
-    this.logger.log(`generated uuid: ${gameId}`);
-
     try {
       await this.commandBus.execute(new StartNewGameCommand(data, gameId));
 
@@ -37,7 +35,9 @@ export class GamesService {
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
     this.logger.log('getAllGames');
-    const games = await this.gamesProjectionRepository.find();
+    const games = await this.gamesProjectionRepository.find({
+      order: { dateModified: 'DESC' },
+    });
     return {
       count: games.length,
       games,

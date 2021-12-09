@@ -20,6 +20,9 @@ export class Game extends AggregateRoot {
   public readonly id: string;
   public readonly version: number;
 
+  dateCreated: Date;
+  dateModified: Date;
+
   @Field()
   @IsString()
   @MinLength(2)
@@ -35,7 +38,7 @@ export class Game extends AggregateRoot {
   @Min(1)
   maxGuesses: number;
 
-  @Field()
+  @Field((type) => [String])
   lettersGuessed: string[];
 
   constructor(id: string, version?: number) {
@@ -51,6 +54,8 @@ export class Game extends AggregateRoot {
     this.wordToGuess = data.wordToGuess;
     this.maxGuesses = data.maxGuesses;
     this.lettersGuessed = [];
+    this.dateCreated = new Date();
+    this.dateModified = new Date();
 
     try {
       await validateOrReject(this);
@@ -63,6 +68,8 @@ export class Game extends AggregateRoot {
           this.playerId,
           this.wordToGuess,
           this.maxGuesses,
+          this.dateCreated,
+          this.dateModified,
         ),
       );
     } catch (err) {
@@ -72,19 +79,23 @@ export class Game extends AggregateRoot {
 
   async guessLetter(letter: string) {
     // TODO: validate guess
-    const gameOver = true;
-    // better validation of course, quick check to see if this works
 
-    if (this.lettersGuessed?.length - 1 === this.maxGuesses && gameOver) {
-      throw new InvalidGameException('max guesses looser');
+    // better validation of course, quick check to see if this works
+    this.lettersGuessed.push(letter[0]);
+    this.logger.log(
+      `this.lettersGuessed?.length: ${this.lettersGuessed?.length}`,
+    );
+    if (this.lettersGuessed?.length >= this.maxGuesses) {
+      throw new InvalidGameException('Max guesses, game over');
     }
     this.apply(new LetterGuessedEvent(this.id, letter, this.lettersGuessed));
   }
 
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
+  // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.logger.log(`replaying from history: ${event}`);
+    this.logger.log(`replaying from history: ${event.id}`);
     this.playerId = event.playerId;
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
@@ -92,7 +103,7 @@ export class Game extends AggregateRoot {
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.logger.log(`replaying from history: ${event}`);
+    this.logger.log(`replaying from history: ${event.id}`);
     this.lettersGuessed.push(event.letter[0]);
   }
 }

@@ -39,10 +39,26 @@ export class Game extends BaseEntity {
   })
   maxGuesses: number;
 
-  @Field()
+  @Field((type) => [String], { nullable: true })
   @Column({
     type: 'json',
-    nullable: false,
+    nullable: true,
   })
   lettersGuessed: string[];
+
+  @Field()
+  @Column({
+    type: 'timestamp',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  dateCreated: Date;
+
+  @Field()
+  @Column({
+    type: 'timestamp',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  dateModified: Date;
 }
