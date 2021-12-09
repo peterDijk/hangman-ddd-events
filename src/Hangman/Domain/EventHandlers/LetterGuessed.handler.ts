@@ -1,5 +1,4 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
@@ -17,15 +16,8 @@ export class LetterGuessedEventHandler
 
   async handle(event: LetterGuessedEvent) {
     try {
-      // await this.gamesProjectionRepository.update(
-      //   {
-      //     gameId: event.gameId,
-      //   },
-      //   { lettersGuessed: event.lettersGuessed },
-      // );
-      this.logger.log(
-        `LetterGuessedEvent - Updating projection, ${JSON.stringify(event)}`,
-      );
+      // send websocket
+      this.logger.log(`${JSON.stringify(event)}`);
     } catch (err) {
       this.logger.error('cant save to projection');
     }

@@ -38,18 +38,6 @@ export class Game extends AggregateRoot {
   @Field()
   lettersGuessed: string[];
 
-  // constructor(
-  //   { playerId, wordToGuess, maxGuesses, lettersGuessed = [] }: GameDto,
-  //   gameId: string,
-  // ) {
-  //   super();
-  //   this.gameId = gameId;
-  //   this.playerId = playerId;
-  //   this.wordToGuess = wordToGuess;
-  //   this.maxGuesses = maxGuesses;
-  //   // TODO parse json
-  //   this.lettersGuessed = lettersGuessed === null ? [] : lettersGuessed;
-  // }
   constructor(id: string, version?: number) {
     super();
     this.id = id;
@@ -63,23 +51,20 @@ export class Game extends AggregateRoot {
     this.wordToGuess = data.wordToGuess;
     this.maxGuesses = data.maxGuesses;
     this.lettersGuessed = [];
-    // if we validate here, we can leave validating in CommandConstructor. double validation is unneeded, and here we can async validate using class-validators
 
     try {
       await validateOrReject(this);
 
       this.logger.log(this.id);
 
-      const event = new NewGameStartedEvent(
-        this.id,
-        this.playerId,
-        this.wordToGuess,
-        this.maxGuesses,
+      this.apply(
+        new NewGameStartedEvent(
+          this.id,
+          this.playerId,
+          this.wordToGuess,
+          this.maxGuesses,
+        ),
       );
-
-      this.logger.log({ event });
-
-      this.apply(event);
     } catch (err) {
       throw new InvalidGameException(err);
     }
@@ -93,12 +78,21 @@ export class Game extends AggregateRoot {
     if (this.lettersGuessed?.length - 1 === this.maxGuesses && gameOver) {
       throw new InvalidGameException('max guesses looser');
     }
+    this.apply(new LetterGuessedEvent(this.id, letter, this.lettersGuessed));
+  }
 
-    this.lettersGuessed.push(letter[0]);
+  // Replay event from history `loadFromHistory` function calls
+  // onNameOfEvent
+  onNewGameStartedEvent(event: NewGameStartedEvent) {
+    this.logger.log(`replaying from history: ${event}`);
+    this.playerId = event.playerId;
+    this.wordToGuess = event.wordToGuess;
+    this.maxGuesses = event.maxGuesses;
+    this.lettersGuessed = [];
+  }
 
-    // this.loadFromHistory()
-    this.logger.log(this.lettersGuessed);
-
-    this.apply(new LetterGuessedEvent(this.id, this.lettersGuessed));
+  onLetterGuessedEvent(event: LetterGuessedEvent) {
+    this.logger.log(`replaying from history: ${event}`);
+    this.lettersGuessed.push(event.letter[0]);
   }
 }

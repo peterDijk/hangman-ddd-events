@@ -9,7 +9,6 @@ import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../config';
-// import { mongoDbUri } from '../mongo/database';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({

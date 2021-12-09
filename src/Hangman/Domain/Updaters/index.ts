@@ -1,5 +1,6 @@
+import { LetterGuessedUpdater } from './LetterGuessed.updater';
 import { NewGameStartedUpdater } from './NewGameStarted.updater';
 
-const StateUpdaters = [NewGameStartedUpdater];
+const StateUpdaters = [NewGameStartedUpdater, LetterGuessedUpdater];
 
 export default StateUpdaters;

@@ -15,10 +15,12 @@ export class NewGameStartedEventHandler
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
 
   async handle(event: NewGameStartedEvent) {
-    this.logger.log(event);
-
     try {
+      // send websocket
       this.logger.log(`${JSON.stringify(event)}`);
+
+      // ABOUT BELOW: think this had to do with wrong event
+      // structure that i had back then ?
 
       // when gameId is as second argument in the event, its not
       // manipulated on importing. Now the first argument is "game": "game"
@@ -32,7 +34,7 @@ export class NewGameStartedEventHandler
       // });
       // await this.gamesProjectionRepository.save(newGame);
     } catch (err) {
-      this.logger.log('cant save to projection');
+      this.logger.log(err);
     }
   }
 }

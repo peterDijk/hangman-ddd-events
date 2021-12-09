@@ -1,8 +1,7 @@
-import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
-import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
 import { StoreEventPublisher } from '@berniemac/event-sourcing-nestjs';
 
 @CommandHandler(StartNewGameCommand)
@@ -20,7 +19,7 @@ export class StartNewGameCommandHandler
 
     const game = this.publisher.mergeObjectContext(
       // returned een aggregate met daarin applied NewGameStartedEvent
-      await this.repository.startNewGameRep(
+      await this.repository.startNewGame(
         { playerId, wordToGuess, maxGuesses },
         uuid,
       ),
