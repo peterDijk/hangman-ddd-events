@@ -21,8 +21,6 @@ export class GamesService {
   async startNewGame(data: GameDto) {
     const gameId = uuidv4();
 
-    this.logger.log(`generated uuid: ${gameId}`);
-
     try {
       await this.commandBus.execute(new StartNewGameCommand(data, gameId));
 
