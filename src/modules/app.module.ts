@@ -24,24 +24,6 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       // mongoURL: `mongodb://${config.STORE_STATE_SETTINGS.hostname}:27017/eventstore`,
       mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,
     }),
-    // EventStoreModule.register({
-    //   type: 'event-store',
-    //   tcpEndpoint: {
-    //     host: config.EVENT_STORE_SETTINGS.hostname,
-    //     port: config.EVENT_STORE_SETTINGS.tcpPort,
-    //   },
-    //   options: {
-    //     maxRetries: 1000, // Optional
-    //     maxReconnections: 1000, // Optional
-    //     reconnectionDelay: 1000, // Optional
-    //     heartbeatInterval: 1000, // Optional
-    //     heartbeatTimeout: 1000, // Optional
-    //     defaultUserCredentials: {
-    //       password: config.EVENT_STORE_SETTINGS.credentials.username,
-    //       username: config.EVENT_STORE_SETTINGS.credentials.password,
-    //     },
-    //   },
-    // }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
     }),
