@@ -21,7 +21,6 @@ export class GamesService {
   async startNewGame(data: GameDto) {
     const gameId = uuidv4();
 
-    // try {
     await this.commandBus.execute(new StartNewGameCommand(data, gameId));
     try {
       const game = new Game('test');
@@ -31,12 +30,9 @@ export class GamesService {
       return { message: 'success', status: 201, gameId, data };
     } catch (err) {
       this.logger.log(err);
+      this.logger.error(err.name, err.stack);
       throw new BadRequestException(err);
     }
-    // } catch (err) {
-    // this.logger.error(err.name, err.stack);
-
-    // }
   }
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
@@ -58,7 +54,7 @@ export class GamesService {
     } catch (err) {
       this.logger.error(err.name, err.stack);
 
-      throw new BadRequestException('Cant make guess');
+      throw new BadRequestException(err, 'Cant make guess');
     }
   }
 }
