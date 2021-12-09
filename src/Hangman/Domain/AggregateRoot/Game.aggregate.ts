@@ -50,6 +50,7 @@ export class Game extends AggregateRoot {
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
+    // apply to be able to validate
     this.playerId = data.playerId;
     this.wordToGuess = data.wordToGuess;
     this.maxGuesses = data.maxGuesses;
@@ -59,8 +60,6 @@ export class Game extends AggregateRoot {
 
     try {
       await validateOrReject(this);
-
-      this.logger.log(this.id);
 
       this.apply(
         new NewGameStartedEvent(
