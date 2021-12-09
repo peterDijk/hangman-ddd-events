@@ -63,7 +63,7 @@ export class Game extends AggregateRoot {
 
       this.apply(
         new NewGameStartedEvent(
-          this.id,
+          `game-${this.id}`,
           this.playerId,
           this.wordToGuess,
           this.maxGuesses,
@@ -87,14 +87,16 @@ export class Game extends AggregateRoot {
     if (this.lettersGuessed?.length >= this.maxGuesses) {
       throw new InvalidGameException('Max guesses, game over');
     }
-    this.apply(new LetterGuessedEvent(this.id, letter, this.lettersGuessed));
+    this.apply(
+      new LetterGuessedEvent(`game-${this.id}`, letter, this.lettersGuessed),
+    );
   }
 
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.logger.log(`replaying from history: ${event.id}`);
+    this.logger.log(`replaying from history: ${event.game}`);
     this.playerId = event.playerId;
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
@@ -102,7 +104,7 @@ export class Game extends AggregateRoot {
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.logger.log(`replaying from history: ${event.id}`);
+    this.logger.log(`replaying from history: ${event.game}`);
     this.lettersGuessed.push(event.letter[0]);
   }
 }

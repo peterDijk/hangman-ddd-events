@@ -19,7 +19,7 @@ export class NewGameStartedUpdater
   async handle(event: NewGameStartedEvent) {
     const game = this.gamesProjectionRepository.create({
       ...event,
-      gameId: event.id,
+      gameId: event.game,
       playerId: event.playerId,
       wordToGuess: event.wordToGuess,
       playerName: '',

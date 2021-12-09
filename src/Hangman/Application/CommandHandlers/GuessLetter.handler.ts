@@ -1,8 +1,7 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
 import { GuessLetterCommand } from '../Commands/GuessLetter.command';
-import { StoreEventPublisher } from '@berniemac/event-sourcing-nestjs';
 
 @CommandHandler(GuessLetterCommand)
 export class GuessLetterCommandHandler
@@ -11,7 +10,7 @@ export class GuessLetterCommandHandler
 
   constructor(
     private readonly repository: GamesRepository,
-    private readonly publisher: StoreEventPublisher,
+    private readonly publisher: EventPublisher,
   ) {}
 
   async execute({ gameId, letter }: GuessLetterCommand) {
