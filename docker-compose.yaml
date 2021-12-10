@@ -18,8 +18,8 @@ services:
         source: projections-volume-data
         target: /var/lib/projections
 
-  store-state.db:
-    container_name: hangman-store-state
+  eventstore.db:
+    container_name: hangman-eventstore
     image: mongo
     restart: always
     ports:
@@ -29,6 +29,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${STORE_STATE_PASSWORD}
     networks:
       - backend
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
 
   mongo-express:
     container_name: mongo-express
@@ -39,25 +43,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${STORE_STATE_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${STORE_STATE_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${STORE_STATE_USERNAME}:${STORE_STATE_PASSWORD}@store-state.db:27017/
-    networks:
-      - backend
-
-  eventstore.db:
-    container_name: hangman-eventstore
-    image: eventstore/eventstore:20.6.1-buster-slim
-    env_file:
-      - ./.env
-    ports:
-      - '1113:1113'
-      - '2113:2113'
-    volumes:
-      - type: volume
-        source: eventstore-volume-data
-        target: /var/lib/eventstore
-      - type: volume
-        source: eventstore-volume-logs
-        target: /var/log/eventstore
+      ME_CONFIG_MONGODB_URL: mongodb://${STORE_STATE_USERNAME}:${STORE_STATE_PASSWORD}@eventstore.db:27017/
     networks:
       - backend
 
@@ -74,9 +60,8 @@ services:
       replicas: ${CONTAINER_SCALE}
       # above is ignored by dc up and dc run (only when deploy to swarm with docker stack deploy)
     depends_on:
-      - eventstore.db
       - projections.db
-      - store-state.db
+      - eventstore.db
       # service wont be started before this service is running
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']
@@ -89,7 +74,6 @@ services:
     volumes:
       - './src:/app/src'
     links:
-      - eventstore.db
       - projections.db
       # by default, any service can reach any other service at that service’s name.
     networks:
@@ -98,7 +82,6 @@ services:
 volumes:
   projections-volume-data:
   eventstore-volume-data:
-  eventstore-volume-logs:
 
 networks:
   backend:
