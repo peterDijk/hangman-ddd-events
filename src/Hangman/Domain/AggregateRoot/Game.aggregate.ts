@@ -80,7 +80,7 @@ export class Game extends AggregateRoot {
     // TODO: validate guess
 
     // better validation of course, quick check to see if this works
-    this.lettersGuessed.push(letter[0]);
+    this.lettersGuessed.push(`${letter[0]}`);
 
     if (this.lettersGuessed?.length - 1 >= this.maxGuesses) {
       throw new InvalidGameException('Max guesses, game over');
@@ -104,6 +104,8 @@ export class Game extends AggregateRoot {
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
     this.lettersGuessed = [];
+    this.dateCreated = event.dateCreated;
+    this.dateModified = event.dateModified;
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
@@ -111,6 +113,15 @@ export class Game extends AggregateRoot {
       `onLetterGuessedEvent: replaying from history: ${event.id} | event.lettersGuessed: ${event.lettersGuessed}`,
     );
     this.logger.log(`Aggregate: ${JSON.stringify(this)}`);
-    this.lettersGuessed.push(event.letter[0]);
+    // mutating the aggregate here changes the this.lettersGuessed of the event
+    // that was send and applied in `guessLetter`?! not good
+    // because they get the letter double added
+    // (adding in guessLetter for validation)
+    // above comment applied when I was doing the this.lettersGuessed.push
+    // here as well. But since I get the complete value in the event
+    // I can just as well set this.lettersGuessed to the whole new value
+
+    this.lettersGuessed = event.lettersGuessed;
+    this.dateModified = event.dateModified;
   }
 }

@@ -23,8 +23,8 @@ export class GamesService {
 
     await this.commandBus.execute(new StartNewGameCommand(data, gameId));
     try {
-      const game = new Game('test');
-      game.startNewGame(data);
+      // const game = new Game('test');
+      // game.startNewGame(data);
 
       this.logger.log(`New game started; ${gameId}`);
       return { message: 'success', status: 201, gameId, data };

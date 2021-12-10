@@ -23,7 +23,10 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
       {
         gameId: event.id,
       },
-      { lettersGuessed: event.lettersGuessed },
+      {
+        lettersGuessed: event.lettersGuessed,
+        dateModified: event.dateModified,
+      },
     );
   }
 }
