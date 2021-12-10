@@ -18,7 +18,7 @@ import { Logger } from '@nestjs/common';
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
-  public readonly version: number;
+  private readonly version: number;
 
   dateCreated: Date;
   dateModified: Date;
@@ -70,6 +70,7 @@ export class Game extends AggregateRoot {
           this.dateCreated,
           this.dateModified,
         ),
+        false,
       );
     } catch (err) {
       throw new InvalidGameException(err);

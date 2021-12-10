@@ -10,6 +10,7 @@ export class LetterGuessedEventHandler
   async handle(event: LetterGuessedEvent) {
     try {
       // send websocket
+
       this.logger.log(`${JSON.stringify(event)}`);
     } catch (err) {
       this.logger.error('cant save to projection');
