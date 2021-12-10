@@ -62,8 +62,7 @@ $ docker-compose up
 
 - graphql: http://localhost:7070/graphql
 - eventstore: https://localhost:2113
-- rest api: http://localhost:7070/v1/games/new
-- rest api: http://localhost:7070/v1/games/list
+- rest api: see Swagger documentation on http://localhost:7070/api
 
 ## Test
 

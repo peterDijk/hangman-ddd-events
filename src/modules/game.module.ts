@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import {
-  EventStoreModule,
-  EventStoreSubscriptionType,
-} from '@juicycleff/nestjs-event-store';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GamesController } from '../controllers/game.controller';
 import { GamesService } from '../Hangman/Application/Services/games.service';
@@ -20,25 +16,6 @@ import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
   imports: [
     CqrsModule,
     EventSourcingModule.forFeature(),
-    // EventStoreModule.registerFeatureAsync({
-    //   type: 'event-store',
-    //   useFactory: async () => {
-    //     const streamName = 'game';
-
-    //     return {
-    //       type: 'event-store',
-    //       featureStreamName: `$ce-${streamName}`,
-    //       store: MongoStore(streamName),
-    //       subscriptions: [
-    //         {
-    //           type: EventStoreSubscriptionType.CatchUp,
-    //           stream: `$ce-${streamName}`,
-    //         },
-    //       ],
-    //       eventHandlers: EventStoreInstanciators,
-    //     };
-    //   },
-    // }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
   controllers: [GamesController],

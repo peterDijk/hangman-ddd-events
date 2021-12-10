@@ -1,6 +1,8 @@
 import { Controller, Post, Body, Logger, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { GuessDto } from '../Hangman/Infrastructure/Dto/Guess.dto';
 import { GamesService } from '../Hangman/Application/Services/games.service';
+import { GameDto } from '../Hangman/Infrastructure/Dto/Game.dto';
 
 @Controller('games')
 @ApiTags('Games')
@@ -13,20 +15,12 @@ export class GamesController {
   @Post('new')
   async startNewGame(
     @Body()
-    {
-      playerId,
-      wordToGuess,
-      maxGuesses,
-    }: {
-      playerId: string;
-      wordToGuess: string;
-      maxGuesses: string;
-    },
+    { playerId, wordToGuess, maxGuesses }: GameDto,
   ) {
     return await this.gameService.startNewGame({
       playerId,
       wordToGuess,
-      maxGuesses: parseInt(maxGuesses),
+      maxGuesses,
     });
   }
 
@@ -41,11 +35,7 @@ export class GamesController {
   async makeGuess(
     @Param() { id },
     @Body()
-    {
-      letter,
-    }: {
-      letter: string;
-    },
+    { letter }: GuessDto,
   ) {
     return await this.gameService.makeGuess(id, letter);
   }
