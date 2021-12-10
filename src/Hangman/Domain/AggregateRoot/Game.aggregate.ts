@@ -81,20 +81,25 @@ export class Game extends AggregateRoot {
 
     // better validation of course, quick check to see if this works
     this.lettersGuessed.push(letter[0]);
-    this.logger.log(
-      `this.lettersGuessed?.length: ${this.lettersGuessed?.length}`,
-    );
-    if (this.lettersGuessed?.length >= this.maxGuesses) {
+
+    if (this.lettersGuessed?.length - 1 >= this.maxGuesses) {
       throw new InvalidGameException('Max guesses, game over');
     }
-    this.apply(new LetterGuessedEvent(this.id, letter, this.lettersGuessed));
+
+    const event = new LetterGuessedEvent(this.id, letter, this.lettersGuessed);
+    this.logger.log(`this.lettersGuessed: ${this.lettersGuessed}`);
+    this.logger.log(event);
+
+    this.apply(event, false);
   }
 
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.logger.log(`replaying from history: ${event.id}`);
+    this.logger.log(
+      `onNewGameStartedEvent: replaying from history: ${event.id}`,
+    );
     this.playerId = event.playerId;
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
@@ -102,7 +107,10 @@ export class Game extends AggregateRoot {
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.logger.log(`replaying from history: ${event.id}`);
+    this.logger.log(
+      `onLetterGuessedEvent: replaying from history: ${event.id} | event.lettersGuessed: ${event.lettersGuessed}`,
+    );
+    this.logger.log(`Aggregate: ${JSON.stringify(this)}`);
     this.lettersGuessed.push(event.letter[0]);
   }
 }
