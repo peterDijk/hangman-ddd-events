@@ -10,14 +10,14 @@ import ProjectionUpdaters from '../Hangman/Domain/Updaters';
 
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
-import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
 import { EventStoreEventPublisher } from '../Hangman/Infrastructure/EventStore/Publisher';
 import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/Subscriber';
+import { EventSourcingModule } from './eventstore.module';
 
 @Module({
   imports: [
     CqrsModule,
-    // EventSourcingModule.forFeature(),
+    EventSourcingModule.forFeature({ streamPrefix: 'game' }),
 
     TypeOrmModule.forFeature([GameProjection]),
   ],
@@ -33,18 +33,19 @@ import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/
     EventStoreEventSubscriber,
   ],
 })
-export class GamesModule implements OnModuleInit {
-  constructor(
-    private readonly event$: EventBus,
-    private readonly eventstorePublisher: EventStoreEventPublisher,
-    private readonly eventstoreSubscriber: EventStoreEventSubscriber,
-  ) {}
+export class GamesModule {}
+// implements OnModuleInit {
+//   constructor(
+//     private readonly event$: EventBus,
+//     private readonly eventstorePublisher: EventStoreEventPublisher,
+//     private readonly eventstoreSubscriber: EventStoreEventSubscriber,
+//   ) {}
 
-  async onModuleInit(): Promise<any> {
-    await this.eventstoreSubscriber.connect();
-    this.eventstoreSubscriber.bridgeEventsTo(this.event$.subject$);
+//   async onModuleInit(): Promise<any> {
+//     await this.eventstoreSubscriber.connect();
+//     this.eventstoreSubscriber.bridgeEventsTo(this.event$.subject$);
 
-    await this.eventstorePublisher.connect();
-    this.event$.publisher = this.eventstorePublisher;
-  }
-}
+//     await this.eventstorePublisher.connect();
+//     this.event$.publisher = this.eventstorePublisher;
+//   }
+// }

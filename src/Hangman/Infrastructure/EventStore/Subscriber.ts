@@ -27,6 +27,7 @@ export class EventStoreEventSubscriber implements IMessageSource {
       const parsedEvent = EventStoreInstanciators[data.event.type](
         data.event.data,
       );
+      // console.log({ parsedEvent });
       if (this.bridge) {
         this.bridge.next(parsedEvent);
       }

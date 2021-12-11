@@ -1,0 +1,153 @@
+import { EventSourcingOptions } from './Interfaces';
+import {
+  AppendExpectedRevision,
+  EventStoreDBClient,
+  FORWARDS,
+  jsonEvent,
+  NO_STREAM,
+  START,
+} from '@eventstore/db-client';
+import { IEvent } from '@nestjs/cqrs';
+import { EventStoreInstanciators } from '../../../event-store';
+import { Injectable, Logger } from '@nestjs/common';
+
+@Injectable()
+export class EventStore {
+  private readonly logger = new Logger(EventStore.name);
+  private readonly eventstore: EventStoreDBClient;
+  private readonly config;
+  private eventStoreLaunched = false;
+
+  constructor(options: EventSourcingOptions) {
+    try {
+      this.eventstore = EventStoreDBClient.connectionString(
+        options.eventStoreUrl,
+      );
+      this.eventStoreLaunched = true;
+      this.logger.log('this.eventStoreLaunched = true');
+    } catch (err) {
+      this.eventStoreLaunched = false;
+    }
+  }
+
+  // public isInitiated(): boolean {
+  //   return this.eventStoreLaunched;
+  // }
+
+  // public getSnapshotInterval(aggregate: string): number | null {
+  //   return this.config ? this.config[aggregate] : null;
+  // }
+
+  public async getEvents(
+    aggregate: string,
+    id: string,
+  ): Promise<{
+    events: IEvent[];
+    snapshot?: any;
+    lastRevision: AppendExpectedRevision;
+  }> {
+    return new Promise<{
+      events: IEvent[];
+      snapshot?: any;
+      lastRevision: AppendExpectedRevision;
+    }>(async (resolve) => {
+      const events = [];
+      let revision: AppendExpectedRevision = NO_STREAM;
+
+      // find using own method
+      const eventStream = await this.eventstore.readStream(
+        this.getAggregateId(aggregate, id),
+      );
+
+      for await (const resolvedEvent of eventStream) {
+        revision = resolvedEvent.event?.revision ?? revision;
+        const parsedEvent = EventStoreInstanciators[resolvedEvent.event.type](
+          resolvedEvent.event.data,
+        );
+        events.push(parsedEvent);
+      }
+      resolve({ events, lastRevision: revision });
+    });
+  }
+
+  // public async getEvent(index: number): Promise<StorableEvent> {
+  //   return new Promise<StorableEvent>((resolve, reject) => {
+  //     this.eventstore.getEvents(index, 1, (err, events) => {
+  //       if (events.length > 0) {
+  //         resolve(this.getStorableEventFromPayload(events[0]));
+  //       } else {
+  //         resolve(null);
+  //       }
+  //     });
+  //   });
+  // }
+
+  public async storeEvent<T extends IEvent>(event: T): Promise<void> {
+    console.log('storeEvent');
+
+    return new Promise<void>(async (resolve, reject) => {
+      if (!this.eventStoreLaunched) {
+        reject('Event Store not launched!');
+        return;
+      }
+      const eventSerialized = JSON.stringify(event);
+      const eventDeserialized = JSON.parse(eventSerialized);
+
+      let revision: AppendExpectedRevision = NO_STREAM;
+
+      try {
+        const events = this.eventstore.readStream(
+          this.getAggregateId(
+            eventDeserialized.eventAggregate,
+            eventDeserialized.id,
+          ),
+          {
+            fromRevision: START,
+            direction: FORWARDS,
+          },
+        );
+
+        for await (const { event } of events) {
+          revision = event?.revision ?? revision;
+        }
+      } catch (err) {}
+
+      await this.eventstore.appendToStream(
+        this.getAggregateId(
+          eventDeserialized.eventAggregate,
+          eventDeserialized.id,
+        ),
+        jsonEvent({
+          id: eventDeserialized.id,
+          type: eventDeserialized.eventName,
+          data: {
+            ...JSON.parse(eventSerialized),
+          },
+        }),
+        { expectedRevision: revision },
+      );
+    });
+  }
+
+  // Monkey patch to obtain event 'instances' from db
+  // private getStorableEventFromPayload(event: any): StorableEvent {
+  //   const { payload } = event;
+  //   const eventPlain = payload;
+  //   eventPlain.constructor = {
+  //     name: eventPlain.eventName,
+  //   };
+
+  //   const transformedEvent = Object.assign(
+  //     Object.create(eventPlain),
+  //     eventPlain,
+  //   );
+  //   transformedEvent.meta = {
+  //     revision: event.streamRevision,
+  //   };
+  //   return transformedEvent;
+  // }
+
+  private getAggregateId(aggregate: string, id: string): string {
+    return aggregate + '-' + id;
+  }
+}
