@@ -1,7 +1,8 @@
 // import { ViewUpdater } from './view';
 // import { ViewEventBus } from './view';
 import { StoreEventBus } from './EventBus';
-import { StoreEventPublisher } from './Publisher';
+import { EventStore } from './EventStore';
+import { EventStoreEventPublisher } from './Publisher';
 import { EventStoreEventSubscriber } from './Subscriber';
 
 export function createEventSourcingProviders() {
@@ -9,6 +10,7 @@ export function createEventSourcingProviders() {
     // ViewUpdater,
     // ViewEventBus,
     StoreEventBus,
-    StoreEventPublisher,
+    EventStoreEventPublisher,
+    // EventStore,
   ];
 }

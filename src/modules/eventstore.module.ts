@@ -4,20 +4,23 @@ import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { EventStore } from '../Hangman/Infrastructure/EventStore/EventStore';
 import { createEventSourcingProviders } from '../Hangman/Infrastructure/EventStore/Providers';
 import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/Subscriber';
+import { EventStoreEventPublisher } from '../Hangman/Infrastructure/EventStore/Publisher';
 
 @Module({
   imports: [CqrsModule],
-  providers: [EventStoreEventSubscriber],
+  providers: [EventStoreEventSubscriber, EventStoreEventPublisher],
 })
 export class EventSourcingModule implements OnModuleInit {
   constructor(
     private readonly event$: EventBus,
     private readonly subscriber: EventStoreEventSubscriber,
+    private readonly publisher: EventStoreEventPublisher,
   ) {}
 
   async onModuleInit() {
     await this.subscriber.connect();
     this.subscriber.bridgeEventsTo(this.event$.subject$);
+    this.event$.publisher = this.publisher;
   }
 
   static forRoot(options: EventSourcingOptions): DynamicModule {

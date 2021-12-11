@@ -9,7 +9,9 @@ import {
 } from '@eventstore/db-client';
 import { IEvent } from '@nestjs/cqrs';
 import { EventStoreInstanciators } from '../../../event-store';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
