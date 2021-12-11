@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StoreEventBus } from './EventBus';
-import { IEvent, AggregateRoot, IEventPublisher } from '@nestjs/cqrs';
+import { IEvent, AggregateRoot } from '@nestjs/cqrs';
 
 export interface Constructor<T> {
   new (...args: any[]): T;
@@ -28,11 +28,4 @@ export class StoreEventPublisher {
     };
     return object;
   }
-  // async publish<T extends IEvent = IEvent>(event: T) {
-  //   this.eventBus.publish(event);
-  // }
-
-  // async publishAll<T extends IEvent = IEvent>(events: T[]) {
-  //   this.eventBus.publishAll(events);
-  // }
 }

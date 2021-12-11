@@ -15,9 +15,10 @@ import { EventSourcingModule } from './eventstore.module';
 @Module({
   imports: [
     CqrsModule,
-    EventSourcingModule.forFeature(),
+    EventSourcingModule.forFeature({ streamPrefix: 'game' }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
+  exports: [CqrsModule],
   controllers: [GamesController],
   providers: [
     GamesResolver,

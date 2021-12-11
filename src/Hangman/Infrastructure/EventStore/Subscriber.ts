@@ -6,10 +6,14 @@ import {
   streamNameFilter,
 } from '@eventstore/db-client';
 import { EventStoreInstanciators } from '../../../event-store';
+import { Injectable } from '@nestjs/common';
+import { EventStore } from './EventStore';
 
+Injectable();
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
+  // constructor(eventStore: EventStore) {}
 
   connect() {
     this.client = EventStoreDBClient.connectionString(
@@ -24,6 +28,7 @@ export class EventStoreEventSubscriber implements IMessageSource {
       fromPosition: START,
     });
     subscription.on('data', (data) => {
+      console.log('from subscription');
       const parsedEvent = EventStoreInstanciators[data.event.type](
         data.event.data,
       );
@@ -35,6 +40,5 @@ export class EventStoreEventSubscriber implements IMessageSource {
 
   bridgeEventsTo<T extends IEvent>(subject: Subject<T>) {
     this.bridge = subject;
-    // console.log('bridged event to Subject', { subject });
   }
 }
