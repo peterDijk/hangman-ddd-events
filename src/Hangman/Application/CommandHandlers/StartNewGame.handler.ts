@@ -1,7 +1,8 @@
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
+import { StoreEventPublisher } from '../../Infrastructure/EventStore/Publisher';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -9,7 +10,7 @@ export class StartNewGameCommandHandler
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
   constructor(
-    private publisher: EventPublisher,
+    private publisher: StoreEventPublisher,
     private readonly repository: GamesRepository,
   ) {}
 

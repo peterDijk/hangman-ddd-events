@@ -7,33 +7,32 @@ export interface Constructor<T> {
 }
 
 @Injectable()
-export class StoreEventPublisher implements IEventPublisher {
+export class StoreEventPublisher {
   constructor(private readonly eventBus: StoreEventBus) {
     console.log('constructor StoreEventPublisher');
   }
 
-  // mergeClassContext<T extends Constructor<AggregateRoot>>(metatype: T): T {
-  //   const eventBus = this.eventBus;
-  //   return class extends metatype {
-  //     publish(event: IEvent) {
-  //       eventBus.publish(event);
-  //     }
-  //   };
-  // }
-
-  // mergeObjectContext<T extends AggregateRoot>(object: T): T {
-  //   console.log('mergeObjectContext');
-  //   const eventBus = this.eventBus;
-  //   object.publish = (event: IEvent) => {
-  //     eventBus.publish(event);
-  //   };
-  //   return object;
-  // }
-  async publish<T extends IEvent = IEvent>(event: T) {
-    this.eventBus.publish(event);
+  mergeClassContext<T extends Constructor<AggregateRoot>>(metatype: T): T {
+    const eventBus = this.eventBus;
+    return class extends metatype {
+      publish(event: IEvent) {
+        eventBus.publish(event);
+      }
+    };
   }
 
-  async publishAll<T extends IEvent = IEvent>(events: T[]) {
-    this.eventBus.publishAll(events);
+  mergeObjectContext<T extends AggregateRoot>(object: T): T {
+    const eventBus = this.eventBus;
+    object.publish = (event: IEvent) => {
+      eventBus.publish(event);
+    };
+    return object;
   }
+  // async publish<T extends IEvent = IEvent>(event: T) {
+  //   this.eventBus.publish(event);
+  // }
+
+  // async publishAll<T extends IEvent = IEvent>(events: T[]) {
+  //   this.eventBus.publishAll(events);
+  // }
 }

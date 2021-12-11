@@ -9,12 +9,9 @@ export class StoreEventBus implements IEventBus {
   constructor(
     // private readonly eventBus: ViewEventBus,
     private readonly eventStore: EventStore,
-  ) {
-    console.log('constructor StoreEventBus');
-  }
+  ) {}
 
   publish<T extends IEvent>(event: T): void {
-    console.log('publish');
     const storableEvent = (event as any) as StorableEvent;
     if (
       storableEvent.id === undefined ||
