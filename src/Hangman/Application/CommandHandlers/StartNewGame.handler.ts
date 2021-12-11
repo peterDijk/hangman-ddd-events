@@ -2,8 +2,6 @@ import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
-// import { StoreEventPublisher } from '@berniemac/event-sourcing-nestjs';
-import { EventStoreDBClient } from '@eventstore/db-client';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -14,10 +12,6 @@ export class StartNewGameCommandHandler
     private publisher: EventPublisher,
     private readonly repository: GamesRepository,
   ) {}
-
-  private client = EventStoreDBClient.connectionString(
-    'esdb://eventstore.db:2113?tls=false',
-  );
 
   async execute({ data, uuid }: StartNewGameCommand) {
     const { playerId, wordToGuess, maxGuesses } = data;

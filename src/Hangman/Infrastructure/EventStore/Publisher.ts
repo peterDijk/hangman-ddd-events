@@ -1,6 +1,11 @@
 import { IEvent, IEventPublisher } from '@nestjs/cqrs';
-import { EventStoreDBClient, jsonEvent } from '@eventstore/db-client';
-
+import {
+  binaryEvent,
+  EventStoreDBClient,
+  jsonEvent,
+} from '@eventstore/db-client';
+import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
+import { StorableEvent } from '@berniemac/event-sourcing-nestjs';
 export class EventStoreEventPublisher implements IEventPublisher {
   private client: EventStoreDBClient;
 
@@ -11,17 +16,19 @@ export class EventStoreEventPublisher implements IEventPublisher {
   }
 
   async publish<T extends IEvent = IEvent>(event: T) {
-    const _event = jsonEvent({
-      type: 'SeatReserved',
-      data: {
-        reservationId: 'sfsd',
-        movieId: 'sdfsdf',
-        seatId: 'dsfdf',
-        userId: 'sdfsdf',
-      },
-    });
+    const eventSerialized = JSON.stringify(event);
+    const eventDeserialized = JSON.parse(eventSerialized);
 
-    await this.client.appendToStream('game', _event);
-    console.log('Event published to ....', { event });
+    await this.client.appendToStream(
+      `game-${eventDeserialized.id}`,
+      jsonEvent({
+        id: eventDeserialized.id,
+        type: eventDeserialized.eventName,
+        data: {
+          ...JSON.parse(eventSerialized),
+        },
+      }),
+    );
+    console.log('Event published to ....', { eventDeserialized });
   }
 }
