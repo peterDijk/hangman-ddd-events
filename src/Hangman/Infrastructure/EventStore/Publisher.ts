@@ -1,49 +1,39 @@
-import { IEvent, IEventPublisher } from '@nestjs/cqrs';
-import {
-  AppendExpectedRevision,
-  EventStoreDBClient,
-  FORWARDS,
-  jsonEvent,
-  NO_STREAM,
-  START,
-} from '@eventstore/db-client';
-export class EventStoreEventPublisher implements IEventPublisher {
-  private client: EventStoreDBClient;
+import { Injectable } from '@nestjs/common';
+import { StoreEventBus } from './EventBus';
+import { IEvent, AggregateRoot, IEventPublisher } from '@nestjs/cqrs';
 
-  connect() {
-    this.client = EventStoreDBClient.connectionString(
-      'esdb://eventstore.db:2113?tls=false',
-    );
+export interface Constructor<T> {
+  new (...args: any[]): T;
+}
+
+@Injectable()
+export class StoreEventPublisher implements IEventPublisher {
+  constructor(private readonly eventBus: StoreEventBus) {
+    console.log('constructor StoreEventPublisher');
   }
 
+  // mergeClassContext<T extends Constructor<AggregateRoot>>(metatype: T): T {
+  //   const eventBus = this.eventBus;
+  //   return class extends metatype {
+  //     publish(event: IEvent) {
+  //       eventBus.publish(event);
+  //     }
+  //   };
+  // }
+
+  // mergeObjectContext<T extends AggregateRoot>(object: T): T {
+  //   console.log('mergeObjectContext');
+  //   const eventBus = this.eventBus;
+  //   object.publish = (event: IEvent) => {
+  //     eventBus.publish(event);
+  //   };
+  //   return object;
+  // }
   async publish<T extends IEvent = IEvent>(event: T) {
-    const eventSerialized = JSON.stringify(event);
-    const eventDeserialized = JSON.parse(eventSerialized);
+    this.eventBus.publish(event);
+  }
 
-    let revision: AppendExpectedRevision = NO_STREAM;
-
-    try {
-      const events = this.client.readStream(`game-${eventDeserialized.id}`, {
-        fromRevision: START,
-        direction: FORWARDS,
-      });
-
-      for await (const { event } of events) {
-        revision = event?.revision ?? revision;
-      }
-    } catch (err) {}
-
-    await this.client.appendToStream(
-      `game-${eventDeserialized.id}`,
-      jsonEvent({
-        id: eventDeserialized.id,
-        type: eventDeserialized.eventName,
-        data: {
-          ...JSON.parse(eventSerialized),
-        },
-      }),
-      { expectedRevision: revision },
-    );
-    console.log('Event published to ....', { eventDeserialized });
+  async publishAll<T extends IEvent = IEvent>(events: T[]) {
+    this.eventBus.publishAll(events);
   }
 }

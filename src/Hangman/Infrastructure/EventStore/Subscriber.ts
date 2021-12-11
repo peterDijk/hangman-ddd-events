@@ -35,6 +35,6 @@ export class EventStoreEventSubscriber implements IMessageSource {
 
   bridgeEventsTo<T extends IEvent>(subject: Subject<T>) {
     this.bridge = subject;
-    console.log('bridged event to Subject', { subject });
+    // console.log('bridged event to Subject', { subject });
   }
 }
