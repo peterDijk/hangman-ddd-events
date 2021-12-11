@@ -20,15 +20,18 @@ export class EventStoreEventPublisher implements IEventPublisher {
     const eventSerialized = JSON.stringify(event);
     const eventDeserialized = JSON.parse(eventSerialized);
 
-    const events = this.client.readStream(`game-${eventDeserialized.id}`, {
-      fromRevision: START,
-      direction: FORWARDS,
-    });
-
     let revision: AppendExpectedRevision = NO_STREAM;
-    for await (const { event } of events) {
-      revision = event?.revision ?? revision;
-    }
+
+    try {
+      const events = this.client.readStream(`game-${eventDeserialized.id}`, {
+        fromRevision: START,
+        direction: FORWARDS,
+      });
+
+      for await (const { event } of events) {
+        revision = event?.revision ?? revision;
+      }
+    } catch (err) {}
 
     await this.client.appendToStream(
       `game-${eventDeserialized.id}`,

@@ -16,8 +16,8 @@ export class EventStoreEventSubscriber implements IMessageSource {
       'esdb://eventstore.db:2113?tls=false',
     );
 
-    const reservationStreamPrefix = 'game';
-    const filter = streamNameFilter({ prefixes: [reservationStreamPrefix] });
+    const streamPrefix = 'game';
+    const filter = streamNameFilter({ prefixes: [streamPrefix] });
 
     const subscription = this.client.subscribeToAll({
       filter,

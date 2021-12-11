@@ -10,12 +10,10 @@ export class GuessLetterCommandHandler
 
   constructor(
     private publisher: EventPublisher,
-    private readonly repository: GamesRepository, // private readonly petersPublisher: unknown, // private readonly publisher: StoreEventPublisher,
+    private readonly repository: GamesRepository,
   ) {}
 
   async execute({ gameId, letter }: GuessLetterCommand) {
-    // call own publish method
-    //
     const game = this.publisher.mergeObjectContext(
       await this.repository.guessLetter(gameId, letter),
     );
