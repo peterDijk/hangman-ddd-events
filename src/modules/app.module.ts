@@ -1,5 +1,4 @@
-import { Module, Logger } from '@nestjs/common';
-import { EventStoreModule } from '@juicycleff/nestjs-event-store';
+import { Module } from '@nestjs/common';
 import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import TypeOrmConfig from '../../ormconfig';
@@ -9,6 +8,7 @@ import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../config';
+import { EventBus } from '../Hangman/Infrastructure/EventStore/EventBus';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
@@ -20,10 +20,10 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
     }),
-    EventSourcingModule.forRoot({
-      // mongoURL: `mongodb://${config.STORE_STATE_SETTINGS.hostname}:27017/eventstore`,
-      mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,
-    }),
+    // EventSourcingModule.forRoot({
+    //   // mongoURL: `mongodb://${config.STORE_STATE_SETTINGS.hostname}:27017/eventstore`,
+    //   mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,
+    // }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
     }),

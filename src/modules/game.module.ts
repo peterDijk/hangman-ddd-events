@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
+import { Module, OnModuleInit } from '@nestjs/common';
+import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GamesController } from '../controllers/game.controller';
 import { GamesService } from '../Hangman/Application/Services/games.service';
@@ -11,11 +11,14 @@ import ProjectionUpdaters from '../Hangman/Domain/Updaters';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
+import { EventStoreEventPublisher } from '../Hangman/Infrastructure/EventStore/Publisher';
+import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/Subscriber';
 
 @Module({
   imports: [
     CqrsModule,
-    EventSourcingModule.forFeature(),
+    // EventSourcingModule.forFeature(),
+
     TypeOrmModule.forFeature([GameProjection]),
   ],
   controllers: [GamesController],
@@ -26,6 +29,22 @@ import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
     ...CommandHandlers,
     ...EventHandlers,
     ...ProjectionUpdaters,
+    EventStoreEventPublisher,
+    EventStoreEventSubscriber,
   ],
 })
-export class GamesModule {}
+export class GamesModule implements OnModuleInit {
+  constructor(
+    private readonly event$: EventBus,
+    private readonly eventstorePublisher: EventStoreEventPublisher,
+    private readonly eventstoreSubscriber: EventStoreEventSubscriber,
+  ) {}
+
+  async onModuleInit(): Promise<any> {
+    await this.eventstoreSubscriber.connect();
+    this.eventstoreSubscriber.bridgeEventsTo(this.event$.subject$);
+
+    await this.eventstorePublisher.connect();
+    this.event$.publisher = this.eventstorePublisher;
+  }
+}

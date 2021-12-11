@@ -10,14 +10,16 @@ export class GuessLetterCommandHandler
   private readonly logger = new Logger(GuessLetterCommandHandler.name);
 
   constructor(
-    private readonly repository: GamesRepository,
-    private readonly publisher: StoreEventPublisher,
+    private readonly repository: GamesRepository, // private readonly petersPublisher: unknown, // private readonly publisher: StoreEventPublisher,
   ) {}
 
   async execute({ gameId, letter }: GuessLetterCommand) {
-    const game = this.publisher.mergeObjectContext(
-      await this.repository.guessLetter(gameId, letter),
-    );
-    game.commit();
+    // call own publish method
+    //
+    //
+    // const game = this.publisher.mergeObjectContext(
+    //   await this.repository.guessLetter(gameId, letter),
+    // );
+    // game.commit();
   }
 }
