@@ -1,11 +1,5 @@
 import { IEvent, IEventPublisher } from '@nestjs/cqrs';
-import {
-  binaryEvent,
-  EventStoreDBClient,
-  jsonEvent,
-} from '@eventstore/db-client';
-import { NewGameStartedEvent } from 'src/Hangman/Domain/Events/NewGameStarted.event';
-import { StorableEvent } from '@berniemac/event-sourcing-nestjs';
+import { EventStoreDBClient, jsonEvent } from '@eventstore/db-client';
 export class EventStoreEventPublisher implements IEventPublisher {
   private client: EventStoreDBClient;
 

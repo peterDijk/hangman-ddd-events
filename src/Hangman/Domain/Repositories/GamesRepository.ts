@@ -3,6 +3,7 @@ import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
 // import { EventStore } from '@berniemac/event-sourcing-nestjs';
 import { EventStoreDBClient } from '@eventstore/db-client';
+import { EventStoreInstanciators } from '../../../event-store';
 
 @Injectable()
 export class GamesRepository {
@@ -16,10 +17,19 @@ export class GamesRepository {
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-
+    const events = [];
     // find using own method
-    const events = await this.client.readStream(aggregateId);
-    this.logger.log(`events: ${events}`);
+    const eventStream = await this.client.readStream(`game-${aggregateId}`);
+
+    for await (const resolvedEvent of eventStream) {
+      const parsedEvent = EventStoreInstanciators[resolvedEvent.event.type](
+        resolvedEvent.event.data,
+      );
+      events.push(parsedEvent);
+    }
+    this.logger.log(events);
+    game.loadFromHistory(events);
+    return game;
 
     // const eventHistory = await this.eventStore.getEvents('game', aggregateId);
 
@@ -30,7 +40,7 @@ export class GamesRepository {
     // Replay all 1000 events, then change the name
     // Next change, again all 1001 events. etc
 
-    // game.loadFromHistory(eventHistory.events);
+    // game.loadFromHistory(eventHistory);
     // is aggregate with all historic events applied
     // events are applied because methods `on....(EventName)` methods
     // in aggregate

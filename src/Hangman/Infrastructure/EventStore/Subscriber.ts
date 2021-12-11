@@ -10,7 +10,6 @@ import { EventStoreInstanciators } from '../../../event-store';
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
-  private readonly events: Array<any>;
 
   connect() {
     this.client = EventStoreDBClient.connectionString(
@@ -36,6 +35,6 @@ export class EventStoreEventSubscriber implements IMessageSource {
 
   bridgeEventsTo<T extends IEvent>(subject: Subject<T>) {
     this.bridge = subject;
-    console.log('bridged event to thingy', { subject });
+    console.log('bridged event to Subject', { subject });
   }
 }
