@@ -1,5 +1,5 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { CqrsModule, EventBus } from '@nestjs/cqrs';
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GamesController } from '../controllers/game.controller';
 import { GamesService } from '../Hangman/Application/Services/games.service';
