@@ -1,5 +1,12 @@
 import { IEvent, IEventPublisher } from '@nestjs/cqrs';
-import { EventStoreDBClient, jsonEvent } from '@eventstore/db-client';
+import {
+  AppendExpectedRevision,
+  EventStoreDBClient,
+  FORWARDS,
+  jsonEvent,
+  NO_STREAM,
+  START,
+} from '@eventstore/db-client';
 export class EventStoreEventPublisher implements IEventPublisher {
   private client: EventStoreDBClient;
 
@@ -13,6 +20,16 @@ export class EventStoreEventPublisher implements IEventPublisher {
     const eventSerialized = JSON.stringify(event);
     const eventDeserialized = JSON.parse(eventSerialized);
 
+    const events = this.client.readStream(`game-${eventDeserialized.id}`, {
+      fromRevision: START,
+      direction: FORWARDS,
+    });
+
+    let revision: AppendExpectedRevision = NO_STREAM;
+    for await (const { event } of events) {
+      revision = event?.revision ?? revision;
+    }
+
     await this.client.appendToStream(
       `game-${eventDeserialized.id}`,
       jsonEvent({
@@ -22,6 +39,7 @@ export class EventStoreEventPublisher implements IEventPublisher {
           ...JSON.parse(eventSerialized),
         },
       }),
+      { expectedRevision: revision },
     );
     console.log('Event published to ....', { eventDeserialized });
   }
