@@ -9,6 +9,7 @@ import { EventStoreEventSubscriber } from './Subscriber';
 @Injectable()
 export class StoreEventBus extends EventBus implements IEventBus {
   constructor(
+    // streamPrefix: string,
     commandBus: CommandBus,
     moduleRef: ModuleRef,
     private readonly eventStore: EventStore,
@@ -17,7 +18,8 @@ export class StoreEventBus extends EventBus implements IEventBus {
     super(commandBus, moduleRef);
   }
 
-  onModuleInit() {
+  onModuleInit(...args) {
+    console.log(args);
     const subscriber = new EventStoreEventSubscriber(this.eventStore);
     subscriber.bridgeEventsTo(this.event$.subject$);
     subscriber.subscribe('game');
