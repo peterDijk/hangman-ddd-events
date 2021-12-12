@@ -9,16 +9,23 @@ import { EventStoreInstanciators } from '../../../event-store';
 import { Injectable } from '@nestjs/common';
 import { EventStore } from './EventStore';
 
-Injectable();
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
-  // constructor(eventStore: EventStore) {}
+  public isConnected = false;
+
+  constructor(private readonly eventStore: EventStore) {}
+
+  subscribe() {
+    this.eventStore.subscribe('game', this.bridge);
+  }
 
   connect() {
     this.client = EventStoreDBClient.connectionString(
       'esdb://eventstore.db:2113?tls=false',
     );
+
+    this.isConnected = true;
 
     const streamPrefix = 'game';
     const filter = streamNameFilter({ prefixes: [streamPrefix] });
@@ -33,6 +40,7 @@ export class EventStoreEventSubscriber implements IMessageSource {
         data.event.data,
       );
       if (this.bridge) {
+        console.log('next on bridge');
         this.bridge.next(parsedEvent);
       }
     });

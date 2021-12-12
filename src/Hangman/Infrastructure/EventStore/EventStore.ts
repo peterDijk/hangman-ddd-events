@@ -6,16 +6,18 @@ import {
   jsonEvent,
   NO_STREAM,
   START,
+  streamNameFilter,
 } from '@eventstore/db-client';
 import { IEvent } from '@nestjs/cqrs';
 import { EventStoreInstanciators } from '../../../event-store';
+import { Subject } from 'rxjs';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
-  private eventStoreLaunched = false;
+  public eventStoreLaunched = false;
 
   constructor(options: EventSourcingOptions) {
     try {
@@ -124,6 +126,24 @@ export class EventStore {
         }),
         { expectedRevision: revision },
       );
+    });
+  }
+
+  subscribe(streamPrefix: string, bridge: Subject<any>) {
+    const filter = streamNameFilter({ prefixes: [streamPrefix] });
+    const subscription = this.eventstore.subscribeToAll({
+      filter,
+      fromPosition: START,
+    });
+    subscription.on('data', (data) => {
+      console.log('from subscription');
+      const parsedEvent = EventStoreInstanciators[data.event.type](
+        data.event.data,
+      );
+      if (bridge) {
+        console.log('next on bridge');
+        bridge.next(parsedEvent);
+      }
     });
   }
 
