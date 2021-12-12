@@ -9,12 +9,10 @@ import { EventStoreInstanciators } from '../../../event-store';
 import { Injectable } from '@nestjs/common';
 import { EventStore } from './EventStore';
 
-Injectable();
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
   public isConnected = false;
-  // constructor(eventStore: EventStore) {}
 
   connect() {
     this.client = EventStoreDBClient.connectionString(
@@ -36,6 +34,7 @@ export class EventStoreEventSubscriber implements IMessageSource {
         data.event.data,
       );
       if (this.bridge) {
+        console.log('next on bridge');
         this.bridge.next(parsedEvent);
       }
     });
