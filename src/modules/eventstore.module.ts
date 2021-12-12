@@ -1,4 +1,4 @@
-import { Module, DynamicModule, OnModuleInit } from '@nestjs/common';
+import { Module, DynamicModule, OnModuleInit, Logger } from '@nestjs/common';
 import { EventSourcingOptions } from '../Hangman/Infrastructure/EventStore/Interfaces';
 import { CqrsModule, EventBus } from '@nestjs/cqrs';
 import { EventStore } from '../Hangman/Infrastructure/EventStore/EventStore';
@@ -10,14 +10,24 @@ import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/
   providers: [EventStoreEventSubscriber],
 })
 export class EventSourcingModule implements OnModuleInit {
+  // private _eventBus: EventBus;
+  // private _subscriber: EventStoreEventSubscriber;
+
+  private logger = new Logger(EventSourcingModule.name);
+
   constructor(
     private readonly event$: EventBus,
     private readonly subscriber: EventStoreEventSubscriber,
-  ) {}
+  ) {
+    // this._eventBus = event$;
+    // this._subscriber = subscriber;
+  }
 
   async onModuleInit() {
-    await this.subscriber.connect();
-    this.subscriber.bridgeEventsTo(this.event$.subject$);
+    this.logger.log('onModuleInit');
+
+    // await this.subscriber.connect();
+    // this.subscriber.bridgeEventsTo(this.event$.subject$);
   }
 
   static forRoot(options: EventSourcingOptions): DynamicModule {
@@ -34,7 +44,9 @@ export class EventSourcingModule implements OnModuleInit {
     };
   }
 
-  static forFeature({ streamPrefix: string }): DynamicModule {
+  static async forFeature({ streamPrefix: string }): Promise<DynamicModule> {
+    // await this._subscriber.connect();
+    // this.subscriber.bridgeEventsTo(this.event$.subject$);
     const providers = createEventSourcingProviders();
     return {
       module: EventSourcingModule,
