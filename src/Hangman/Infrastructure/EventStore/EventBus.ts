@@ -19,8 +19,8 @@ export class StoreEventBus extends EventBus implements IEventBus {
 
   onModuleInit() {
     const subscriber = new EventStoreEventSubscriber(this.eventStore);
-    subscriber.connect();
     subscriber.bridgeEventsTo(this.event$.subject$);
+    subscriber.subscribe('game');
   }
 
   publish<T extends IEvent>(event: T): void {
