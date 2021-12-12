@@ -11,7 +11,9 @@ import {
 import { IEvent } from '@nestjs/cqrs';
 import { EventStoreInstanciators } from '../../../event-store';
 import { Subject } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;

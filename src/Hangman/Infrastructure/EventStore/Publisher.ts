@@ -1,31 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { StoreEventBus } from './EventBus';
-import { IEvent, AggregateRoot } from '@nestjs/cqrs';
-
-export interface Constructor<T> {
-  new (...args: any[]): T;
-}
+import { Injectable, Logger } from '@nestjs/common';
+import { IEvent, IEventPublisher } from '@nestjs/cqrs';
+import { EventStore } from './EventStore';
 
 @Injectable()
-export class StoreEventPublisher {
-  constructor(private readonly eventBus: StoreEventBus) {
-    console.log('constructor StoreEventPublisher');
-  }
+export class EventStoreEventPublisher implements IEventPublisher {
+  private logger = new Logger(EventStoreEventPublisher.name);
 
-  mergeClassContext<T extends Constructor<AggregateRoot>>(metatype: T): T {
-    const eventBus = this.eventBus;
-    return class extends metatype {
-      publish(event: IEvent) {
-        eventBus.publish(event);
-      }
-    };
-  }
+  constructor(private readonly eventStore: EventStore) {} //
 
-  mergeObjectContext<T extends AggregateRoot>(object: T): T {
-    const eventBus = this.eventBus;
-    object.publish = (event: IEvent) => {
-      eventBus.publish(event);
-    };
-    return object;
+  async publish<T extends IEvent = IEvent>(event: T) {
+    this.logger.log('call eventstore.storeEvent(event)');
+    this.logger.log(this.eventStore);
+    this.eventStore.storeEvent(event);
   }
 }
