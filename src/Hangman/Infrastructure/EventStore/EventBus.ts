@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { IEvent, IEventBus } from '@nestjs/cqrs/dist/interfaces';
@@ -18,7 +18,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
   }
 
   onModuleInit() {
-    const subscriber = new EventStoreEventSubscriber();
+    const subscriber = new EventStoreEventSubscriber(this.eventStore);
     subscriber.connect();
     subscriber.bridgeEventsTo(this.event$.subject$);
   }
@@ -42,6 +42,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
   }
 
   publishAll(events: IEvent[]): void {
+    // what does this do?
     (events || []).forEach((event) => this.publish(event));
   }
 }

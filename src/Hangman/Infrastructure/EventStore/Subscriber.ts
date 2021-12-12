@@ -14,6 +14,12 @@ export class EventStoreEventSubscriber implements IMessageSource {
   private bridge: Subject<any>;
   public isConnected = false;
 
+  constructor(private readonly eventStore: EventStore) {}
+
+  subscribe() {
+    this.eventStore.subscribe('game', this.bridge);
+  }
+
   connect() {
     this.client = EventStoreDBClient.connectionString(
       'esdb://eventstore.db:2113?tls=false',
