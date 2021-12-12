@@ -13,12 +13,15 @@ Injectable();
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
+  public isConnected = false;
   // constructor(eventStore: EventStore) {}
 
   connect() {
     this.client = EventStoreDBClient.connectionString(
       'esdb://eventstore.db:2113?tls=false',
     );
+
+    this.isConnected = true;
 
     const streamPrefix = 'game';
     const filter = streamNameFilter({ prefixes: [streamPrefix] });

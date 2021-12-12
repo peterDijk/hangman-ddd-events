@@ -13,7 +13,7 @@ import { EventStoreInstanciators } from '../../../event-store';
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
-  private eventStoreLaunched = false;
+  public eventStoreLaunched = false;
 
   constructor(options: EventSourcingOptions) {
     try {

@@ -10,27 +10,27 @@ import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/
   providers: [EventStoreEventSubscriber],
 })
 export class EventSourcingModule implements OnModuleInit {
-  // private _eventBus: EventBus;
-  // private _subscriber: EventStoreEventSubscriber;
-
   private logger = new Logger(EventSourcingModule.name);
 
   constructor(
     private readonly event$: EventBus,
     private readonly subscriber: EventStoreEventSubscriber,
-  ) {
-    // this._eventBus = event$;
-    // this._subscriber = subscriber;
-  }
+    private readonly eventStore: EventStore,
+  ) {}
 
   async onModuleInit() {
     this.logger.log('onModuleInit');
+    // this.logger.log(this.event$);
+    // this.logger.log(this.subscriber.isConnected);
 
-    // await this.subscriber.connect();
-    // this.subscriber.bridgeEventsTo(this.event$.subject$);
+    if (!this.subscriber.isConnected) {
+      await this.subscriber.connect();
+      this.subscriber.bridgeEventsTo(this.event$.subject$);
+    }
   }
 
   static forRoot(options: EventSourcingOptions): DynamicModule {
+    // this.forRootInit = true;
     return {
       module: EventSourcingModule,
       providers: [
