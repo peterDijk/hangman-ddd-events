@@ -6,44 +6,24 @@ import {
   streamNameFilter,
 } from '@eventstore/db-client';
 import { EventStoreInstanciators } from '../../../event-store';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { EventStore } from './EventStore';
 
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
   private bridge: Subject<any>;
   public isConnected = false;
+  public hasBridge = false;
+
+  private logger = new Logger(EventStoreEventSubscriber.name);
 
   constructor(private readonly eventStore: EventStore) {}
 
-  subscribe() {
-    this.eventStore.subscribe('game', this.bridge);
-  }
-
-  connect() {
-    this.client = EventStoreDBClient.connectionString(
-      'esdb://eventstore.db:2113?tls=false',
-    );
-
-    this.isConnected = true;
-
-    const streamPrefix = 'game';
-    const filter = streamNameFilter({ prefixes: [streamPrefix] });
-
-    const subscription = this.client.subscribeToAll({
-      filter,
-      fromPosition: START,
-    });
-    subscription.on('data', (data) => {
-      console.log('from subscription');
-      const parsedEvent = EventStoreInstanciators[data.event.type](
-        data.event.data,
-      );
-      if (this.bridge) {
-        console.log('next on bridge');
-        this.bridge.next(parsedEvent);
-      }
-    });
+  subscribe(streamPrefix) {
+    this.logger.log('subscribe');
+    if (this.bridge) {
+      this.eventStore.subscribe(streamPrefix, this.bridge);
+    }
   }
 
   bridgeEventsTo<T extends IEvent>(subject: Subject<T>) {

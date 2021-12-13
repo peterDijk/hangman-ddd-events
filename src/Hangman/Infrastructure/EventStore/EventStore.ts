@@ -16,6 +16,7 @@ export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
   public eventStoreLaunched = false;
+  private streamPrefix = '';
 
   constructor(options: EventSourcingOptions) {
     try {
@@ -125,6 +126,10 @@ export class EventStore {
         { expectedRevision: revision },
       );
     });
+  }
+
+  setStreamPrefix(streamPrefix) {
+    this.streamPrefix = streamPrefix;
   }
 
   subscribe(streamPrefix: string, bridge: Subject<any>) {

@@ -26,8 +26,10 @@ export class EventSourcingModule {
     };
   }
 
-  static async forFeature({ streamPrefix: string }): Promise<DynamicModule> {
-    const providers = createEventSourcingProviders();
+  static async forFeature(options: {
+    streamPrefix: string;
+  }): Promise<DynamicModule> {
+    const providers = createEventSourcingProviders(options.streamPrefix);
     return {
       module: EventSourcingModule,
       imports: [CqrsModule],
