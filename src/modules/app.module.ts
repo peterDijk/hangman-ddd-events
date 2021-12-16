@@ -21,7 +21,6 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       cors: true,
     }),
     EventSourcingModule.forRoot({
-      // mongoURL: `mongodb://${config.STORE_STATE_SETTINGS.hostname}:27017/eventstore`,
       mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,
     }),
     TypeOrmModule.forRootAsync({

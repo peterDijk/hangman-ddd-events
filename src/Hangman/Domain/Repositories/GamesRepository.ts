@@ -12,17 +12,11 @@ export class GamesRepository {
     const game = new Game(aggregateId);
     const eventHistory = await this.eventStore.getEvents('game', aggregateId);
 
-    // how is this performant in a big application?
-    // for every action, find all events on the aggregate
-    // replay them then do the action.
-    // Name change on a aggregate that has 1000 events:
-    // Replay all 1000 events, then change the name
-    // Next change, again all 1001 events. etc
+    // how performant is getting events for id xx in a big application?
+    // try with setting maxGuesses to 100.000 and let locust make 99.000 guesses.
+    // does making a guess request start to take a lot longer?
 
     game.loadFromHistory(eventHistory.events);
-    // is aggregate with all historic events applied
-    // events are applied because methods `on....(EventName)` methods
-    // in aggregate
 
     return game;
   }
