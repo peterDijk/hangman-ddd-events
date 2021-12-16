@@ -2,16 +2,11 @@ import { Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 @InputType()
-export class GameDto {
-  @ApiProperty()
+export class GuessDto {
   @Field()
-  playerId?: string;
+  gameId: string;
 
   @ApiProperty()
   @Field()
-  wordToGuess?: string;
-
-  @ApiProperty()
-  @Field()
-  maxGuesses?: number;
+  letter: string;
 }

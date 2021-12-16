@@ -17,6 +17,7 @@
     "migration:generate": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:generate -n",
     "migration:run": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:run",
     "migration:revert": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:revert",
+    "reconstruct-view-db": "ts-node -r tsconfig-paths/register src/scripts/reconstruct-view-db.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -24,6 +25,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@berniemac/event-sourcing-nestjs": "^1.1.7",
     "@juicycleff/nestjs-event-store": "^3.1.18",
     "@nestjs/common": "^7.5.1",
     "@nestjs/core": "^7.5.1",
@@ -36,7 +38,6 @@
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
-    "mongoose": "^6.0.14",
     "mysql2": "^2.2.5",
     "node-eventstore-client": "^0.2.18",
     "node-nats-streaming": "^0.3.2",

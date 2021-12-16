@@ -6,6 +6,8 @@ import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { GuessLetterCommand } from '../Commands/GuessLetter.command';
+import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
 
 @Injectable()
 export class GamesService {
@@ -18,24 +20,41 @@ export class GamesService {
 
   async startNewGame(data: GameDto) {
     const gameId = uuidv4();
+
+    await this.commandBus.execute(new StartNewGameCommand(data, gameId));
     try {
-      await this.commandBus.execute(new StartNewGameCommand(data, gameId));
+      // const game = new Game('test');
+      // game.startNewGame(data);
 
       this.logger.log(`New game started; ${gameId}`);
       return { message: 'success', status: 201, gameId, data };
     } catch (err) {
+      this.logger.log(err);
       this.logger.error(err.name, err.stack);
-
-      throw new BadRequestException("Can't start a new game");
+      throw new BadRequestException(err);
     }
   }
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
     this.logger.log('getAllGames');
-    const games = await this.gamesProjectionRepository.find();
+    const games = await this.gamesProjectionRepository.find({
+      order: { dateModified: 'DESC' },
+    });
     return {
       count: games.length,
       games,
     };
+  }
+
+  async makeGuess(gameId: string, letter: string) {
+    try {
+      await this.commandBus.execute(new GuessLetterCommand(gameId, letter));
+
+      return { message: 'success', status: 200, gameId, letter };
+    } catch (err) {
+      this.logger.error(err.name, err.stack);
+
+      throw new BadRequestException(err, 'Cant make guess');
+    }
   }
 }

@@ -16,18 +16,10 @@ export class NewGameStartedEventHandler
 
   async handle(event: NewGameStartedEvent) {
     try {
-      this.logger.log(`Adding projection, ${JSON.stringify(event)}`);
-
-      const newGame = this.gamesProjectionRepository.create({
-        gameId: event.gameId,
-        playerId: event.playerId,
-        playerName: '',
-        wordToGuess: event.wordToGuess,
-        maxGuesses: event.maxGuesses,
-      });
-      await this.gamesProjectionRepository.save(newGame);
+      // send websocket
+      this.logger.log(`${JSON.stringify(event)}`);
     } catch (err) {
-      this.logger.log('cant save to projection');
+      this.logger.log(err);
     }
   }
 }

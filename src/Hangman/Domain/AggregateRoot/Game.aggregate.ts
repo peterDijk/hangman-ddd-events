@@ -12,12 +12,16 @@ import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
+import { Logger } from '@nestjs/common';
 
 @ObjectType()
 export class Game extends AggregateRoot {
-  @Field()
-  @IsUUID()
-  gameId: string;
+  public readonly id: string;
+  private readonly version: number;
+
+  dateCreated: Date;
+  dateModified: Date;
 
   @Field()
   @IsString()
@@ -26,7 +30,7 @@ export class Game extends AggregateRoot {
 
   @Field()
   @IsString()
-  @MinLength(5)
+  @MinLength(3)
   wordToGuess: string;
 
   @Field()
@@ -34,30 +38,85 @@ export class Game extends AggregateRoot {
   @Min(1)
   maxGuesses: number;
 
-  constructor({ playerId, wordToGuess, maxGuesses }: GameDto, gameId: string) {
+  @Field((type) => [String])
+  lettersGuessed: string[];
+
+  constructor(id: string, version?: number) {
     super();
-    this.gameId = gameId;
-    this.playerId = playerId;
-    this.wordToGuess = wordToGuess;
-    this.maxGuesses = maxGuesses;
+    this.id = id;
+    this.version = version;
   }
 
-  async startNewGame() {
-    // if we validate here, we can leave validating in CommandConstructor. double validation is unneeded, and here we can async validate using class-validators
+  private logger = new Logger(Game.name);
+
+  async startNewGame(data: GameDto) {
+    // apply to be able to validate
+    this.playerId = data.playerId;
+    this.wordToGuess = data.wordToGuess;
+    this.maxGuesses = data.maxGuesses;
+    this.lettersGuessed = [];
+    this.dateCreated = new Date();
+    this.dateModified = new Date();
 
     try {
       await validateOrReject(this);
 
       this.apply(
         new NewGameStartedEvent(
-          this.gameId,
+          this.id,
           this.playerId,
           this.wordToGuess,
           this.maxGuesses,
+          this.dateCreated,
+          this.dateModified,
         ),
+        false,
       );
     } catch (err) {
       throw new InvalidGameException(err);
     }
+  }
+
+  async guessLetter(letter: string) {
+    // TODO: validate guess
+
+    // better validation of course, quick check to see if this works
+
+    const newLettersGuessed = [...this.lettersGuessed, letter];
+
+    if (newLettersGuessed.length >= this.maxGuesses) {
+      throw new InvalidGameException('Max guesses, game over');
+    }
+
+    const event = new LetterGuessedEvent(this.id, letter);
+    this.logger.log(`this.lettersGuessed: ${this.lettersGuessed}`);
+    this.logger.log(event);
+
+    this.apply(event, false);
+  }
+
+  // Replay event from history `loadFromHistory` function calls
+  // onNameOfEvent
+  // framework magic
+  onNewGameStartedEvent(event: NewGameStartedEvent) {
+    this.logger.log(
+      `onNewGameStartedEvent: replaying from history: ${event.id}`,
+    );
+    this.playerId = event.playerId;
+    this.wordToGuess = event.wordToGuess;
+    this.maxGuesses = event.maxGuesses;
+    this.lettersGuessed = [];
+    this.dateCreated = event.dateCreated;
+    this.dateModified = event.dateModified;
+  }
+
+  onLetterGuessedEvent(event: LetterGuessedEvent) {
+    this.logger.log(
+      `onLetterGuessedEvent: replaying from history: ${event.id}`,
+    );
+    this.logger.log(`Aggregate: ${JSON.stringify(this)}`);
+
+    this.lettersGuessed.push(event.letter[0]);
+    this.dateModified = event.dateModified;
   }
 }
