@@ -15,14 +15,14 @@ export function createEventSourcingProviders(streamPrefix?: string) {
     // {
     //   provide: 'CONNECTION',
     //   useFactory: (
-    //     streamPrefix: string,
+    //     // streamPrefix: string,
     //     commandBus: CommandBus,
     //     moduleRef: ModuleRef,
     //     eventStore: EventStore,
     //     event$: EventBus,
     //   ) => {
     //     return new StoreEventBus(
-    //       streamPrefix,
+    //       // streamPrefix,
     //       commandBus,
     //       moduleRef,
     //       eventStore,

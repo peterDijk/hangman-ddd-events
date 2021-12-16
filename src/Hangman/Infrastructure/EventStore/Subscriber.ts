@@ -14,10 +14,15 @@ export class EventStoreEventSubscriber implements IMessageSource {
   private bridge: Subject<any>;
   public isConnected = false;
   public hasBridge = false;
+  public stream = '';
 
   private logger = new Logger(EventStoreEventSubscriber.name);
 
   constructor(private readonly eventStore: EventStore) {}
+
+  setStreamPrefix(prefix: string) {
+    this.stream = prefix;
+  }
 
   subscribe(streamPrefix) {
     this.logger.log('subscribe');
