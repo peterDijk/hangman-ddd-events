@@ -6,11 +6,7 @@ export class LetterGuessedEvent extends StorableEvent {
 
   dateModified: Date;
 
-  constructor(
-    public readonly id: string,
-    public readonly letter: string,
-    public readonly lettersGuessed: string[],
-  ) {
+  constructor(public readonly id: string, public readonly letter: string) {
     super();
     this.dateModified = new Date();
   }

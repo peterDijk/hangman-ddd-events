@@ -18,13 +18,14 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
   private logger = new Logger(LetterGuessedUpdater.name);
 
   async handle(event: LetterGuessedEvent) {
-    this.logger.log(`event.lettersGuessed: ${event.lettersGuessed}`);
+    const projection = await this.gamesProjectionRepository.findOne(event.id);
+    this.logger.log(projection);
     this.gamesProjectionRepository.update(
       {
         gameId: event.id,
       },
       {
-        lettersGuessed: event.lettersGuessed,
+        lettersGuessed: [...projection.lettersGuessed, event.letter],
         dateModified: event.dateModified,
       },
     );

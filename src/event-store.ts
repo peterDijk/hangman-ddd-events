@@ -23,6 +23,6 @@ export const EventStoreInstanciators = {
   },
   LetterGuessedEvent: ({ id, letter, lettersGuessed }) => {
     console.log(`LetterGuessedEvent from eventstore`, { id });
-    return new LetterGuessedEvent(id, letter, lettersGuessed);
+    return new LetterGuessedEvent(id, letter);
   },
 };
