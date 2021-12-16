@@ -29,9 +29,9 @@ export class EventStore {
     }
   }
 
-  // public isInitiated(): boolean {
-  //   return this.eventStoreLaunched;
-  // }
+  public isInitiated(): boolean {
+    return this.eventStoreLaunched;
+  }
 
   // public getSnapshotInterval(aggregate: string): number | null {
   //   return this.config ? this.config[aggregate] : null;
@@ -69,15 +69,9 @@ export class EventStore {
     });
   }
 
-  // public async getEvent(index: number): Promise<StorableEvent> {
-  //   return new Promise<StorableEvent>((resolve, reject) => {
-  //     this.eventstore.getEvents(index, 1, (err, events) => {
-  //       if (events.length > 0) {
-  //         resolve(this.getStorableEventFromPayload(events[0]));
-  //       } else {
-  //         resolve(null);
-  //       }
-  //     });
+  // public async getEvent(index: number): Promise<IEvent> {
+  //   return new Promise<IEvent>((resolve, reject) => {
+  //     this.getEvents(index, 1, (err, events) => {});
   //   });
   // }
 
