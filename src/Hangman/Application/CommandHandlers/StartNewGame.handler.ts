@@ -24,6 +24,6 @@ export class StartNewGameCommandHandler
         uuid,
       ),
     );
-    game.commit(); // hier wordt het event naar de publisher (eventstore) gestuurd, volgende stap is event handler
+    game.commit(); // hier wordt het event naar de publisher (eventstore) gestuurd, die stored het in eventstore,volgende stap is event handler
   }
 }

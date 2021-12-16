@@ -19,6 +19,7 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
 
   async handle(event: LetterGuessedEvent) {
     const projection = await this.gamesProjectionRepository.findOne(event.id);
+    this.logger.log(projection);
     this.gamesProjectionRepository.update(
       {
         gameId: event.id,
