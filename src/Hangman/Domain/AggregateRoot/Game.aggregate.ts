@@ -69,6 +69,7 @@ export class Game extends AggregateRoot {
           this.maxGuesses,
           this.dateCreated,
           this.dateModified,
+          this.lettersGuessed,
         ),
         false,
       );
