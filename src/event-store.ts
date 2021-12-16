@@ -21,7 +21,7 @@ export const EventStoreInstanciators = {
       dateModified,
     );
   },
-  LetterGuessedEvent: ({ id, letter, lettersGuessed }) => {
+  LetterGuessedEvent: ({ id, letter }) => {
     console.log(`LetterGuessedEvent from eventstore`, { id });
     return new LetterGuessedEvent(id, letter);
   },

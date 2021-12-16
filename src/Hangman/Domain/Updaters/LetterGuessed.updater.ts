@@ -3,7 +3,7 @@ import { Game as GameProjection } from '../../ReadModels/game.entity';
 import {
   IViewUpdater,
   ViewUpdaterHandler,
-} from '@berniemac/event-sourcing-nestjs';
+} from '../../Infrastructure/EventStore/Views';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
