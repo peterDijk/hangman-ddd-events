@@ -28,7 +28,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
     );
     subscriber.bridgeEventsTo(this.event$.subject$);
     subscriber.getAll();
-    // subscriber.subscribe('game');
+    subscriber.subscribe('game');
   }
 
   publish<T extends IEvent>(event: T): void {
