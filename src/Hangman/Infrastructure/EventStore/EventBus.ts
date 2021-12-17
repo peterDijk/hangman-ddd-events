@@ -5,7 +5,7 @@ import { IEvent, IEventBus } from '@nestjs/cqrs/dist/interfaces';
 import { EventStore } from './EventStore';
 import { StorableEvent } from './Interfaces';
 import { EventStoreEventSubscriber } from './Subscriber';
-import { ViewEventBus } from './Views/View-Eventbus';
+import { ViewEventBus } from './Views';
 
 @Injectable()
 export class StoreEventBus extends EventBus implements IEventBus {
@@ -15,21 +15,23 @@ export class StoreEventBus extends EventBus implements IEventBus {
     moduleRef: ModuleRef,
     private readonly eventStore: EventStore,
     private readonly event$: EventBus,
-    private readonly viewEventBus: ViewEventBus,
+    private readonly viewEventsBus: ViewEventBus,
   ) {
     super(commandBus, moduleRef);
   }
 
   onModuleInit(...args) {
     console.log(args);
-    const subscriber = new EventStoreEventSubscriber(this.eventStore);
+    const subscriber = new EventStoreEventSubscriber(
+      this.eventStore,
+      this.viewEventsBus,
+    );
     subscriber.bridgeEventsTo(this.event$.subject$);
-    subscriber.subscribe('game');
+    subscriber.getAll();
+    // subscriber.subscribe('game');
   }
 
   publish<T extends IEvent>(event: T): void {
-    console.log('publish eventbus');
-
     const storableEvent = (event as any) as StorableEvent;
     if (
       storableEvent.id === undefined ||
@@ -40,8 +42,6 @@ export class StoreEventBus extends EventBus implements IEventBus {
     }
 
     this.eventStore.storeEvent(storableEvent);
-    console.log('calling view-eventbus');
-    this.viewEventBus.publish(event);
   }
 
   publishAll(events: IEvent[]): void {

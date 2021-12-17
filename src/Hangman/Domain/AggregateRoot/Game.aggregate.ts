@@ -89,8 +89,6 @@ export class Game extends AggregateRoot {
     }
 
     const event = new LetterGuessedEvent(this.id, letter);
-    this.logger.log(`this.lettersGuessed: ${this.lettersGuessed}`);
-    this.logger.log(event);
 
     this.apply(event, false);
   }

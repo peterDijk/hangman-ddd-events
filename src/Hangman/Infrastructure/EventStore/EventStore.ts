@@ -1,6 +1,7 @@
 import { EventSourcingOptions } from './Interfaces';
 import {
   AppendExpectedRevision,
+  END,
   EventStoreDBClient,
   FORWARDS,
   jsonEvent,
@@ -11,6 +12,9 @@ import {
 import { IEvent } from '@nestjs/cqrs';
 import { EventStoreInstanciators } from '../../../event-store';
 import { Subject } from 'rxjs';
+import { Repository } from 'typeorm';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
+import { ViewEventBus } from './Views';
 
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
@@ -126,11 +130,23 @@ export class EventStore {
     this.streamPrefix = streamPrefix;
   }
 
+  async getAll(viewEventsBus: ViewEventBus) {
+    const events = await this.eventstore.readAll();
+
+    for await (const { event } of events) {
+      const parsedEvent = EventStoreInstanciators[event.type]?.(event.data);
+
+      if (parsedEvent) {
+        viewEventsBus.publish(event);
+      }
+    }
+  }
+
   subscribe(streamPrefix: string, bridge: Subject<any>) {
     const filter = streamNameFilter({ prefixes: [streamPrefix] });
     const subscription = this.eventstore.subscribeToAll({
       filter,
-      fromPosition: START,
+      fromPosition: END,
     });
     subscription.on('data', (data) => {
       console.log('from subscription');

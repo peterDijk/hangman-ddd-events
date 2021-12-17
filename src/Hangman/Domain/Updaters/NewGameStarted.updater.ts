@@ -21,6 +21,7 @@ export class NewGameStartedUpdater
 
   async handle(event: NewGameStartedEvent) {
     this.logger.log(event);
+
     const game = this.gamesProjectionRepository.create({
       ...event,
       gameId: event.id,
@@ -31,6 +32,8 @@ export class NewGameStartedUpdater
       dateModified: event.dateModified,
       lettersGuessed: [],
     });
-    game.save();
+    const newProjection = await game.save();
+
+    this.logger.log(newProjection);
   }
 }
