@@ -137,7 +137,7 @@ export class EventStore {
       const parsedEvent = EventStoreInstanciators[event.type]?.(event.data);
 
       if (parsedEvent) {
-        viewEventsBus.publish(parsedEvent);
+        await viewEventsBus.publish(parsedEvent);
       }
     }
   }

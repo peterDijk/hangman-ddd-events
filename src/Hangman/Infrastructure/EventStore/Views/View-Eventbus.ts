@@ -13,10 +13,10 @@ export class ViewEventBus implements IEventBus {
     private viewUpdater: ViewUpdater,
   ) {}
 
-  publish<T extends IEvent>(event: T): void {
+  async publish<T extends IEvent>(event: T): Promise<unknown> {
     console.log('publish - eventbus');
 
-    this.viewUpdater.run(event);
+    return await this.viewUpdater.run(event);
   }
 
   publishAll(events: IEvent[]): void {
