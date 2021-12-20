@@ -82,10 +82,7 @@ export class EventStore {
   //   });
   // }
 
-  public async storeEvent<T extends IEvent>(
-    event: T,
-    prefix: string,
-  ): Promise<void> {
+  public async storeEvent<T extends IEvent>(event: T): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       if (!this.eventStoreLaunched) {
         reject('Event Store not launched!');
@@ -98,7 +95,10 @@ export class EventStore {
 
       try {
         const events = this.eventstore.readStream(
-          this.getAggregateId(prefix, eventDeserialized.id),
+          this.getAggregateId(
+            eventDeserialized.eventAggregate,
+            eventDeserialized.id,
+          ),
           {
             fromRevision: START,
             direction: FORWARDS,

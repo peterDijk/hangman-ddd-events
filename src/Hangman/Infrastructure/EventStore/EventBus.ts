@@ -42,8 +42,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
     ) {
       throw new Error('Events must implement StorableEvent interface');
     }
-    console.log('storing');
-    this.eventStore.storeEvent(storableEvent, this.streamPrefix);
+    this.eventStore.storeEvent(storableEvent);
   }
 
   publishAll(events: IEvent[]): void {
