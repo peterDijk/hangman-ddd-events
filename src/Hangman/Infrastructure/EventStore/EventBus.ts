@@ -10,12 +10,12 @@ import { ViewEventBus } from './Views';
 @Injectable()
 export class StoreEventBus extends EventBus implements IEventBus {
   constructor(
-    // streamPrefix: string,
     commandBus: CommandBus,
     moduleRef: ModuleRef,
     private readonly eventStore: EventStore,
     private readonly event$: EventBus,
     private readonly viewEventsBus: ViewEventBus,
+    private streamPrefix: string,
   ) {
     super(commandBus, moduleRef);
   }
@@ -27,7 +27,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
     );
     subscriber.bridgeEventsTo(this.event$.subject$);
     subscriber.getAll(); // from checkpoint xxx comes later
-    subscriber.subscribe('game');
+    subscriber.subscribe(this.streamPrefix);
   }
 
   publish<T extends IEvent>(event: T): void {
