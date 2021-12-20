@@ -1,6 +1,7 @@
 import { EventSourcingOptions } from './Interfaces';
 import {
   AppendExpectedRevision,
+  END,
   EventStoreDBClient,
   FORWARDS,
   jsonEvent,
@@ -11,12 +12,18 @@ import {
 import { IEvent } from '@nestjs/cqrs';
 import { EventStoreInstanciators } from '../../../event-store';
 import { Subject } from 'rxjs';
+import { Repository } from 'typeorm';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
+import { ViewEventBus } from './Views';
+import { Logger } from '@nestjs/common';
 
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
   public eventStoreLaunched = false;
   private streamPrefix = '';
+
+  private logger = new Logger(EventStore.name);
 
   constructor(options: EventSourcingOptions) {
     try {
@@ -29,9 +36,9 @@ export class EventStore {
     }
   }
 
-  // public isInitiated(): boolean {
-  //   return this.eventStoreLaunched;
-  // }
+  public isInitiated(): boolean {
+    return this.eventStoreLaunched;
+  }
 
   // public getSnapshotInterval(aggregate: string): number | null {
   //   return this.config ? this.config[aggregate] : null;
@@ -69,21 +76,13 @@ export class EventStore {
     });
   }
 
-  // public async getEvent(index: number): Promise<StorableEvent> {
-  //   return new Promise<StorableEvent>((resolve, reject) => {
-  //     this.eventstore.getEvents(index, 1, (err, events) => {
-  //       if (events.length > 0) {
-  //         resolve(this.getStorableEventFromPayload(events[0]));
-  //       } else {
-  //         resolve(null);
-  //       }
-  //     });
+  // public async getEvent(index: number): Promise<IEvent> {
+  //   return new Promise<IEvent>((resolve, reject) => {
+  //     this.getEvents(index, 1, (err, events) => {});
   //   });
   // }
 
   public async storeEvent<T extends IEvent>(event: T): Promise<void> {
-    console.log('storeEvent');
-
     return new Promise<void>(async (resolve, reject) => {
       if (!this.eventStoreLaunched) {
         reject('Event Store not launched!');
@@ -132,19 +131,35 @@ export class EventStore {
     this.streamPrefix = streamPrefix;
   }
 
+  async getAll(viewEventsBus: ViewEventBus) {
+    // maybe not readAll
+    const events = this.eventstore.readAll();
+
+    for await (const { event } of events) {
+      const parsedEvent = EventStoreInstanciators[event.type]?.(event.data);
+
+      if (parsedEvent) {
+        try {
+          await viewEventsBus.publish(parsedEvent);
+        } catch (err) {
+          throw Error('Error updating projection');
+        }
+      }
+    }
+    this.logger.log('Done parsing all past events to projection');
+  }
+
   subscribe(streamPrefix: string, bridge: Subject<any>) {
     const filter = streamNameFilter({ prefixes: [streamPrefix] });
     const subscription = this.eventstore.subscribeToAll({
       filter,
-      fromPosition: START,
+      fromPosition: END,
     });
     subscription.on('data', (data) => {
-      console.log('from subscription');
       const parsedEvent = EventStoreInstanciators[data.event.type](
         data.event.data,
       );
       if (bridge) {
-        console.log('next on bridge');
         bridge.next(parsedEvent);
       }
     });

@@ -4,6 +4,12 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { EventStore } from '../Hangman/Infrastructure/EventStore/EventStore';
 import { createEventSourcingProviders } from '../Hangman/Infrastructure/EventStore/Providers';
 import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/Subscriber';
+import {
+  ViewEventBus,
+  ViewUpdater,
+} from '../Hangman/Infrastructure/EventStore/Views';
+import { StoreEventBus } from '../Hangman/Infrastructure/EventStore/EventBus';
+import { StoreEventPublisher } from '../Hangman/Infrastructure/EventStore/Publisher';
 
 @Module({
   imports: [CqrsModule],
@@ -29,12 +35,16 @@ export class EventSourcingModule {
   static async forFeature(options: {
     streamPrefix: string;
   }): Promise<DynamicModule> {
-    const providers = createEventSourcingProviders(options.streamPrefix);
     return {
       module: EventSourcingModule,
       imports: [CqrsModule],
-      providers: providers,
-      exports: providers,
+      providers: [
+        ViewUpdater,
+        ViewEventBus,
+        StoreEventBus,
+        StoreEventPublisher,
+      ],
+      exports: [ViewUpdater, ViewEventBus, StoreEventBus, StoreEventPublisher],
     };
   }
 }

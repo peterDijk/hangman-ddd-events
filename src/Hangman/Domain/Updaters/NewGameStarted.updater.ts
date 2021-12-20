@@ -1,13 +1,13 @@
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 
-import {
-  IViewUpdater,
-  ViewUpdaterHandler,
-} from '@berniemac/event-sourcing-nestjs';
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
+import {
+  IViewUpdater,
+  ViewUpdaterHandler,
+} from '../../Infrastructure/EventStore/Views';
 
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater
@@ -20,7 +20,6 @@ export class NewGameStartedUpdater
   private logger = new Logger(NewGameStartedUpdater.name);
 
   async handle(event: NewGameStartedEvent) {
-    this.logger.log(event);
     const game = this.gamesProjectionRepository.create({
       ...event,
       gameId: event.id,
@@ -31,6 +30,7 @@ export class NewGameStartedUpdater
       dateModified: event.dateModified,
       lettersGuessed: [],
     });
-    game.save();
+
+    await game.save();
   }
 }

@@ -89,8 +89,6 @@ export class Game extends AggregateRoot {
     }
 
     const event = new LetterGuessedEvent(this.id, letter);
-    this.logger.log(`this.lettersGuessed: ${this.lettersGuessed}`);
-    this.logger.log(event);
 
     this.apply(event, false);
   }
@@ -99,9 +97,6 @@ export class Game extends AggregateRoot {
   // onNameOfEvent
   // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.logger.log(
-      `onNewGameStartedEvent: replaying from history: ${event.id}`,
-    );
     this.playerId = event.playerId;
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
@@ -111,11 +106,6 @@ export class Game extends AggregateRoot {
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.logger.log(
-      `onLetterGuessedEvent: replaying from history: ${event.id}`,
-    );
-    this.logger.log(`Aggregate: ${JSON.stringify(this)}`);
-
     this.lettersGuessed.push(event.letter[0]);
     this.dateModified = event.dateModified;
   }

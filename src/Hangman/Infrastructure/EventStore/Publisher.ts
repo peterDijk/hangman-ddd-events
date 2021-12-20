@@ -8,9 +8,7 @@ export interface Constructor<T> {
 
 @Injectable()
 export class StoreEventPublisher {
-  constructor(private readonly eventBus: StoreEventBus) {
-    console.log('constructor StoreEventPublisher');
-  }
+  constructor(private readonly eventBus: StoreEventBus) {}
 
   mergeClassContext<T extends Constructor<AggregateRoot>>(metatype: T): T {
     const eventBus = this.eventBus;

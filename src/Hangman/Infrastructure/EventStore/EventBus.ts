@@ -5,6 +5,7 @@ import { IEvent, IEventBus } from '@nestjs/cqrs/dist/interfaces';
 import { EventStore } from './EventStore';
 import { StorableEvent } from './Interfaces';
 import { EventStoreEventSubscriber } from './Subscriber';
+import { ViewEventBus } from './Views';
 
 @Injectable()
 export class StoreEventBus extends EventBus implements IEventBus {
@@ -14,14 +15,18 @@ export class StoreEventBus extends EventBus implements IEventBus {
     moduleRef: ModuleRef,
     private readonly eventStore: EventStore,
     private readonly event$: EventBus,
+    private readonly viewEventsBus: ViewEventBus,
   ) {
     super(commandBus, moduleRef);
   }
 
-  onModuleInit(...args) {
-    console.log(args);
-    const subscriber = new EventStoreEventSubscriber(this.eventStore);
+  onModuleInit() {
+    const subscriber = new EventStoreEventSubscriber(
+      this.eventStore,
+      this.viewEventsBus,
+    );
     subscriber.bridgeEventsTo(this.event$.subject$);
+    subscriber.getAll(); // from checkpoint xxx comes later
     subscriber.subscribe('game');
   }
 
@@ -35,12 +40,7 @@ export class StoreEventBus extends EventBus implements IEventBus {
       throw new Error('Events must implement StorableEvent interface');
     }
 
-    this.eventStore
-      .storeEvent(storableEvent)
-      // .then(() => this.eventBus.publish(event))
-      .catch((err) => {
-        throw err;
-      });
+    this.eventStore.storeEvent(storableEvent);
   }
 
   publishAll(events: IEvent[]): void {

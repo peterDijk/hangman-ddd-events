@@ -8,6 +8,10 @@ import {
 import { EventStoreInstanciators } from '../../../event-store';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventStore } from './EventStore';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
+import { Repository } from 'typeorm';
+import { ViewEventBus } from './Views';
 
 export class EventStoreEventSubscriber implements IMessageSource {
   private client: EventStoreDBClient;
@@ -18,14 +22,20 @@ export class EventStoreEventSubscriber implements IMessageSource {
 
   private logger = new Logger(EventStoreEventSubscriber.name);
 
-  constructor(private readonly eventStore: EventStore) {}
+  constructor(
+    private readonly eventStore: EventStore,
+    private readonly viewEventsBus: ViewEventBus,
+  ) {}
 
   setStreamPrefix(prefix: string) {
     this.stream = prefix;
   }
 
+  getAll() {
+    this.eventStore.getAll(this.viewEventsBus);
+  }
+
   subscribe(streamPrefix) {
-    this.logger.log('subscribe');
     if (this.bridge) {
       this.eventStore.subscribe(streamPrefix, this.bridge);
     }

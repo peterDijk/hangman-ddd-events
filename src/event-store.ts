@@ -10,8 +10,6 @@ export const EventStoreInstanciators = {
     dateCreated,
     dateModified,
   }) => {
-    console.log('NewGameStartedEvent from eventstore', { id });
-
     return new NewGameStartedEvent(
       id,
       playerId,
@@ -21,8 +19,7 @@ export const EventStoreInstanciators = {
       dateModified,
     );
   },
-  LetterGuessedEvent: ({ id, letter, lettersGuessed }) => {
-    console.log(`LetterGuessedEvent from eventstore`, { id });
+  LetterGuessedEvent: ({ id, letter }) => {
     return new LetterGuessedEvent(id, letter);
   },
 };

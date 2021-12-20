@@ -1,5 +1,5 @@
-// import { ViewUpdater } from './view';
-// import { ViewEventBus } from './view';
+import { ViewUpdater } from './Views';
+import { ViewEventBus } from './Views';
 import { ModuleRef } from '@nestjs/core';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { StoreEventBus } from './EventBus';
@@ -8,29 +8,5 @@ import { StoreEventPublisher } from './Publisher';
 import { EventStoreEventSubscriber } from './Subscriber';
 
 export function createEventSourcingProviders(streamPrefix?: string) {
-  return [
-    // ViewUpdater,
-    // ViewEventBus,
-    StoreEventBus,
-    // {
-    //   provide: 'CONNECTION',
-    //   useFactory: (
-    //     // streamPrefix: string,
-    //     commandBus: CommandBus,
-    //     moduleRef: ModuleRef,
-    //     eventStore: EventStore,
-    //     event$: EventBus,
-    //   ) => {
-    //     return new StoreEventBus(
-    //       // streamPrefix,
-    //       commandBus,
-    //       moduleRef,
-    //       eventStore,
-    //       event$,
-    //     );
-    //   },
-    //   inject: [StoreEventBus],
-    // },
-    StoreEventPublisher,
-  ];
+  return [ViewUpdater, ViewEventBus, StoreEventBus, StoreEventPublisher];
 }
