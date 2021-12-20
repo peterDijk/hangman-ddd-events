@@ -15,12 +15,15 @@ import { Subject } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { ViewEventBus } from './Views';
+import { Logger } from '@nestjs/common';
 
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
   private readonly config;
   public eventStoreLaunched = false;
   private streamPrefix = '';
+
+  private logger = new Logger(EventStore.name);
 
   constructor(options: EventSourcingOptions) {
     try {
@@ -139,6 +142,7 @@ export class EventStore {
         await viewEventsBus.publish(parsedEvent);
       }
     }
+    this.logger.log('done parsing all past events');
   }
 
   subscribe(streamPrefix: string, bridge: Subject<any>) {

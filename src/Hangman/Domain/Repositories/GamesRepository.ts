@@ -4,44 +4,18 @@ import { Game } from '../AggregateRoot/Game.aggregate';
 // import { EventStore } from '@berniemac/event-sourcing-nestjs';
 import { EventStoreDBClient } from '@eventstore/db-client';
 import { EventStoreInstanciators } from '../../../event-store';
+import { EventStore } from '../../Infrastructure/EventStore/EventStore';
 
 @Injectable()
 export class GamesRepository {
-  // constructor() {} // private readonly eventStore: EventStore
+  constructor(private readonly eventStore: EventStore) {} //
   private logger = new Logger(GamesRepository.name);
-
-  // https://stackoverflow.com/questions/64769673/nestjs-external-event-bus-implementation-with-redis
-  private client = EventStoreDBClient.connectionString(
-    'esdb://eventstore.db:2113?tls=false',
-  );
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-    const events = [];
-    // find using own method
-    const eventStream = await this.client.readStream(`game-${aggregateId}`);
-
-    for await (const resolvedEvent of eventStream) {
-      const parsedEvent = EventStoreInstanciators[resolvedEvent.event.type](
-        resolvedEvent.event.data,
-      );
-      events.push(parsedEvent);
-    }
+    const { events } = await this.eventStore.getEvents('game', aggregateId);
     game.loadFromHistory(events);
     return game;
-
-    // const eventHistory = await this.eventStore.getEvents('game', aggregateId);
-
-    // how performant is getting events for id xx in a big application?
-    // try with setting maxGuesses to 100.000 and let locust make 99.000 guesses.
-    // does making a guess request start to take a lot longer?
-
-    // game.loadFromHistory(eventHistory);
-    // is aggregate with all historic events applied
-    // events are applied because methods `on....(EventName)` methods
-    // in aggregate
-
-    // return game;
   }
 
   async startNewGame(data: GameDto, uuid: string) {
