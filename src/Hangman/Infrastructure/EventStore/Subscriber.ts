@@ -31,8 +31,8 @@ export class EventStoreEventSubscriber implements IMessageSource {
     this.stream = prefix;
   }
 
-  getAll() {
-    this.eventStore.getAll(this.viewEventsBus);
+  async getAll() {
+    await this.eventStore.getAll(this.viewEventsBus);
   }
 
   subscribe(streamPrefix) {

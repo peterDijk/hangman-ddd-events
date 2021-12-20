@@ -131,7 +131,8 @@ export class EventStore {
     this.streamPrefix = streamPrefix;
   }
 
-  async getAll(viewEventsBus: ViewEventBus) {
+  async getAll(viewEventsBus: ViewEventBus): Promise<void> {
+    this.logger.log('Replaying all events to build projection');
     // maybe not readAll
     const events = this.eventstore.readAll();
 
@@ -163,6 +164,7 @@ export class EventStore {
         bridge.next(parsedEvent);
       }
     });
+    this.logger.log(`Subscribed to all streams with prefix '${streamPrefix}-'`);
   }
 
   // Monkey patch to obtain event 'instances' from db
