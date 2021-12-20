@@ -13,8 +13,6 @@ export class LetterGuessedEventHandler
     try {
       await this.viewUpdater.handle(event);
       // send websocket
-
-      this.logger.log(`${JSON.stringify(event)}`);
     } catch (err) {
       this.logger.error(`cant save to projection: ${err}`);
     }

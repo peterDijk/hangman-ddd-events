@@ -80,8 +80,6 @@ export class EventStore {
   // }
 
   public async storeEvent<T extends IEvent>(event: T): Promise<void> {
-    console.log('storeEvent');
-
     return new Promise<void>(async (resolve, reject) => {
       if (!this.eventStoreLaunched) {
         reject('Event Store not launched!');
@@ -131,7 +129,8 @@ export class EventStore {
   }
 
   async getAll(viewEventsBus: ViewEventBus) {
-    const events = await this.eventstore.readAll();
+    // maybe not readAll
+    const events = this.eventstore.readAll();
 
     for await (const { event } of events) {
       const parsedEvent = EventStoreInstanciators[event.type]?.(event.data);
@@ -149,12 +148,10 @@ export class EventStore {
       fromPosition: END,
     });
     subscription.on('data', (data) => {
-      console.log('from subscription');
       const parsedEvent = EventStoreInstanciators[data.event.type](
         data.event.data,
       );
       if (bridge) {
-        console.log('next on bridge');
         bridge.next(parsedEvent);
       }
     });

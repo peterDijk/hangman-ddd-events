@@ -38,7 +38,6 @@ export class EventStoreEventSubscriber implements IMessageSource {
   }
 
   subscribe(streamPrefix) {
-    this.logger.log('subscribe');
     if (this.bridge) {
       this.eventStore.subscribe(streamPrefix, this.bridge);
     }

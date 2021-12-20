@@ -27,7 +27,6 @@ export class GamesRepository {
       );
       events.push(parsedEvent);
     }
-    this.logger.log(events);
     game.loadFromHistory(events);
     return game;
 

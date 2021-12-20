@@ -20,14 +20,13 @@ export class StoreEventBus extends EventBus implements IEventBus {
     super(commandBus, moduleRef);
   }
 
-  onModuleInit(...args) {
-    console.log(args);
+  onModuleInit() {
     const subscriber = new EventStoreEventSubscriber(
       this.eventStore,
       this.viewEventsBus,
     );
     subscriber.bridgeEventsTo(this.event$.subject$);
-    subscriber.getAll();
+    subscriber.getAll(); // from checkpoint xxx comes later
     subscriber.subscribe('game');
   }
 

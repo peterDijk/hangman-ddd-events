@@ -14,12 +14,10 @@ export class ViewEventBus implements IEventBus {
   ) {}
 
   async publish<T extends IEvent>(event: T): Promise<unknown> {
-    console.log('publish - eventbus');
-
     return await this.viewUpdater.run(event);
   }
 
   publishAll(events: IEvent[]): void {
-    (events || []).forEach((event) => this.publish(event));
+    (events || []).forEach(async (event) => await this.publish(event));
   }
 }
