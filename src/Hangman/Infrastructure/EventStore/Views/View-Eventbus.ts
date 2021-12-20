@@ -1,6 +1,3 @@
-// un-used at the moment (updaters are called in the event handlers)
-// but keep files for now for possible future reference
-
 import { EventBus } from '@nestjs/cqrs/dist/event-bus';
 import { Injectable } from '@nestjs/common';
 import { IEvent, IEventBus } from '@nestjs/cqrs/dist/interfaces';

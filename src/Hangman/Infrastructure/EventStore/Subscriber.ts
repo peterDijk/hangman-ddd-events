@@ -32,9 +32,7 @@ export class EventStoreEventSubscriber implements IMessageSource {
   }
 
   getAll() {
-    if (this.bridge) {
-      this.eventStore.getAll(this.viewEventsBus);
-    }
+    this.eventStore.getAll(this.viewEventsBus);
   }
 
   subscribe(streamPrefix) {
