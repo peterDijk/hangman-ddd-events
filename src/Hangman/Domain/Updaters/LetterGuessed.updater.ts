@@ -28,7 +28,5 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
         dateModified: event.dateModified,
       },
     );
-
-    // this.logger.log(`num guesses: ${projection.lettersGuessed.length + 1}`);
   }
 }

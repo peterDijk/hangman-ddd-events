@@ -1,15 +1,17 @@
+import { performance, PerformanceObserver } from 'perf_hooks';
 import { Injectable, Logger } from '@nestjs/common';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
-// import { EventStore } from '@berniemac/event-sourcing-nestjs';
-import { EventStoreDBClient } from '@eventstore/db-client';
-import { EventStoreInstanciators } from '../../../event-store';
 import { EventStore } from '../../Infrastructure/EventStore/EventStore';
 
 @Injectable()
 export class GamesRepository {
   constructor(private readonly eventStore: EventStore) {} //
   private logger = new Logger(GamesRepository.name);
+
+  private observer = new PerformanceObserver((items) =>
+    items.getEntries().forEach((entry) => this.logger.log(entry)),
+  ).observe({ entryTypes: ['measure'] });
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
@@ -26,8 +28,15 @@ export class GamesRepository {
   }
 
   async guessLetter(gameId: string, letter: string) {
+    performance.mark('start-guess');
+
     const game = await this.findOneById(gameId);
     await game.guessLetter(letter);
+
+    performance.mark('stop-guess');
+    this.logger.log(`total num guesses: ${game.lettersGuessed.length}`);
+    performance.measure('Measurement', 'start-guess', 'stop-guess');
+
     return game;
   }
 }

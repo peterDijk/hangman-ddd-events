@@ -139,10 +139,14 @@ export class EventStore {
       const parsedEvent = EventStoreInstanciators[event.type]?.(event.data);
 
       if (parsedEvent) {
-        await viewEventsBus.publish(parsedEvent);
+        try {
+          await viewEventsBus.publish(parsedEvent);
+        } catch (err) {
+          throw Error('Error updating projection');
+        }
       }
     }
-    this.logger.log('done parsing all past events');
+    this.logger.log('Done parsing all past events to projection');
   }
 
   subscribe(streamPrefix: string, bridge: Subject<any>) {
