@@ -2,8 +2,7 @@ import { performance, PerformanceObserver } from 'perf_hooks';
 import { Injectable, Logger } from '@nestjs/common';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
-import { EventStore } from '../../Infrastructure/EventStore/EventStore';
-import { StoreEventBus } from '../../Infrastructure/EventStore/EventBus';
+import { EventStore, StoreEventBus } from '@peterdijk/nestjs-eventstoredb';
 
 @Injectable()
 export class GamesRepository {

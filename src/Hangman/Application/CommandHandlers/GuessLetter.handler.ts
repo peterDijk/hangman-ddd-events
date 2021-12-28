@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
+import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
+
 import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
 import { GuessLetterCommand } from '../Commands/GuessLetter.command';
-import { StoreEventPublisher } from '../../Infrastructure/EventStore/Publisher';
 
 @CommandHandler(GuessLetterCommand)
 export class GuessLetterCommandHandler

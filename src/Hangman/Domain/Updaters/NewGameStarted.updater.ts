@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import {
   IViewUpdater,
   ViewUpdaterHandler,
-} from '../../Infrastructure/EventStore/Views';
+} from '@peterdijk/nestjs-eventstoredb';
 
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater

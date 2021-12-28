@@ -1,4 +1,4 @@
-import { StorableEvent } from '../../Infrastructure/EventStore/Interfaces';
+import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
 
 export class NewGameStartedEvent extends StorableEvent {
   eventVersion = 1;
