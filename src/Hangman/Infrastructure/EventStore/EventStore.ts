@@ -1,4 +1,4 @@
-import { EventSourcingOptions } from './Interfaces';
+import { EventSerializers, EventSourcingOptions } from './Interfaces';
 import {
   AppendExpectedRevision,
   END,
@@ -10,18 +10,18 @@ import {
   streamNameFilter,
 } from '@eventstore/db-client';
 import { IEvent } from '@nestjs/cqrs';
-import { EventSerializers } from '../../../EventSerializers';
+// import { EventSerializers } from '../../../EventSerializers';
 import { Subject } from 'rxjs';
-import { Repository } from 'typeorm';
-import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { ViewEventBus } from './Views';
 import { Logger } from '@nestjs/common';
 
 export class EventStore {
   private readonly eventstore: EventStoreDBClient;
+  private aggregateEventSerializers: {
+    [aggregate: string]: EventSerializers;
+  } = {};
   private readonly config;
   public eventStoreLaunched = false;
-  private streamPrefix = '';
 
   private logger = new Logger(EventStore.name);
 
@@ -38,6 +38,10 @@ export class EventStore {
 
   public isInitiated(): boolean {
     return this.eventStoreLaunched;
+  }
+
+  public setSerializers(aggregate: string, eventSerializers: EventSerializers) {
+    this.aggregateEventSerializers[aggregate] = eventSerializers;
   }
 
   // public getSnapshotInterval(aggregate: string): number | null {
@@ -66,9 +70,9 @@ export class EventStore {
 
       for await (const resolvedEvent of eventStream) {
         revision = resolvedEvent.event?.revision ?? revision;
-        const parsedEvent = EventSerializers[resolvedEvent.event.type](
-          resolvedEvent.event.data,
-        );
+        const parsedEvent = this.aggregateEventSerializers[aggregate][
+          resolvedEvent.event.type
+        ](resolvedEvent.event.data);
         events.push(parsedEvent);
       }
       resolve({ events, lastRevision: revision });
@@ -123,13 +127,18 @@ export class EventStore {
     });
   }
 
-  async getAll(viewEventsBus: ViewEventBus): Promise<void> {
+  async getAll(
+    viewEventsBus: ViewEventBus,
+    streamPrefix: string,
+  ): Promise<void> {
     this.logger.log('Replaying all events to build projection');
     // maybe not readAll
     const events = this.eventstore.readAll();
 
     for await (const { event } of events) {
-      const parsedEvent = EventSerializers[event.type]?.(event.data);
+      const parsedEvent = this.aggregateEventSerializers[streamPrefix][
+        event.type
+      ]?.(event.data);
 
       if (parsedEvent) {
         try {
@@ -149,7 +158,9 @@ export class EventStore {
       fromPosition: END,
     });
     subscription.on('data', (data) => {
-      const parsedEvent = EventSerializers[data.event.type](data.event.data);
+      const parsedEvent = this.aggregateEventSerializers[streamPrefix][
+        data.event.type
+      ](data.event.data);
       if (bridge) {
         bridge.next(parsedEvent);
       }

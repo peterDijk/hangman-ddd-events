@@ -11,11 +11,15 @@ import ProjectionUpdaters from '../Hangman/Domain/Updaters';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
 import { EventSourcingModule } from './eventstore.module';
+import { EventSerializers } from '../EventSerializers';
 
 @Module({
   imports: [
     CqrsModule,
-    EventSourcingModule.forFeature({ streamPrefix: 'game' }),
+    EventSourcingModule.forFeature({
+      streamPrefix: 'game',
+      eventSerializers: EventSerializers,
+    }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
   exports: [CqrsModule],

@@ -10,26 +10,22 @@ export class EventStoreEventSubscriber implements IMessageSource {
   private bridge: Subject<any>;
   public isConnected = false;
   public hasBridge = false;
-  public stream = '';
 
   private logger = new Logger(EventStoreEventSubscriber.name);
 
   constructor(
     private readonly eventStore: EventStore,
     private readonly viewEventsBus: ViewEventBus,
+    private readonly streamPrefix: string,
   ) {}
 
-  setStreamPrefix(prefix: string) {
-    this.stream = prefix;
-  }
-
   async getAll() {
-    await this.eventStore.getAll(this.viewEventsBus);
+    await this.eventStore.getAll(this.viewEventsBus, this.streamPrefix);
   }
 
-  subscribe(streamPrefix) {
+  subscribe() {
     if (this.bridge) {
-      this.eventStore.subscribe(streamPrefix, this.bridge);
+      this.eventStore.subscribe(this.streamPrefix, this.bridge);
     }
   }
 

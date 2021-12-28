@@ -3,13 +3,14 @@ import { ModuleRef } from '@nestjs/core';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { IEvent, IEventBus } from '@nestjs/cqrs/dist/interfaces';
 import { EventStore } from './EventStore';
-import { StorableEvent } from './Interfaces';
+import { EventSerializers, StorableEvent } from './Interfaces';
 import { EventStoreEventSubscriber } from './Subscriber';
 import { ViewEventBus } from './Views';
 
 @Injectable()
 export class StoreEventBus extends EventBus implements IEventBus {
   public streamPrefix: string;
+  public eventSerializers: EventSerializers;
 
   constructor(
     commandBus: CommandBus,
@@ -18,19 +19,23 @@ export class StoreEventBus extends EventBus implements IEventBus {
     private readonly event$: EventBus,
     private readonly viewEventsBus: ViewEventBus,
     streamPrefix: string,
+    eventSerializers: EventSerializers,
   ) {
     super(commandBus, moduleRef);
     this.streamPrefix = streamPrefix;
+    this.eventSerializers = eventSerializers;
   }
 
   async onModuleInit() {
+    this.eventStore.setSerializers(this.streamPrefix, this.eventSerializers);
     const subscriber = new EventStoreEventSubscriber(
       this.eventStore,
       this.viewEventsBus,
+      this.streamPrefix,
     );
     subscriber.bridgeEventsTo(this.event$.subject$);
     await subscriber.getAll(); // from checkpoint xxx comes later
-    subscriber.subscribe(this.streamPrefix);
+    subscriber.subscribe();
   }
 
   publish<T extends IEvent>(event: T): void {

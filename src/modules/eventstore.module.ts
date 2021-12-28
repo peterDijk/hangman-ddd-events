@@ -1,8 +1,10 @@
 import { Module, DynamicModule, Logger } from '@nestjs/common';
-import { EventSourcingOptions } from '../Hangman/Infrastructure/EventStore/Interfaces';
+import {
+  EventSerializers,
+  EventSourcingOptions,
+} from '../Hangman/Infrastructure/EventStore/Interfaces';
 import { CommandBus, CqrsModule, EventBus } from '@nestjs/cqrs';
 import { EventStore } from '../Hangman/Infrastructure/EventStore/EventStore';
-import { createEventSourcingProviders } from '../Hangman/Infrastructure/EventStore/Providers';
 import { EventStoreEventSubscriber } from '../Hangman/Infrastructure/EventStore/Subscriber';
 import {
   ViewEventBus,
@@ -36,6 +38,7 @@ export class EventSourcingModule {
 
   static async forFeature(options: {
     streamPrefix: string;
+    eventSerializers: EventSerializers;
   }): Promise<DynamicModule> {
     return {
       module: EventSourcingModule,
@@ -59,6 +62,7 @@ export class EventSourcingModule {
               event$,
               viewEventsBus,
               options.streamPrefix,
+              options.eventSerializers,
             );
           },
           inject: [CommandBus, ModuleRef, EventStore, EventBus, ViewEventBus],

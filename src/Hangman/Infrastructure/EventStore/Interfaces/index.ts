@@ -4,6 +4,10 @@ export interface EventSourcingOptions {
   eventStoreUrl: string;
 }
 
+export interface EventSerializers {
+  [EventName: string]: (options: unknown) => StorableEvent;
+}
+
 export interface IEventMeta {
   revision: number;
 }
