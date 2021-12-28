@@ -10,7 +10,6 @@ export interface IEventMeta {
 
 export abstract class StorableEvent implements IEvent {
   abstract id: string;
-  abstract eventAggregate: string;
   abstract eventVersion: number;
   eventName: string;
 

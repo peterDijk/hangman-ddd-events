@@ -1,16 +1,8 @@
 import { IEvent, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
-import {
-  EventStoreDBClient,
-  START,
-  streamNameFilter,
-} from '@eventstore/db-client';
-import { EventStoreInstanciators } from '../../../event-store';
+import { EventStoreDBClient } from '@eventstore/db-client';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventStore } from './EventStore';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Game as GameProjection } from '../../ReadModels/game.entity';
-import { Repository } from 'typeorm';
 import { ViewEventBus } from './Views';
 
 export class EventStoreEventSubscriber implements IMessageSource {

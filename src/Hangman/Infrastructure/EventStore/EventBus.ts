@@ -37,16 +37,14 @@ export class StoreEventBus extends EventBus implements IEventBus {
     const storableEvent = (event as any) as StorableEvent;
     if (
       storableEvent.id === undefined ||
-      storableEvent.eventAggregate === undefined ||
       storableEvent.eventVersion === undefined
     ) {
       throw new Error('Events must implement StorableEvent interface');
     }
-    this.eventStore.storeEvent(storableEvent);
+    this.eventStore.storeEvent(storableEvent, this.streamPrefix);
   }
 
   publishAll(events: IEvent[]): void {
-    // what does this do?
     (events || []).forEach((event) => this.publish(event));
   }
 }
