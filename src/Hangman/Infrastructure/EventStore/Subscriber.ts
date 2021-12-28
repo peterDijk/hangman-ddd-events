@@ -1,16 +1,8 @@
 import { IEvent, IMessageSource } from '@nestjs/cqrs';
 import { Subject } from 'rxjs';
-import {
-  EventStoreDBClient,
-  START,
-  streamNameFilter,
-} from '@eventstore/db-client';
-import { EventStoreInstanciators } from '../../../event-store';
+import { EventStoreDBClient } from '@eventstore/db-client';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventStore } from './EventStore';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Game as GameProjection } from '../../ReadModels/game.entity';
-import { Repository } from 'typeorm';
 import { ViewEventBus } from './Views';
 
 export class EventStoreEventSubscriber implements IMessageSource {
@@ -18,26 +10,22 @@ export class EventStoreEventSubscriber implements IMessageSource {
   private bridge: Subject<any>;
   public isConnected = false;
   public hasBridge = false;
-  public stream = '';
 
   private logger = new Logger(EventStoreEventSubscriber.name);
 
   constructor(
     private readonly eventStore: EventStore,
     private readonly viewEventsBus: ViewEventBus,
+    private readonly streamPrefix: string,
   ) {}
 
-  setStreamPrefix(prefix: string) {
-    this.stream = prefix;
+  async getAll() {
+    await this.eventStore.getAll(this.viewEventsBus, this.streamPrefix);
   }
 
-  getAll() {
-    this.eventStore.getAll(this.viewEventsBus);
-  }
-
-  subscribe(streamPrefix) {
+  subscribe() {
     if (this.bridge) {
-      this.eventStore.subscribe(streamPrefix, this.bridge);
+      this.eventStore.subscribe(this.streamPrefix, this.bridge);
     }
   }
 

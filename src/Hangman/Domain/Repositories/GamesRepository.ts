@@ -3,10 +3,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { Game } from '../AggregateRoot/Game.aggregate';
 import { EventStore } from '../../Infrastructure/EventStore/EventStore';
+import { StoreEventBus } from '../../Infrastructure/EventStore/EventBus';
 
 @Injectable()
 export class GamesRepository {
-  constructor(private readonly eventStore: EventStore) {} //
+  constructor(
+    private readonly eventStore: EventStore,
+    private readonly eventBus: StoreEventBus,
+  ) {} //
   private logger = new Logger(GamesRepository.name);
 
   private observer = new PerformanceObserver((items) =>
@@ -15,7 +19,10 @@ export class GamesRepository {
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-    const { events } = await this.eventStore.getEvents('game', aggregateId);
+    const { events } = await this.eventStore.getEvents(
+      this.eventBus.streamPrefix,
+      aggregateId,
+    );
     game.loadFromHistory(events);
     return game;
   }

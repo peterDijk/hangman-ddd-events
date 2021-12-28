@@ -4,13 +4,16 @@ export interface EventSourcingOptions {
   eventStoreUrl: string;
 }
 
+export interface EventSerializers {
+  [EventName: string]: (options: unknown) => StorableEvent;
+}
+
 export interface IEventMeta {
   revision: number;
 }
 
 export abstract class StorableEvent implements IEvent {
   abstract id: string;
-  abstract eventAggregate: string;
   abstract eventVersion: number;
   eventName: string;
 

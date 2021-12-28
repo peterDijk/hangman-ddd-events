@@ -1,7 +1,6 @@
-import { StorableEvent } from '@berniemac/event-sourcing-nestjs';
+import { StorableEvent } from '../../Infrastructure/EventStore/Interfaces';
 
 export class LetterGuessedEvent extends StorableEvent {
-  eventAggregate = 'game';
   eventVersion = 1;
 
   dateModified: Date;

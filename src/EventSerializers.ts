@@ -1,7 +1,7 @@
 import { LetterGuessedEvent } from './Hangman/Domain/Events/LetterGuessed.event';
 import { NewGameStartedEvent } from './Hangman/Domain/Events/NewGameStarted.event';
 
-export const EventStoreInstanciators = {
+export const EventSerializers = {
   NewGameStartedEvent: ({
     id,
     playerId,
