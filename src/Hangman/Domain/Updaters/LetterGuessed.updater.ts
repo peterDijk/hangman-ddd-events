@@ -1,9 +1,9 @@
-import { Game as GameProjection } from '../../ReadModels/game.entity';
-
 import {
   IViewUpdater,
   ViewUpdaterHandler,
-} from '../../Infrastructure/EventStore/Views';
+} from '@peterdijk/nestjs-eventstoredb';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
