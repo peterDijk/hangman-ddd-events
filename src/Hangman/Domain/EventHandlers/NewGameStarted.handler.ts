@@ -11,7 +11,6 @@ export class NewGameStartedEventHandler
   implements IEventHandler<NewGameStartedEvent> {
   constructor(
     @InjectRepository(GameProjection)
-    private gamesProjectionRepository: Repository<GameProjection>,
     private readonly viewUpdater: NewGameStartedUpdater,
   ) {}
   private readonly logger = new Logger(NewGameStartedEventHandler.name);
