@@ -11,7 +11,7 @@ import ProjectionUpdaters from '../Hangman/Domain/Updaters';
 
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
-import { EventSerializers } from '../EventSerializers';
+import { EventSerializers } from '../Hangman/Domain/Events/EventSerializers';
 
 @Module({
   imports: [

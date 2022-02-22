@@ -7,7 +7,6 @@ import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { GuessLetterCommand } from '../Commands/GuessLetter.command';
-import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
 
 @Injectable()
 export class GamesService {

@@ -1,5 +1,5 @@
-import { LetterGuessedEvent } from './Hangman/Domain/Events/LetterGuessed.event';
-import { NewGameStartedEvent } from './Hangman/Domain/Events/NewGameStarted.event';
+import { LetterGuessedEvent } from './LetterGuessed.event';
+import { NewGameStartedEvent } from './NewGameStarted.event';
 
 export const EventSerializers = {
   NewGameStartedEvent: ({
