@@ -1,0 +1,36 @@
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
+import { GamesController } from './game.controller';
+import { GamesService } from './games.service';
+import { GamesRepository } from './repository/game.repository';
+import CommandHandlers from './commands/handlers';
+import EventHandlers from './events/handlers';
+import ProjectionUpdaters from './events/updaters';
+
+import { GamesResolver } from './game.resolver';
+import { Game as GameProjection } from './projections/game.entity';
+import { EventSerializers } from './events/impl/EventSerializers';
+
+@Module({
+  imports: [
+    CqrsModule,
+    EventStoreModule.forFeature({
+      streamPrefix: 'game',
+      eventSerializers: EventSerializers,
+    }),
+    TypeOrmModule.forFeature([GameProjection]),
+  ],
+  exports: [CqrsModule],
+  controllers: [GamesController],
+  providers: [
+    GamesResolver,
+    GamesService,
+    GamesRepository,
+    ...CommandHandlers,
+    ...EventHandlers,
+    ...ProjectionUpdaters,
+  ],
+})
+export class GamesModule {}

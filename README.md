@@ -40,7 +40,7 @@ STORE_STATE_USERNAME=root
 STORE_STATE_PASSWORD=example
 STORE_STATE_DB=store-state-db
 STORE_STATE_EVENTS_DB=eventstore
-GQL_PLAYGROUND=enabled
+GQL_PLAYGROUND=true
 ```
 
 ### Migrations

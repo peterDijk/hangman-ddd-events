@@ -23,18 +23,18 @@ const configs = {
     PORT: process.env.CONTAINER_PORT || 3000, // internal container port
     EXT_PORT: process.env.APP_PORT,
     // Event Store
-    EVENT_STORE_SETTINGS: {
-      protocol: process.env.EVENT_STORE_PROTOCOL || 'http',
-      hostname: process.env.EVENT_STORE_HOSTNAME || '0.0.0.0',
-      tcpPort: process.env.EVENT_STORE_TCP_PORT || 1113,
-      httpPort: process.env.EVENT_STORE_HTTP_PORT || 2113,
+    EVENTSTORE_SETTINGS: {
+      protocol: process.env.EVENTSTORE_PROTOCOL || 'http',
+      hostname: process.env.EVENTSTORE_HOSTNAME || '0.0.0.0',
+      tcpPort: process.env.EVENTSTORE_EXT_TCP_PORT || 1113,
+      httpPort: process.env.EVENTSTORE_EXT_HTTP_PORT || 2113,
       credentials: {
-        username: process.env.EVENT_STORE_CREDENTIALS_USERNAME || 'admin',
-        password: process.env.EVENT_STORE_CREDENTIALS_PASSWORD || 'changeit',
+        username: process.env.EVENTSTORE_CREDENTIALS_USERNAME || 'admin',
+        password: process.env.EVENTSTORE_CREDENTIALS_PASSWORD || 'changeit',
       },
       poolOptions: {
-        min: process.env.EVENT_STORE_POOLOPTIONS_MIN || 1,
-        max: process.env.EVENT_STORE_POOLOPTIONS_MAX || 10,
+        min: process.env.EVENTSTORE_POOLOPTIONS_MIN || 1,
+        max: process.env.EVENTSTORE_POOLOPTIONS_MAX || 10,
       },
     },
     PROJECTION_DB_SETTINGS: {
