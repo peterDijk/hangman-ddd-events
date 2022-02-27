@@ -20,7 +20,7 @@ const STREAM_GAME_PREFIX = 'game';
     CqrsModule,
     EventStoreModule.forFeature({
       streamPrefix: STREAM_GAME_PREFIX,
-      eventSerializers: EventSerializers,
+      eventSerializers: EventSerializers, // What does this do?
     }),
     TypeOrmModule.forFeature([GameProjection]),
   ],

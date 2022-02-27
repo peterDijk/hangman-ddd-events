@@ -7,6 +7,6 @@ export class LetterGuessedEvent extends StorableEvent {
 
   constructor(public readonly id: string, public readonly letter: string) {
     super();
-    this.dateModified = new Date();
+    this.dateModified = new Date(); // FIXME: If this is set here, should it not be set in the aggregate root?
   }
 }
