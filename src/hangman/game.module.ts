@@ -13,16 +13,17 @@ import { GamesResolver } from './game.resolver';
 import { Game as GameProjection } from './projections/game.entity';
 import { EventSerializers } from './events/impl/EventSerializers';
 
+const STREAM_GAME_PREFIX = 'game';
+
 @Module({
   imports: [
     CqrsModule,
     EventStoreModule.forFeature({
-      streamPrefix: 'game',
+      streamPrefix: STREAM_GAME_PREFIX,
       eventSerializers: EventSerializers,
     }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
-  exports: [CqrsModule],
   controllers: [GamesController],
   providers: [
     GamesResolver,
