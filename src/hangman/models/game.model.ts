@@ -1,4 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Logger } from '@nestjs/common';
 import {
   IsString,
   validateOrReject,
@@ -12,12 +14,13 @@ import { NewGameStartedEvent } from '../events/impl/new-game-started.event';
 import { LetterGuessedEvent } from '../events/impl/letter-guessed.event';
 import { InvalidGameException } from '../exceptions';
 import { GameDto } from '../interfaces/game-dto.interface';
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Logger } from '@nestjs/common';
 
 @ObjectType()
 export class Game extends AggregateRoot {
+  @IsUUID()
   public readonly id: string;
+
+  // @IsNumber() // FIXME - caused validation error
   private readonly version: number;
 
   dateCreated: Date;
@@ -45,6 +48,7 @@ export class Game extends AggregateRoot {
     super();
     this.id = id;
     this.version = version;
+    this.lettersGuessed = [];
   }
 
   private logger = new Logger(Game.name);
@@ -54,12 +58,13 @@ export class Game extends AggregateRoot {
     this.playerId = data.playerId;
     this.wordToGuess = data.wordToGuess;
     this.maxGuesses = data.maxGuesses;
-    this.lettersGuessed = [];
+    // this.lettersGuessed = []; // Moved this initilization to the constructor
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
     try {
-      await validateOrReject(this);
+      // Does this need to be async with await? Can this entire method be made sync?
+      await validateOrReject(this); // Should you validate "this", or data (the DTO)?
 
       this.apply(
         new NewGameStartedEvent(
@@ -73,6 +78,7 @@ export class Game extends AggregateRoot {
         false,
       );
     } catch (err) {
+      // TODO: Is try/catch needed? Does validateOrReject throw an error already if it fails?
       throw new InvalidGameException(err);
     }
   }
@@ -100,13 +106,13 @@ export class Game extends AggregateRoot {
     this.playerId = event.playerId;
     this.wordToGuess = event.wordToGuess;
     this.maxGuesses = event.maxGuesses;
-    this.lettersGuessed = [];
+    // this.lettersGuessed = []; // Is this necessary?
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
     this.lettersGuessed.push(event.letter[0]);
-    this.dateModified = event.dateModified;
+    this.dateModified = event.dateModified; // FIXME: date modified not passed from command handler
   }
 }
