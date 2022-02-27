@@ -15,13 +15,9 @@ export class GamesController {
   @Post('new')
   async startNewGame(
     @Body()
-    { playerId, wordToGuess, maxGuesses }: GameDto,
+    gameDto: GameDto,
   ) {
-    return await this.gameService.startNewGame({
-      playerId,
-      wordToGuess,
-      maxGuesses,
-    });
+    return await this.gameService.startNewGame(gameDto);
   }
 
   @ApiResponse({ status: 200, description: 'List games' })
