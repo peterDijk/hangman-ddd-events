@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
-
-import { StartNewGameCommand } from '../impl/start-new-game.command';
 import { Logger } from '@nestjs/common';
+
+import { Game } from '../../models/game.model';
 import { GamesRepository } from '../../repository/game.repository';
+import { StartNewGameCommand } from '../impl/start-new-game.command';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -11,19 +12,17 @@ export class StartNewGameCommandHandler
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
   constructor(
-    private publisher: StoreEventPublisher,
     private readonly repository: GamesRepository,
+    private publisher: StoreEventPublisher,
   ) {}
 
-  async execute({ data, uuid }: StartNewGameCommand) {
-    const { playerId, wordToGuess, maxGuesses } = data;
+  async execute(command: StartNewGameCommand) {
+    this.logger.log(`StartNewGameCommand...`);
+    const { data, uuid } = command;
 
-    const game = this.publisher.mergeObjectContext(
-      await this.repository.startNewGame(
-        { playerId, wordToGuess, maxGuesses },
-        uuid,
-      ),
-    );
+    const GameModel = this.publisher.mergeClassContext(Game);
+    const game = new GameModel(uuid);
+    await game.startNewGame(data);
 
     game.commit();
   }

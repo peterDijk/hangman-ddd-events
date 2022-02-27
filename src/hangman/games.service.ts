@@ -2,11 +2,12 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { v4 as uuidv4 } from 'uuid';
+
 import { GameDto } from './interfaces/game-dto.interface';
 import { StartNewGameCommand } from './commands/impl/start-new-game.command';
-import { Game as GameProjection } from './projections/game.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { GuessLetterCommand } from './commands/impl/guess-letter.command';
+import { Game as GameProjection } from './projections/game.entity';
 
 @Injectable()
 export class GamesService {
@@ -20,7 +21,7 @@ export class GamesService {
   async startNewGame(data: GameDto) {
     const gameId = uuidv4();
 
-    await this.commandBus.execute(new StartNewGameCommand(data, gameId));
+    await this.commandBus.execute(new StartNewGameCommand(gameId, data));
     try {
       this.logger.log(`New game started; ${gameId}`);
       return { message: 'success', status: 201, gameId, data };
