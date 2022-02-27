@@ -28,7 +28,7 @@ export class GamesResolver {
   }
 
   @Mutation((returns) => GameResponse)
-  async makeGuess(@Args('input') guesDto: GuessDto): Promise<GameResponse> {
-    return await this.gameService.makeGuess(guesDto.gameId, guesDto.letter);
+  async makeGuess(@Args('input') guessDto: GuessDto): Promise<GameResponse> {
+    return await this.gameService.makeGuess(guessDto.gameId, guessDto.letter);
   }
 }
