@@ -88,6 +88,11 @@ export class Game extends AggregateRoot {
 
     // better validation of course, quick check to see if this works
 
+    // Trying out a new validation
+    if (this.lettersGuessed.includes(letter)) {
+      throw new InvalidGameException(`Letter ${letter} already guessed`);
+    }
+
     const newLettersGuessed = [...this.lettersGuessed, letter];
 
     if (newLettersGuessed.length >= this.maxGuesses) {
