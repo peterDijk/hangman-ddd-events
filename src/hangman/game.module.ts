@@ -6,7 +6,7 @@ import { GamesController } from './game.controller';
 import { GamesService } from './games.service';
 import { GamesRepository } from './repository/game.repository';
 import { CommandHandlers } from './commands/handlers';
-import EventHandlers from './events/handlers';
+import { EventHandlers } from './events/handlers';
 import ProjectionUpdaters from './events/updaters';
 
 import { GamesResolver } from './game.resolver';
