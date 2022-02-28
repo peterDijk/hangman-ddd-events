@@ -4,10 +4,10 @@ import { NewGameStartedEvent } from '../impl/new-game-started.event';
 import { NewGameStartedUpdater } from '../updaters/new-game-started.updater';
 
 @EventsHandler(NewGameStartedEvent)
-export class NewGameStartedEventHandler
+export class NewGameStartedHandler
   implements IEventHandler<NewGameStartedEvent> {
   constructor(private readonly viewUpdater: NewGameStartedUpdater) {}
-  private readonly logger = new Logger(NewGameStartedEventHandler.name);
+  private readonly logger = new Logger(NewGameStartedHandler.name);
 
   async handle(event: NewGameStartedEvent) {
     try {

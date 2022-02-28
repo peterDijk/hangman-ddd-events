@@ -4,10 +4,9 @@ import { LetterGuessedEvent } from '../impl/letter-guessed.event';
 import { LetterGuessedUpdater } from '../updaters/letter-guessed.updater';
 
 @EventsHandler(LetterGuessedEvent)
-export class LetterGuessedEventHandler
-  implements IEventHandler<LetterGuessedEvent> {
+export class LetterGuessedHandler implements IEventHandler<LetterGuessedEvent> {
   constructor(private readonly viewUpdater: LetterGuessedUpdater) {}
-  private readonly logger = new Logger(LetterGuessedEventHandler.name);
+  private readonly logger = new Logger(LetterGuessedHandler.name);
 
   async handle(event: LetterGuessedEvent) {
     try {

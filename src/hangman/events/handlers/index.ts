@@ -1,7 +1,4 @@
-import { LetterGuessedEventHandler } from './letter-guessed.handler';
-import { NewGameStartedEventHandler } from './new-game-started.handler';
+import { LetterGuessedHandler } from './letter-guessed.handler';
+import { NewGameStartedHandler } from './new-game-started.handler';
 
-export const EventHandlers = [
-  NewGameStartedEventHandler,
-  LetterGuessedEventHandler,
-];
+export const EventHandlers = [NewGameStartedHandler, LetterGuessedHandler];
