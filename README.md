@@ -8,6 +8,12 @@ project to learn about DDD and Event Sourcing
 
 in a Docker setup using Eventstore
 
+## TODO
+
+- [] store last processed event checkpoint, on app init only replay from checkpoint
+- [] better filestructure
+- [] ...
+
 ## Installation
 
 ### prepare `.env` file for environment variables with content:
