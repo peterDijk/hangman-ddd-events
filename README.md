@@ -10,9 +10,9 @@ in a Docker setup using Eventstore
 
 ## TODO
 
-- [] store last processed event checkpoint, on app init only replay from checkpoint
-- [] better filestructure
-- [] ...
+- [ ] store last processed event checkpoint, on app init only replay from checkpoint
+- [ ] better filestructure
+- [ ] ...
 
 ## Installation
 
