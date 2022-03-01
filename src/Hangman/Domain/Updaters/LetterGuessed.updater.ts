@@ -1,9 +1,9 @@
-import { Game as GameProjection } from '../../ReadModels/game.entity';
-
 import {
   IViewUpdater,
   ViewUpdaterHandler,
-} from '@berniemac/event-sourcing-nestjs';
+} from '@peterdijk/nestjs-eventstoredb';
+import { Game as GameProjection } from '../../ReadModels/game.entity';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
@@ -19,8 +19,7 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
 
   async handle(event: LetterGuessedEvent) {
     const projection = await this.gamesProjectionRepository.findOne(event.id);
-    this.logger.log(projection);
-    this.gamesProjectionRepository.update(
+    await this.gamesProjectionRepository.update(
       {
         gameId: event.id,
       },

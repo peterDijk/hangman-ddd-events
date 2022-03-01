@@ -1,7 +1,6 @@
-import { StorableEvent } from '@berniemac/event-sourcing-nestjs';
+import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
 
 export class NewGameStartedEvent extends StorableEvent {
-  eventAggregate = 'game';
   eventVersion = 1;
 
   constructor(
@@ -11,7 +10,6 @@ export class NewGameStartedEvent extends StorableEvent {
     public readonly maxGuesses: number,
     public readonly dateCreated: Date,
     public readonly dateModified: Date,
-    public readonly lettersGuessed: string[],
   ) {
     super();
   }

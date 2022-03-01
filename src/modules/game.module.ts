@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 import { GamesController } from '../controllers/game.controller';
 import { GamesService } from '../Hangman/Application/Services/games.service';
 import { GamesRepository } from '../Hangman/Domain/Repositories/GamesRepository';
@@ -10,14 +11,18 @@ import ProjectionUpdaters from '../Hangman/Domain/Updaters';
 
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../Hangman/ReadModels/game.entity';
-import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
+import { EventSerializers } from '../Hangman/Domain/Events/EventSerializers';
 
 @Module({
   imports: [
     CqrsModule,
-    EventSourcingModule.forFeature(),
+    EventStoreModule.forFeature({
+      streamPrefix: 'game',
+      eventSerializers: EventSerializers,
+    }),
     TypeOrmModule.forFeature([GameProjection]),
   ],
+  exports: [CqrsModule],
   controllers: [GamesController],
   providers: [
     GamesResolver,

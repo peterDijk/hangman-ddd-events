@@ -1,9 +1,8 @@
-import { Module, Logger } from '@nestjs/common';
-import { EventStoreModule } from '@juicycleff/nestjs-event-store';
-import { EventSourcingModule } from '@berniemac/event-sourcing-nestjs';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import TypeOrmConfig from '../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
+import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../Hangman/Application/Services/app.service';
@@ -20,8 +19,8 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
     }),
-    EventSourcingModule.forRoot({
-      mongoURL: `${mongoDbUri}/eventstore?authSource=admin`,
+    EventStoreModule.forRoot({
+      eventStoreUrl: 'esdb://eventstore.db:2113?tls=false',
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,

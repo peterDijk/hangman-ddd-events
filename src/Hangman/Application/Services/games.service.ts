@@ -7,7 +7,6 @@ import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Game as GameProjection } from '../../ReadModels/game.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { GuessLetterCommand } from '../Commands/GuessLetter.command';
-import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
 
 @Injectable()
 export class GamesService {
@@ -23,9 +22,6 @@ export class GamesService {
 
     await this.commandBus.execute(new StartNewGameCommand(data, gameId));
     try {
-      // const game = new Game('test');
-      // game.startNewGame(data);
-
       this.logger.log(`New game started; ${gameId}`);
       return { message: 'success', status: 201, gameId, data };
     } catch (err) {
