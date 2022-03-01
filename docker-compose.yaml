@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  projections.db:
+  hangman-projections:
     container_name: hangman-projections
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -18,7 +18,7 @@ services:
         source: projections-volume-data
         target: /var/lib/projections
 
-  eventstore.db:
+  hangman-eventstore:
     container_name: hangman-eventstore
     image: eventstore/eventstore:20.6.1-buster-slim
     env_file:
@@ -36,7 +36,7 @@ services:
     networks:
       - backend
 
-  hangman-ddd-events:
+  hangman:
     container_name: hangman
     build:
       context: '.'
@@ -49,8 +49,8 @@ services:
       replicas: ${CONTAINER_SCALE}
       # above is ignored by dc up and dc run (only when deploy to swarm with docker stack deploy)
     depends_on:
-      - projections.db
-      - eventstore.db
+      - hangman-projections
+      - hangman-eventstore
       # service wont be started before this service is running
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:7070']
@@ -63,7 +63,7 @@ services:
     volumes:
       - './src:/app/src'
     links:
-      - projections.db
+      - hangman-projections
       # by default, any service can reach any other service at that service’s name.
     networks:
       - backend
