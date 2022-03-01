@@ -8,6 +8,7 @@ import { GamesRepository } from './repository/game.repository';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { StateUpdaters } from './events/updaters';
+import { QueryHandlers } from './queries/handlers';
 
 import { GamesResolver } from './game.resolver';
 import { Game as GameProjection } from './projections/game.entity';
@@ -32,6 +33,7 @@ const STREAM_GAME_PREFIX = 'game';
     ...CommandHandlers,
     ...EventHandlers,
     ...StateUpdaters,
+    ...QueryHandlers,
   ],
 })
 export class GamesModule {}

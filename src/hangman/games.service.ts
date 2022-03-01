@@ -1,20 +1,18 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { GameDto } from './interfaces/game-dto.interface';
 import { StartNewGameCommand } from './commands/impl/start-new-game.command';
 import { GuessLetterCommand } from './commands/impl/guess-letter.command';
+import { GetGameesQuery } from './queries/impl/get-games.query';
 import { Game as GameProjection } from './projections/game.entity';
 
 @Injectable()
 export class GamesService {
   constructor(
     private readonly commandBus: CommandBus,
-    @InjectRepository(GameProjection)
-    private gamesProjectionRepository: Repository<GameProjection>,
+    private readonly queryBus: QueryBus,
   ) {}
   private readonly logger = new Logger(GamesService.name);
 
@@ -34,9 +32,7 @@ export class GamesService {
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
     this.logger.log('getAllGames');
-    const games = await this.gamesProjectionRepository.find({
-      order: { dateModified: 'DESC' },
-    });
+    const games = await this.queryBus.execute(new GetGameesQuery());
     return {
       count: games.length,
       games,
