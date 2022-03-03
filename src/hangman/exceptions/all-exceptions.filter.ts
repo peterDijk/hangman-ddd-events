@@ -8,7 +8,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const response = ctx.getResponse();
 
     Logger.log(exception, 'AllExceptionsFilter');
-    S;
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
 
     const message =
