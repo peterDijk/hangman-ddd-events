@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GameDto } from './interfaces/game-dto.interface';
 import { StartNewGameCommand } from './commands/impl/start-new-game.command';
 import { GuessLetterCommand } from './commands/impl/guess-letter.command';
-import { GetGameesQuery } from './queries/impl/get-games.query';
+import { GetGamesQuery } from './queries/impl/get-games.query';
 import { Game as GameProjection } from './projections/game.entity';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class GamesService {
 
   async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
     this.logger.log('getAllGames');
-    const games = await this.queryBus.execute(new GetGameesQuery());
+    const games = await this.queryBus.execute(new GetGamesQuery());
     return {
       count: games.length,
       games,

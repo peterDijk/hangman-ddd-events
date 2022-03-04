@@ -1,1 +1,1 @@
-export class GetGameesQuery {}
+export class GetGamesQuery {}
