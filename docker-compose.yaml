@@ -9,10 +9,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${PROJECTIONS_CREDENTIALS_PASSWORD}
       MYSQL_DATABASE: ${PROJECTIONS_DATABASE}
+      MYSQL_TCP_PORT: ${PROJECTIONS_PORT}
     networks:
       - backend
     ports:
-      - ${PROJECTIONS_PORT}:3306
+      - ${PROJECTIONS_PORT}:${PROJECTIONS_PORT}
     volumes:
       - type: volume
         source: projections-volume-data
