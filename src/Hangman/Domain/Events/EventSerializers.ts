@@ -9,6 +9,7 @@ export const EventSerializers = {
     maxGuesses,
     dateCreated,
     dateModified,
+    eventVersion,
   }) => {
     return new NewGameStartedEvent(
       id,
@@ -17,9 +18,10 @@ export const EventSerializers = {
       maxGuesses,
       dateCreated,
       dateModified,
+      eventVersion,
     );
   },
-  LetterGuessedEvent: ({ id, letter }) => {
-    return new LetterGuessedEvent(id, letter);
+  LetterGuessedEvent: ({ id, letter, dateModified, eventVersion }) => {
+    return new LetterGuessedEvent(id, letter, dateModified, eventVersion);
   },
 };
