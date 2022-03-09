@@ -20,7 +20,8 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       cors: true,
     }),
     EventStoreModule.forRoot({
-      eventStoreUrl: 'esdb://eventstore.db:2113?tls=false',
+      eventStoreUrl: `esdb://${config.EVENT_STORE_SETTINGS.hostname}:${config.EVENT_STORE_SETTINGS
+    .httpPort}?tls=false`,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
