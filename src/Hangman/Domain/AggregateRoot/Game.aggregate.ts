@@ -5,7 +5,6 @@ import {
   IsNumber,
   MinLength,
   Min,
-  IsUUID,
 } from 'class-validator';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
@@ -18,7 +17,6 @@ import { Logger } from '@nestjs/common';
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
-  private version: number;
 
   dateCreated: Date;
   dateModified: Date;
@@ -44,7 +42,6 @@ export class Game extends AggregateRoot {
   constructor(id: string) {
     super();
     this.id = id;
-    this.version = 1;
   }
 
   private logger = new Logger(Game.name);
@@ -69,7 +66,6 @@ export class Game extends AggregateRoot {
           this.maxGuesses,
           this.dateCreated,
           this.dateModified,
-          this.version,
         ),
         false,
       );
@@ -90,14 +86,8 @@ export class Game extends AggregateRoot {
     }
 
     const dateModified = new Date();
-    const newVersion = this.version + 1;
 
-    const event = new LetterGuessedEvent(
-      this.id,
-      letter,
-      dateModified,
-      newVersion,
-    );
+    const event = new LetterGuessedEvent(this.id, letter, dateModified);
 
     this.apply(event, false);
   }
@@ -112,12 +102,10 @@ export class Game extends AggregateRoot {
     this.lettersGuessed = [];
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
-    this.version = event.eventVersion;
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
     this.lettersGuessed.push(event.letter[0]);
     this.dateModified = event.dateModified;
-    this.version = event.eventVersion;
   }
 }
