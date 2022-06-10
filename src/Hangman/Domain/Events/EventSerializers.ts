@@ -19,7 +19,7 @@ export const EventSerializers = {
       dateModified,
     );
   },
-  LetterGuessedEvent: ({ id, letter }) => {
-    return new LetterGuessedEvent(id, letter);
+  LetterGuessedEvent: ({ id, letter, dateModified }) => {
+    return new LetterGuessedEvent(id, letter, dateModified);
   },
 };

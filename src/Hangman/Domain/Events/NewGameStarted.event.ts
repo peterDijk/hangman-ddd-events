@@ -1,7 +1,7 @@
 import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
 
 export class NewGameStartedEvent extends StorableEvent {
-  eventVersion = 1;
+  public readonly eventVersion = 1;
 
   constructor(
     public readonly id: string,

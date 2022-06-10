@@ -5,7 +5,6 @@ import {
   IsNumber,
   MinLength,
   Min,
-  IsUUID,
 } from 'class-validator';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
@@ -18,7 +17,6 @@ import { Logger } from '@nestjs/common';
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
-  private readonly version: number;
 
   dateCreated: Date;
   dateModified: Date;
@@ -41,10 +39,9 @@ export class Game extends AggregateRoot {
   @Field((type) => [String])
   lettersGuessed: string[];
 
-  constructor(id: string, version?: number) {
+  constructor(id: string) {
     super();
     this.id = id;
-    this.version = version;
   }
 
   private logger = new Logger(Game.name);
@@ -88,7 +85,9 @@ export class Game extends AggregateRoot {
       throw new InvalidGameException('Max guesses, game over');
     }
 
-    const event = new LetterGuessedEvent(this.id, letter);
+    const dateModified = new Date();
+
+    const event = new LetterGuessedEvent(this.id, letter, dateModified);
 
     this.apply(event, false);
   }
