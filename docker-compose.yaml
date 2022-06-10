@@ -25,8 +25,8 @@ services:
     env_file:
       - ./.env
     ports:
-      - '1113:1113'
-      - '2113:2113'
+      - '${EVENTSTORE_EXT_TCP_PORT}:${EVENTSTORE_EXT_TCP_PORT}'
+      - '${EVENTSTORE_EXT_HTTP_PORT}:${EVENTSTORE_EXT_HTTP_PORT}'
     volumes:
       - type: volume
         source: eventstore-volume-data
