@@ -22,22 +22,16 @@ export class Game extends AggregateRoot {
   dateCreated: Date;
   dateModified: Date;
 
-  @Field()
   @IsString()
   @MinLength(2)
   playerId: string;
 
-  // @IsString()
-  // @MinLength(3)
-  @Field()
   wordToGuess: Word;
 
-  @Field()
   @IsNumber()
   @Min(1)
   maxGuesses: number;
 
-  @Field((type) => [String])
   lettersGuessed: string[];
 
   constructor(id: string) {
