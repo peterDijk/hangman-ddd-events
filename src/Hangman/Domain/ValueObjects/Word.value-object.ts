@@ -9,7 +9,7 @@ interface WordProps {
 
 export class Word extends ValueObject<WordProps> {
   @IsString()
-  @MinLength(3)
+  @MinLength(5)
   private _value: string;
 
   // Can't use the `new` keyword from outside the scope of the class.
@@ -32,5 +32,9 @@ export class Word extends ValueObject<WordProps> {
     } catch (err) {
       throw new InvalidGameException(err);
     }
+  }
+
+  public static createReplay(wordToGuess: string): Word {
+    return new Word({ value: wordToGuess });
   }
 }

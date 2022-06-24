@@ -96,9 +96,9 @@ export class Game extends AggregateRoot {
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
-  async onNewGameStartedEvent(event: NewGameStartedEvent) {
+  onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.playerId = event.playerId;
-    this.wordToGuess = await Word.create(event.wordToGuess);
+    this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = event.maxGuesses;
     this.lettersGuessed = [];
     this.dateCreated = event.dateCreated;
