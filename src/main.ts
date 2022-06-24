@@ -11,7 +11,9 @@ import { config } from '../config';
 import { AllExceptionsFilter } from './Hangman/Exceptions/all-exceptions.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error'],
+  });
   app.setGlobalPrefix(config.PREFIX);
   // app.useGlobalFilters(new AllExceptionsFilter());
   // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
