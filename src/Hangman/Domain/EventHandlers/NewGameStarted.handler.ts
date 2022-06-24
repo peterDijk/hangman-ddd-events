@@ -1,6 +1,6 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { Logger } from '@nestjs/common';
+import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 
 @EventsHandler(NewGameStartedEvent)
 export class NewGameStartedEventHandler

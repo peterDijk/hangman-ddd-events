@@ -3,27 +3,20 @@ import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
 import { Logger } from '@nestjs/common';
-import { GamesRepository } from '../../Domain/Repositories/GamesRepository';
+import { Game } from '../../Domain/AggregateRoot/Game.aggregate';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
   implements ICommandHandler<StartNewGameCommand> {
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
-  constructor(
-    private publisher: StoreEventPublisher,
-    private readonly repository: GamesRepository,
-  ) {}
+  constructor(private publisher: StoreEventPublisher) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
-    const { playerId, wordToGuess, maxGuesses } = data;
+    const aggregate = new Game(uuid);
+    await aggregate.startNewGame(data);
 
-    const game = this.publisher.mergeObjectContext(
-      await this.repository.startNewGame(
-        { playerId, wordToGuess, maxGuesses },
-        uuid,
-      ),
-    );
+    const game = this.publisher.mergeObjectContext(aggregate);
 
     game.commit();
   }
