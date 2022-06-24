@@ -27,7 +27,9 @@ export class GuessLetterCommandHandler
     await aggregate.guessLetter(letter);
 
     performance.mark('stop-guess');
-    this.logger.log(`total num guesses: ${aggregate.lettersGuessed.length}`);
+    this.logger.log(
+      `total num guesses: ${aggregate.lettersGuessed.value.length}`,
+    );
     performance.measure('Measurement', 'start-guess', 'stop-guess');
 
     const game = this.publisher.mergeObjectContext(aggregate);

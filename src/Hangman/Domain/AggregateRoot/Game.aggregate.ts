@@ -15,6 +15,7 @@ import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
 import { Word } from '../ValueObjects/Word.value-object';
 import { MaxGuesses } from '../ValueObjects/MaxGuesses.value-object';
+import { LettersGuessed } from '../ValueObjects/LettersGuessed.value-object';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -29,8 +30,7 @@ export class Game extends AggregateRoot {
 
   wordToGuess: Word;
   maxGuesses: MaxGuesses;
-
-  lettersGuessed: string[];
+  lettersGuessed: LettersGuessed;
 
   constructor(id: string) {
     super();
@@ -44,7 +44,7 @@ export class Game extends AggregateRoot {
     this.playerId = data.playerId;
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
-    this.lettersGuessed = [];
+    this.lettersGuessed = await LettersGuessed.create([]);
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
@@ -72,7 +72,7 @@ export class Game extends AggregateRoot {
 
     // better validation of course, quick check to see if this works
 
-    const newLettersGuessed = [...this.lettersGuessed, letter];
+    const newLettersGuessed = [...this.lettersGuessed.value, letter];
 
     if (newLettersGuessed.length >= this.maxGuesses.value) {
       throw new InvalidGameException('Max guesses, game over');
@@ -92,13 +92,17 @@ export class Game extends AggregateRoot {
     this.playerId = event.playerId;
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
-    this.lettersGuessed = [];
+    this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.lettersGuessed.push(event.letter[0]);
+    this.lettersGuessed = LettersGuessed.createReplay([
+      ...this.lettersGuessed.value,
+      event.letter[0],
+    ]);
+    // this.lettersGuessed.push(event.letter[0]);
     this.dateModified = event.dateModified;
   }
 }
