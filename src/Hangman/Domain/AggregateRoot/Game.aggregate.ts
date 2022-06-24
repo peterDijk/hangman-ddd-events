@@ -14,6 +14,7 @@ import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
 import { Word } from '../ValueObjects/Word.value-object';
+import { MaxGuesses } from '../ValueObjects/MaxGuesses.value-object';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -27,10 +28,7 @@ export class Game extends AggregateRoot {
   playerId: string;
 
   wordToGuess: Word;
-
-  @IsNumber()
-  @Min(1)
-  maxGuesses: number;
+  maxGuesses: MaxGuesses;
 
   lettersGuessed: string[];
 
@@ -45,7 +43,7 @@ export class Game extends AggregateRoot {
     // apply to be able to validate
     this.playerId = data.playerId;
     this.wordToGuess = await Word.create(data.wordToGuess);
-    this.maxGuesses = data.maxGuesses;
+    this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.lettersGuessed = [];
     this.dateCreated = new Date();
     this.dateModified = new Date();
@@ -58,7 +56,7 @@ export class Game extends AggregateRoot {
           this.id,
           this.playerId,
           this.wordToGuess.value,
-          this.maxGuesses,
+          this.maxGuesses.value,
           this.dateCreated,
           this.dateModified,
         ),
@@ -76,7 +74,7 @@ export class Game extends AggregateRoot {
 
     const newLettersGuessed = [...this.lettersGuessed, letter];
 
-    if (newLettersGuessed.length >= this.maxGuesses) {
+    if (newLettersGuessed.length >= this.maxGuesses.value) {
       throw new InvalidGameException('Max guesses, game over');
     }
 
@@ -93,7 +91,7 @@ export class Game extends AggregateRoot {
   onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.playerId = event.playerId;
     this.wordToGuess = Word.createReplay(event.wordToGuess);
-    this.maxGuesses = event.maxGuesses;
+    this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
     this.lettersGuessed = [];
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
