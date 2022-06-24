@@ -50,7 +50,7 @@ export class Game extends AggregateRoot {
   async startNewGame(data: GameDto) {
     // apply to be able to validate
     this.playerId = data.playerId;
-    this.wordToGuess = Word.create(data.wordToGuess);
+    this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = data.maxGuesses;
     this.lettersGuessed = [];
     this.dateCreated = new Date();
@@ -96,9 +96,9 @@ export class Game extends AggregateRoot {
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
-  onNewGameStartedEvent(event: NewGameStartedEvent) {
+  async onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.playerId = event.playerId;
-    this.wordToGuess = Word.create(event.wordToGuess);
+    this.wordToGuess = await Word.create(event.wordToGuess);
     this.maxGuesses = event.maxGuesses;
     this.lettersGuessed = [];
     this.dateCreated = event.dateCreated;
