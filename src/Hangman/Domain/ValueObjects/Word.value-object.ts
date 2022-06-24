@@ -1,10 +1,4 @@
-import {
-  IsString,
-  validateOrReject,
-  IsNumber,
-  MinLength,
-  Min,
-} from 'class-validator';
+import { IsString, validateOrReject, MinLength } from 'class-validator';
 import { InvalidGameException } from '../../Exceptions';
 
 import { ValueObject } from './ValueObject';
@@ -30,9 +24,9 @@ export class Word extends ValueObject<WordProps> {
 
   public static async create(wordToGuess: string): Promise<Word> {
     try {
-      const _word = new Word({ value: wordToGuess });
-      await validateOrReject(_word);
-      return _word;
+      const word = new Word({ value: wordToGuess });
+      await validateOrReject(word);
+      return word;
     } catch (err) {
       throw new InvalidGameException(err);
     }
