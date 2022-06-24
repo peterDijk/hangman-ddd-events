@@ -15,6 +15,8 @@ export class Word extends ValueObject<WordProps> {
   // Can't use the `new` keyword from outside the scope of the class.
   private constructor(props: WordProps) {
     super(props);
+
+    // for validation using class-validator
     this._value = props.value;
   }
 
