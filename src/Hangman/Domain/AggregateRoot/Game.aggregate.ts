@@ -44,7 +44,6 @@ export class Game extends AggregateRoot {
     this.playerId = data.playerId;
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
-    this.lettersGuessed = await LettersGuessed.create([]);
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
@@ -102,7 +101,6 @@ export class Game extends AggregateRoot {
       ...this.lettersGuessed.value,
       event.letter[0],
     ]);
-    // this.lettersGuessed.push(event.letter[0]);
     this.dateModified = event.dateModified;
   }
 }
