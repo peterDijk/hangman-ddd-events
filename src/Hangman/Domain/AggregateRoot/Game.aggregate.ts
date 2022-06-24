@@ -6,13 +6,14 @@ import {
   MinLength,
   Min,
 } from 'class-validator';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Logger } from '@nestjs/common';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
-import { Field, ObjectType } from '@nestjs/graphql';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
-import { Logger } from '@nestjs/common';
+import { Word } from '../ValueObjects/Word.value-object';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -26,10 +27,10 @@ export class Game extends AggregateRoot {
   @MinLength(2)
   playerId: string;
 
+  // @IsString()
+  // @MinLength(3)
   @Field()
-  @IsString()
-  @MinLength(3)
-  wordToGuess: string;
+  wordToGuess: Word;
 
   @Field()
   @IsNumber()
@@ -49,7 +50,7 @@ export class Game extends AggregateRoot {
   async startNewGame(data: GameDto) {
     // apply to be able to validate
     this.playerId = data.playerId;
-    this.wordToGuess = data.wordToGuess;
+    this.wordToGuess = Word.create(data.wordToGuess);
     this.maxGuesses = data.maxGuesses;
     this.lettersGuessed = [];
     this.dateCreated = new Date();
@@ -62,7 +63,7 @@ export class Game extends AggregateRoot {
         new NewGameStartedEvent(
           this.id,
           this.playerId,
-          this.wordToGuess,
+          this.wordToGuess.value,
           this.maxGuesses,
           this.dateCreated,
           this.dateModified,
@@ -97,7 +98,7 @@ export class Game extends AggregateRoot {
   // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.playerId = event.playerId;
-    this.wordToGuess = event.wordToGuess;
+    this.wordToGuess = Word.create(event.wordToGuess);
     this.maxGuesses = event.maxGuesses;
     this.lettersGuessed = [];
     this.dateCreated = event.dateCreated;
