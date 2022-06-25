@@ -48,7 +48,7 @@ export class Game extends AggregateRoot {
     this.dateModified = new Date();
 
     try {
-      await validateOrReject(this);
+      // await validateOrReject(this);
 
       this.apply(
         new NewGameStartedEvent(
