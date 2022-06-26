@@ -1,41 +1,41 @@
-import { IsNumber, IsString, Min, validateOrReject } from 'class-validator';
+import { IsString, max, validateOrReject } from 'class-validator';
+import { isType } from 'graphql';
 import { InvalidGameException } from '../../Exceptions';
+import { Letter } from './Letter.value-object';
+import { MaxGuesses } from './MaxGuesses.value-object';
 
 import { ValueObject } from './ValueObject';
 
 interface LettersGuessedProps {
-  value: string[];
+  value: Letter[];
 }
 
 export class LettersGuessed extends ValueObject<LettersGuessedProps> {
-  @IsString({ each: true })
-  private _value: string[];
-
   // Can't use the `new` keyword from outside the scope of the class.
   private constructor(props: LettersGuessedProps) {
     super(props);
-
-    // for validation using class-validator
-    this._value = props.value;
   }
 
-  get value(): string[] {
+  get value(): Letter[] {
     return this.props.value;
   }
 
   public static async create(
-    lettersGuessed: string[],
+    lettersGuessed: Letter[],
+    maxGuesses: MaxGuesses,
   ): Promise<LettersGuessed> {
     try {
+      if (lettersGuessed.length > maxGuesses.value) {
+        throw new InvalidGameException(`Max guesses, game over`);
+      }
       const guessed = new LettersGuessed({ value: lettersGuessed });
-      await validateOrReject(guessed);
       return guessed;
     } catch (err) {
       throw new InvalidGameException(err);
     }
   }
 
-  public static createReplay(lettersGuessed: string[]): LettersGuessed {
+  public static createReplay(lettersGuessed: Letter[]): LettersGuessed {
     return new LettersGuessed({ value: lettersGuessed });
   }
 }
