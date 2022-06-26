@@ -17,7 +17,7 @@ export class GamesResolver {
 
   @Query(() => String)
   sayHello(): string {
-    return 'Hello World!';
+    return 'Hello Games!';
   }
 
   @Query((returns) => AllGamesResponse)

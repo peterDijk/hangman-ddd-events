@@ -27,8 +27,8 @@ export class User extends AggregateRoot {
       this.apply(
         new UserCreatedEvent(
           this.id,
-          this.userName,
-          this.password,
+          this.userName.value,
+          this.password.value,
           this.dateCreated,
           this.dateModified,
         ),
@@ -39,8 +39,8 @@ export class User extends AggregateRoot {
   }
 
   onUserCreatedEvent(event: UserCreatedEvent) {
-    this.userName = event.userName;
-    this.password = event.password;
+    this.userName = Username.createReplay(event.userName);
+    this.password = Password.createReplay(event.password);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
