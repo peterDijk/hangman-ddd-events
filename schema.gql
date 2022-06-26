@@ -1,0 +1,52 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Game {
+  gameId: String!
+  playerId: String!
+  playerName: String!
+  wordToGuess: String!
+  maxGuesses: Float!
+  lettersGuessed: [String!]
+  dateCreated: DateTime!
+  dateModified: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type GameResponse {
+  message: String!
+  gameId: String
+  error: String
+  status: Float!
+}
+
+type AllGamesResponse {
+  count: Float!
+  games: [Game!]
+}
+
+type Query {
+  sayHello: String!
+  getAllGames: AllGamesResponse!
+}
+
+type Mutation {
+  startNewGame(input: GameDto!): GameResponse!
+  makeGuess(input: GuessDto!): GameResponse!
+}
+
+input GameDto {
+  playerId: String!
+  wordToGuess: String!
+  maxGuesses: Float!
+}
+
+input GuessDto {
+  gameId: String!
+  letter: String!
+}

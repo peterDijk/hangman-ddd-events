@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Min, validateOrReject } from 'class-validator';
+import { IsString, validateOrReject } from 'class-validator';
 import { InvalidGameException } from '../../Exceptions';
 
 import { ValueObject } from './ValueObject';
