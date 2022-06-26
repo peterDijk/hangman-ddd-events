@@ -41,16 +41,11 @@ export class Game extends AggregateRoot {
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
-    // try {
-    // apply to be able to validate
     this.playerId = data.playerId;
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.dateCreated = new Date();
     this.dateModified = new Date();
-
-    // await validateOrReject(this);
-    // validation is now done in value objects
 
     this.apply(
       new NewGameStartedEvent(
@@ -63,9 +58,6 @@ export class Game extends AggregateRoot {
       ),
       false,
     );
-    // } catch (err) {
-    //   throw new InvalidGameException(err);
-    // }
   }
 
   async guessLetter(letter: string) {
