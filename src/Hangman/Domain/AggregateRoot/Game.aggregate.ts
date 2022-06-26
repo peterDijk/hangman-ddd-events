@@ -16,6 +16,7 @@ import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
 import { Word } from '../ValueObjects/Word.value-object';
 import { MaxGuesses } from '../ValueObjects/MaxGuesses.value-object';
 import { LettersGuessed } from '../ValueObjects/LettersGuessed.value-object';
+import { Letter } from '../ValueObjects/Letter.value-object';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -40,6 +41,7 @@ export class Game extends AggregateRoot {
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
+    // try {
     // apply to be able to validate
     this.playerId = data.playerId;
     this.wordToGuess = await Word.create(data.wordToGuess);
@@ -47,41 +49,46 @@ export class Game extends AggregateRoot {
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
-    try {
-      await validateOrReject(this);
+    // await validateOrReject(this);
+    // validation is now done in value objects
 
-      this.apply(
-        new NewGameStartedEvent(
-          this.id,
-          this.playerId,
-          this.wordToGuess.value,
-          this.maxGuesses.value,
-          this.dateCreated,
-          this.dateModified,
-        ),
-        false,
-      );
-    } catch (err) {
-      throw new InvalidGameException(err);
-    }
+    this.apply(
+      new NewGameStartedEvent(
+        this.id,
+        this.playerId,
+        this.wordToGuess.value,
+        this.maxGuesses.value,
+        this.dateCreated,
+        this.dateModified,
+      ),
+      false,
+    );
+    // } catch (err) {
+    //   throw new InvalidGameException(err);
+    // }
   }
 
   async guessLetter(letter: string) {
     // TODO: validate guess
+    // validation is done in LettersGuessed VA (length) and Letter VA (string, 1 char)
 
-    // better validation of course, quick check to see if this works
+    try {
+      const newLetter = await Letter.create(letter);
+      const lettersGuessed = await LettersGuessed.create(
+        [...this.lettersGuessed.value, newLetter],
+        this.maxGuesses,
+      );
+      const newLettersGuessed = lettersGuessed;
 
-    const newLettersGuessed = [...this.lettersGuessed.value, letter];
+      this.lettersGuessed = newLettersGuessed;
+      this.dateModified = new Date();
 
-    if (newLettersGuessed.length >= this.maxGuesses.value) {
-      throw new InvalidGameException('Max guesses, game over');
+      const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
+
+      this.apply(event, false);
+    } catch (err) {
+      throw new InvalidGameException(err);
     }
-
-    const dateModified = new Date();
-
-    const event = new LetterGuessedEvent(this.id, letter, dateModified);
-
-    this.apply(event, false);
   }
 
   // Replay event from history `loadFromHistory` function calls
@@ -99,7 +106,7 @@ export class Game extends AggregateRoot {
   onLetterGuessedEvent(event: LetterGuessedEvent) {
     this.lettersGuessed = LettersGuessed.createReplay([
       ...this.lettersGuessed.value,
-      event.letter[0],
+      Letter.createReplay(event.letter[0]),
     ]);
     this.dateModified = event.dateModified;
   }

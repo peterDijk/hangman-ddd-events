@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   IsString,
   MaxLength,
@@ -17,6 +18,8 @@ export class Letter extends ValueObject<LetterProps> {
   @MinLength(1)
   @MaxLength(1)
   private _value: string;
+
+  private logger = new Logger(Letter.name);
 
   // Can't use the `new` keyword from outside the scope of the class.
   private constructor(props: LetterProps) {
