@@ -10,6 +10,6 @@ export class UserCreatedEvent extends StorableEvent {
     public readonly dateCreated: Date,
     public readonly dateModified: Date,
   ) {
-    super();
+    super('user');
   }
 }

@@ -18,7 +18,7 @@ export class NewGameStartedEvent extends StorableEvent {
     public readonly dateModified: Date,
     eventVersion?: number,
   ) {
-    super();
+    super('game');
     if (eventVersion) {
       this.eventVersion = eventVersion;
     }

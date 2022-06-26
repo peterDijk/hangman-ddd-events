@@ -12,10 +12,7 @@ export class GamesRepository {
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-    const { events } = await this.eventStore.getEvents(
-      this.eventBus.streamPrefix,
-      aggregateId,
-    );
+    const { events } = await this.eventStore.getEvents('game', aggregateId);
     game.loadFromHistory(events);
     return game;
   }

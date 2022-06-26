@@ -30,6 +30,7 @@ async function bootstrap() {
 
   await app.listen(config.PORT, config.HOST);
   Logger.log(`Server listening on port ${config.EXT_PORT}`, 'Bootstrap');
+  Logger.debug(`TEST &&&&&&&&&&&&&&`);
   Logger.log(
     `API Explorer available on port ${config.EXT_PORT}${config.API_EXPLORER_PATH}`,
   );
