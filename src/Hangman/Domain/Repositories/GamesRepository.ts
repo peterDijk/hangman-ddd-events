@@ -4,6 +4,8 @@ import { EventStore, StoreEventBus } from '@peterdijk/nestjs-eventstoredb';
 
 @Injectable()
 export class GamesRepository {
+  private readonly aggregate = 'game';
+
   constructor(
     private readonly eventStore: EventStore,
     private readonly eventBus: StoreEventBus,
@@ -12,7 +14,10 @@ export class GamesRepository {
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-    const { events } = await this.eventStore.getEvents('game', aggregateId);
+    const { events } = await this.eventStore.getEvents(
+      this.aggregate,
+      aggregateId,
+    );
     game.loadFromHistory(events);
     return game;
   }
