@@ -14,6 +14,7 @@ export class Game extends BaseEntity {
   @ObjectIdColumn()
   _id: ObjectID;
 
+  @Field()
   @PrimaryColumn()
   gameId: string;
 

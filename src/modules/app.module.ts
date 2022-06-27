@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import TypeOrmConfig from '../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
 import { AppController } from '../controllers/app.controller';
@@ -14,11 +15,12 @@ import { UserModule } from './user.module';
 @Module({
   imports: [
     // AuthModule,
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: 'schema.gql',
       introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       cors: true,
+      driver: ApolloDriver,
     }),
     EventStoreModule.forRoot({
       eventStoreUrl: `esdb://${config.EVENT_STORE_SETTINGS.hostname}:${config.EVENT_STORE_SETTINGS.httpPort}?tls=false`,

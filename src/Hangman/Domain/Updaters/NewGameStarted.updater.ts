@@ -36,19 +36,22 @@ export class NewGameStartedUpdater
     }
 
     this.logger.debug({ event: JSON.stringify(event), wordToGuess });
+    // try {
+    //   const game = this.gamesProjectionRepository.create({
+    //     ...event,
+    //     gameId: event.id,
+    //     playerId: event.playerId,
+    //     wordToGuess,
+    //     playerName: '',
+    //     dateCreated: event.dateCreated,
+    //     dateModified: event.dateModified,
+    //     lettersGuessed: [],
+    //     maxGuesses: maxGuesses,
+    //   });
 
-    const game = this.gamesProjectionRepository.create({
-      ...event,
-      gameId: event.id,
-      playerId: event.playerId,
-      wordToGuess,
-      playerName: '',
-      dateCreated: event.dateCreated,
-      dateModified: event.dateModified,
-      lettersGuessed: [],
-      maxGuesses: maxGuesses,
-    });
-
-    await game.save();
+    //   await game.save();
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }
 }

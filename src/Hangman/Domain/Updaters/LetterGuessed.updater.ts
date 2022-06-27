@@ -25,15 +25,26 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
      * update the projection
      *
      */
-    const projection = await this.gamesProjectionRepository.findOne(event.id);
-    await this.gamesProjectionRepository.update(
-      {
-        gameId: event.id,
-      },
-      {
-        lettersGuessed: [...projection.lettersGuessed, event.letter],
-        dateModified: event.dateModified,
-      },
-    );
+    // try {
+    //   const projection = await this.gamesProjectionRepository.find({
+    //     where: {
+    //       gameId: event.id,
+    //     },
+    //   });
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    // this.logger.debug(
+    //   `found projection document: ${JSON.stringify(projection)}`,
+    // );
+    // await this.gamesProjectionRepository.update(
+    //   {
+    //     gameId: event.id,
+    //   },
+    //   {
+    //     lettersGuessed: [...projection.lettersGuessed, event.letter],
+    //     dateModified: event.dateModified,
+    //   },
+    // );
   }
 }
