@@ -32,22 +32,23 @@ class CustomNamingStrategy
 const SOURCE_PATH = config.ENV === 'production' ? 'dist/src' : 'src';
 
 export default {
-  type: config.PROJECTION_DB_SETTINGS.type,
-  host: config.PROJECTION_DB_SETTINGS.hostname,
-  port: config.PROJECTION_DB_SETTINGS.port,
-  username: config.PROJECTION_DB_SETTINGS.credentials.username,
-  password: config.PROJECTION_DB_SETTINGS.credentials.password,
-  database: config.PROJECTION_DB_SETTINGS.database,
-  migrationsTableName: 'migration',
+  type: config.MONGO_PROJECTION_DB_SETTINGS.type,
+  host: config.MONGO_PROJECTION_DB_SETTINGS.hostname,
+  port: 27017, //config.MONGO_PROJECTION_DB_SETTINGS.port,
+  username: config.MONGO_PROJECTION_DB_SETTINGS.credentials.username,
+  password: config.MONGO_PROJECTION_DB_SETTINGS.credentials.password,
+  authSource: 'admin',
+  database: config.MONGO_PROJECTION_DB_SETTINGS.database,
+  // migrationsTableName: 'migration',
   entities: [`${SOURCE_PATH}/**/*.entity{.ts,.js}`],
-  migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
-  namingStrategy: new CustomNamingStrategy(),
-  synchronize: false,
-  logging: false,
-  ssl: config.ENV === 'production' && {
-    rejectUnauthorized: false,
-  },
-  cli: {
-    migrationsDir: 'src/migrations',
-  },
+  // migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
+  // namingStrategy: new CustomNamingStrategy(),
+  synchronize: true,
+  logging: true,
+  // ssl: config.ENV === 'production' && {
+  //   rejectUnauthorized: false,
+  // },
+  // cli: {
+  //   migrationsDir: 'src/migrations',
+  // },
 };

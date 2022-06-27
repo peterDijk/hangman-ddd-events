@@ -47,6 +47,16 @@ const configs = {
       type: process.env.PROJECTIONS_DB_TYPE,
       database: process.env.PROJECTIONS_DATABASE,
     },
+    MONGO_PROJECTION_DB_SETTINGS: {
+      hostname: process.env.MONGO_PROJECTIONS_HOSTNAME,
+      port: process.env.MONGO_PROJECTIONS_PORT,
+      credentials: {
+        username: process.env.MONGO_PROJECTIONS_CREDENTIALS_USERNAME,
+        password: process.env.MONGO_PROJECTIONS_CREDENTIALS_PASSWORD,
+      },
+      type: process.env.MONGO_PROJECTIONS_DB_TYPE,
+      database: process.env.MONGO_PROJECTIONS_DATABASE,
+    },
     STORE_STATE_SETTINGS: {
       hostname: process.env.STORE_STATE_HOSTNAME,
       port: process.env.STORE_STATE_PORT,

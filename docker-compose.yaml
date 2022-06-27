@@ -3,21 +3,16 @@ version: '3.4'
 services:
   mongodb:
     image: mongo:5.0
-    ports:
-      - 27017:27017
     volumes:
       - ~/apps/mongo:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${PROJECTIONS_CREDENTIALS_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${PROJECTIONS_CREDENTIALS_PASSWORD}
     networks:
       - backend
     ports:
-      - ${PROJECTIONS_PORT}:${PROJECTIONS_PORT}
+      - ${MONGO_PROJECTIONS_PORT}:${MONGO_PROJECTIONS_PORT}      
     volumes:
       - type: volume
-        source: projections-volume-data
-        target: /var/lib/projections
+        source: mongo-projections-volume-data
+        target: /var/lib/mongo-projections
 
   hangman-projections:
     container_name: hangman-projections
@@ -89,6 +84,7 @@ services:
 
 volumes:
   projections-volume-data:
+  mongo-projections-volume-data:
   eventstore-volume-data:
   eventstore-volume-logs:
 

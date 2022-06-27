@@ -9,7 +9,6 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "prestart": "npm run migration:run",
     "start": "nodemon --config nodemon.json",
     "start:prod": "node dist/src/main",
     "start:debug": "nest start --debug --watch",

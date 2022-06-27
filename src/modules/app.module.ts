@@ -10,7 +10,7 @@ import { GamesModule } from './game.module';
 import { config } from '../../config';
 import { UserModule } from './user.module';
 
-export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
+// export const mongoDbUri = `${config.MONGO_PROJECTION_DB_SETTINGS.type}://${config.MONGO_PROJECTION_DB_SETTINGS.credentials.username}:${config.MONGO_PROJECTION_DB_SETTINGS.credentials.password}@${config.MONGO_PROJECTION_DB_SETTINGS.hostname}:${config.MONGO_PROJECTION_DB_SETTINGS.port}`;
 @Module({
   imports: [
     // AuthModule,
@@ -24,8 +24,23 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       eventStoreUrl: `esdb://${config.EVENT_STORE_SETTINGS.hostname}:${config.EVENT_STORE_SETTINGS.httpPort}?tls=false`,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async () => TypeOrmConfig as any,
+      useFactory: async () => {
+        const config = TypeOrmConfig as any;
+        console.log({ config });
+        return config;
+      },
     }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   host: 'mongodb',
+    //   port: 27017,
+    //   username: 'root',
+    //   password: 'example',
+    //   authSource: 'admin',
+    //   database: 'test',
+    //   entities: [],
+    //   synchronize: true,
+    // }),
     GamesModule,
     UserModule,
   ],

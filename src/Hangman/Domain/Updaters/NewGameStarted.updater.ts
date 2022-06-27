@@ -2,7 +2,7 @@ import { Game as GameProjection } from '../../ReadModels/game.entity';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ObjectID, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import {
   IViewUpdater,
