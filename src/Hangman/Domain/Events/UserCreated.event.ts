@@ -2,6 +2,7 @@ import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
 
 export class UserCreatedEvent extends StorableEvent {
   public readonly eventVersion = 1;
+  aggregateName = 'user';
 
   constructor(
     public readonly id: string,
@@ -10,6 +11,6 @@ export class UserCreatedEvent extends StorableEvent {
     public readonly dateCreated: Date,
     public readonly dateModified: Date,
   ) {
-    super('user');
+    super();
   }
 }

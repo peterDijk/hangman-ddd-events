@@ -6,8 +6,8 @@ export class NewGameStartedEvent extends StorableEvent {
   public eventVersion = 1;
   /* Changelog
    * v2: wordToGuess and maxGuesses are value objects
-
-  */
+   */
+  aggregateName = 'game';
 
   constructor(
     public readonly id: string,
@@ -18,7 +18,7 @@ export class NewGameStartedEvent extends StorableEvent {
     public readonly dateModified: Date,
     eventVersion?: number,
   ) {
-    super('game');
+    super();
     if (eventVersion) {
       this.eventVersion = eventVersion;
     }
