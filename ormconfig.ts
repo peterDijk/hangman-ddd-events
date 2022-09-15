@@ -1,3 +1,4 @@
+import { DataSource } from 'typeorm';
 import { DefaultNamingStrategy } from 'typeorm/naming-strategy/DefaultNamingStrategy';
 import { NamingStrategyInterface } from 'typeorm/naming-strategy/NamingStrategyInterface';
 import { snakeCase } from 'typeorm/util/StringUtils';
@@ -30,6 +31,29 @@ class CustomNamingStrategy
 }
 
 const SOURCE_PATH = config.ENV === 'production' ? 'dist/src' : 'src';
+
+export const AppDataSource = new DataSource({
+  type: config.PROJECTION_DB_SETTINGS.type,
+  host: config.PROJECTION_DB_SETTINGS.hostname,
+  port: config.PROJECTION_DB_SETTINGS.port,
+  username: config.PROJECTION_DB_SETTINGS.credentials.username,
+  password: config.PROJECTION_DB_SETTINGS.credentials.password,
+  database: config.PROJECTION_DB_SETTINGS.database,
+  migrationsTableName: 'migration',
+  namingStrategy: new CustomNamingStrategy(),
+  synchronize: false,
+  logging: true,
+  entities: [`${SOURCE_PATH}/**/*.entity{.ts,.js}`],
+  migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
+  subscribers: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
+  ssl: config.ENV === 'production' && {
+    rejectUnauthorized: false,
+  },
+});
+
+async function init() {
+  await AppDataSource.initialize();
+}
 
 export default {
   type: config.PROJECTION_DB_SETTINGS.type,

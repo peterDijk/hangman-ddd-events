@@ -25,7 +25,9 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
      * update the projection
      *
      */
-    const projection = await this.gamesProjectionRepository.findOne(event.id);
+    const projection = await this.gamesProjectionRepository.findOne({
+      where: { gameId: event.id },
+    });
     await this.gamesProjectionRepository.update(
       {
         gameId: event.id,

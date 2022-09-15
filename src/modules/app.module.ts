@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+
 import TypeOrmConfig from '../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
@@ -14,7 +16,15 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
 @Module({
   imports: [
     // AuthModule,
-    GraphQLModule.forRoot({
+    // GraphQLModule.forRoot({
+    //   driver: ,
+    //   autoSchemaFile: 'schema.gql',
+    //   introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+    //   playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+    //   cors: true,
+    // }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
       playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
