@@ -1,12 +1,7 @@
 import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
-import { MaxGuesses } from '../ValueObjects/MaxGuesses.value-object';
-import { Word } from '../ValueObjects/Word.value-object';
 
 export class NewGameStartedEvent extends StorableEvent {
   public eventVersion = 1;
-  /* Changelog
-   * v2: wordToGuess and maxGuesses are value objects
-   */
   aggregateName = 'game';
 
   constructor(
