@@ -51,10 +51,6 @@ export const AppDataSource = new DataSource({
   },
 });
 
-async function init() {
-  await AppDataSource.initialize();
-}
-
 export default {
   type: config.PROJECTION_DB_SETTINGS.type,
   host: config.PROJECTION_DB_SETTINGS.hostname,

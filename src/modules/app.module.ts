@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
-import TypeOrmConfig from '../../ormconfig';
+import TypeOrmConfig, { AppDataSource } from '../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
@@ -35,6 +35,12 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,
+      // dataSource receives the configured DataSourceOptions
+      // and returns a Promise<DataSource>.
+      dataSourceFactory: async (options) => {
+        const dataSource = await AppDataSource.initialize();
+        return dataSource;
+      },
     }),
     GamesModule,
     UserModule,
