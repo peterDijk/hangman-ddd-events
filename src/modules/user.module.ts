@@ -25,7 +25,7 @@ import { User as UserProjection } from '../Hangman/ReadModels/user.entity';
     UserService,
     ...UserCommandHandlers,
     // ...UserEventHandlers,
-    ...UserProjectionUpdaters,
+    // ...UserProjectionUpdaters,
   ],
 })
 export class UserModule {}
