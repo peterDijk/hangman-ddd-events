@@ -20,33 +20,16 @@ export class NewGameStartedUpdater
   private logger = new Logger(NewGameStartedUpdater.name);
 
   async handle(event: NewGameStartedEvent) {
-    let wordToGuess: string;
-    let maxGuesses: number;
-
-    wordToGuess = event.wordToGuess;
-    maxGuesses = event.maxGuesses;
-
-    if (event.eventVersion === 2) {
-      // try out version with valueobjects
-      // but reverted
-      // event is stored in this format so account for it
-      // in updater
-      wordToGuess = (event.wordToGuess as any).props.value;
-      maxGuesses = (event.maxGuesses as any).props.value;
-    }
-
-    this.logger.debug({ event: JSON.stringify(event), wordToGuess });
-
     const game = this.gamesProjectionRepository.create({
       ...event,
       gameId: event.id,
       playerId: event.playerId,
-      wordToGuess,
+      wordToGuess: event.wordToGuess,
       playerName: '',
       dateCreated: event.dateCreated,
       dateModified: event.dateModified,
       lettersGuessed: [],
-      maxGuesses: maxGuesses,
+      maxGuesses: event.maxGuesses,
     });
 
     await game.save();

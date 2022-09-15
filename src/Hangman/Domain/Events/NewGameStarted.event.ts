@@ -4,10 +4,6 @@ import { Word } from '../ValueObjects/Word.value-object';
 
 export class NewGameStartedEvent extends StorableEvent {
   public eventVersion = 1;
-  /* Changelog
-   * v2: wordToGuess and maxGuesses are value objects
-
-  */
 
   constructor(
     public readonly id: string,
