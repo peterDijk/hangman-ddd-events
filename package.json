@@ -34,7 +34,7 @@
     "@nestjs/platform-express": "^9.0.11",
     "@nestjs/swagger": "^6.1.2",
     "@nestjs/typeorm": "^9.0.1",
-    "@peterdijk/nestjs-eventstoredb": "^0.7.2",
+    "@peterdijk/nestjs-eventstoredb": "^0.7.31",
     "@types/bcrypt": "^5.0.0",
     "apollo-server-express": "^3.10.2",
     "bcrypt": "^5.0.1",
