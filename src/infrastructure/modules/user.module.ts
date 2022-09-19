@@ -26,7 +26,7 @@ import { User as UserProjection } from '../read-models/user.entity';
     UserService,
     ...UserCommandHandlers,
     ...UserEventHandlers,
-    // ...UserProjectionUpdaters,
+    ...UserProjectionUpdaters,
   ],
 })
 export class UserModule {}

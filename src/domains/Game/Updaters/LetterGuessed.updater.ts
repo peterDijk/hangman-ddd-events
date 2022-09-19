@@ -25,18 +25,18 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
      * update the projection
      *
      */
-    // const projection = await this.gamesProjectionRepository.findOne({
-    //   where: { gameId: event.id },
-    // });
+    const projection = await this.gamesProjectionRepository.findOne({
+      where: { gameId: event.id },
+    });
     this.logger.log('disabled update projection');
-    // await this.gamesProjectionRepository.update(
-    //   {
-    //     gameId: event.id,
-    //   },
-    //   {
-    //     lettersGuessed: [...projection.lettersGuessed, event.letter],
-    //     dateModified: event.dateModified,
-    //   },
-    // );
+    await this.gamesProjectionRepository.update(
+      {
+        gameId: event.id,
+      },
+      {
+        lettersGuessed: [...projection.lettersGuessed, event.letter],
+        dateModified: event.dateModified,
+      },
+    );
   }
 }

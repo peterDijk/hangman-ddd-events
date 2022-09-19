@@ -22,18 +22,18 @@ export class NewGameStartedUpdater
 
   async handle(event: NewGameStartedEvent) {
     this.logger.log('disabled update projection');
-    // const game = this.gamesProjectionRepository.create({
-    //   ...event,
-    //   gameId: event.id,
-    //   playerId: event.playerId,
-    //   wordToGuess: event.wordToGuess,
-    //   playerName: '',
-    //   dateCreated: event.dateCreated,
-    //   dateModified: event.dateModified,
-    //   lettersGuessed: [],
-    //   maxGuesses: event.maxGuesses,
-    // });
+    const game = this.gamesProjectionRepository.create({
+      ...event,
+      gameId: event.id,
+      playerId: event.playerId,
+      wordToGuess: event.wordToGuess,
+      playerName: '',
+      dateCreated: event.dateCreated,
+      dateModified: event.dateModified,
+      lettersGuessed: [],
+      maxGuesses: event.maxGuesses,
+    });
 
-    // await game.save();
+    await game.save();
   }
 }
