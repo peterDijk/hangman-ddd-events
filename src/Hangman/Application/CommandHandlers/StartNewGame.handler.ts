@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
 import { StartNewGameCommand } from '../Commands/StartNewGame.command';
@@ -11,7 +11,8 @@ export class StartNewGameCommandHandler
 {
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
-  constructor(private publisher: StoreEventPublisher) {}
+  // constructor(private publisher: StoreEventPublisher) {}
+  constructor(private publisher: EventPublisher) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
     this.logger.log(`executing command`);

@@ -30,11 +30,6 @@ type AllGamesResponse {
   games: [Game!]
 }
 
-type UserResponse {
-  userId: String!
-  username: String!
-}
-
 type Query {
   sayHello: String!
   getAllGames: AllGamesResponse!
@@ -43,7 +38,6 @@ type Query {
 type Mutation {
   startNewGame(input: GameDto!): GameResponse!
   makeGuess(input: GuessDto!): GameResponse!
-  createNewUser(input: UserDto!): UserResponse!
 }
 
 input GameDto {
@@ -55,9 +49,4 @@ input GameDto {
 input GuessDto {
   gameId: String!
   letter: String!
-}
-
-input UserDto {
-  username: String!
-  password: String!
 }

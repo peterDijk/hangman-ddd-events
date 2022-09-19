@@ -17,7 +17,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
-    CqrsModule,
     // AuthModule,
     // GraphQLModule.forRoot({
     //   driver: ,
@@ -46,7 +45,7 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       },
     }),
     GamesModule,
-    UserModule,
+    // UserModule,
   ],
   controllers: [AppController],
   providers: [AppResolver, AppService],

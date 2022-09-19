@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { performance, PerformanceObserver } from 'perf_hooks';
@@ -8,7 +8,8 @@ import { GuessLetterCommand } from '../Commands/GuessLetter.command';
 
 @CommandHandler(GuessLetterCommand)
 export class GuessLetterCommandHandler
-  implements ICommandHandler<GuessLetterCommand> {
+  implements ICommandHandler<GuessLetterCommand>
+{
   private readonly logger = new Logger(GuessLetterCommandHandler.name);
 
   private observer = new PerformanceObserver((items) =>
@@ -16,7 +17,7 @@ export class GuessLetterCommandHandler
   ).observe({ entryTypes: ['measure'] });
 
   constructor(
-    private publisher: StoreEventPublisher,
+    private publisher: EventPublisher, // StoreEventPublisher,
     private readonly repository: GamesRepository,
   ) {}
 

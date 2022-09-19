@@ -30,7 +30,7 @@ import { EventSerializers } from '../Hangman/Domain/Events/EventSerializers';
     GamesRepository,
     ...CommandHandlers,
     ...EventHandlers,
-    // ...ProjectionUpdaters,
+    ...ProjectionUpdaters,
   ],
 })
 export class GamesModule {}

@@ -7,7 +7,8 @@ import { User } from '../../Domain/AggregateRoot/User.aggregate';
 
 @CommandHandler(CreateNewUserCommand)
 export class CreateNewUserHandler
-  implements ICommandHandler<CreateNewUserCommand> {
+  implements ICommandHandler<CreateNewUserCommand>
+{
   private readonly logger = new Logger(CreateNewUserHandler.name);
 
   constructor(private publisher: StoreEventPublisher) {}

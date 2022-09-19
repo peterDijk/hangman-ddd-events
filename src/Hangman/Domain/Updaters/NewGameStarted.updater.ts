@@ -11,7 +11,8 @@ import {
 
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater
-  implements IViewUpdater<NewGameStartedEvent> {
+  implements IViewUpdater<NewGameStartedEvent>
+{
   constructor(
     @InjectRepository(GameProjection)
     private gamesProjectionRepository: Repository<GameProjection>,
