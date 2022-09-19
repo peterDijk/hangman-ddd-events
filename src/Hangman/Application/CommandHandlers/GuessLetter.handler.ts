@@ -17,7 +17,7 @@ export class GuessLetterCommandHandler
   ).observe({ entryTypes: ['measure'] });
 
   constructor(
-    private publisher: EventPublisher, // StoreEventPublisher,
+    private publisher: StoreEventPublisher,
     private readonly repository: GamesRepository,
   ) {}
 

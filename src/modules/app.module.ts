@@ -18,22 +18,17 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
 @Module({
   imports: [
     // AuthModule,
-    // GraphQLModule.forRoot({
-    //   driver: ,
-    //   autoSchemaFile: 'schema.gql',
-    //   introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-    //   playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-    //   cors: true,
-    // }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
-      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      introspection: config.GQL_PLAYGROUND,
+      playground: config.GQL_PLAYGROUND,
       cors: true,
     }),
     EventStoreModule.forRoot({
-      eventStoreUrl: `esdb://${config.EVENT_STORE_SETTINGS.hostname}:${config.EVENT_STORE_SETTINGS.httpPort}?tls=false`,
+      address: config.EVENT_STORE_SETTINGS.hostname,
+      port: config.EVENT_STORE_SETTINGS.httpPort,
+      insecure: true,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,

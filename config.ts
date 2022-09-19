@@ -22,6 +22,7 @@ const configs = {
     HOST: process.env.APP_HOST || '0.0.0.0',
     PORT: process.env.CONTAINER_PORT || 3000, // internal container port
     EXT_PORT: process.env.APP_PORT,
+    GQL_PLAYGROUND: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
     // Event Store
     EVENT_STORE_SETTINGS: {
       protocol: process.env.EVENT_STORE_PROTOCOL || 'http',

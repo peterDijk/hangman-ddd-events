@@ -11,8 +11,8 @@ export class StartNewGameCommandHandler
 {
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
-  // constructor(private publisher: StoreEventPublisher) {}
-  constructor(private publisher: EventPublisher) {}
+  constructor(private publisher: StoreEventPublisher) {}
+  // constructor(private publisher: EventPublisher) {}
 
   async execute({ data, uuid }: StartNewGameCommand) {
     this.logger.log(`executing command`);
