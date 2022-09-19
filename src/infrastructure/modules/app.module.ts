@@ -32,10 +32,10 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       useFactory: async () => TypeOrmConfig as any,
       // dataSource receives the configured DataSourceOptions
       // and returns a Promise<DataSource>.
-      dataSourceFactory: async (options) => {
-        const dataSource = await AppDataSource.initialize();
-        return dataSource;
-      },
+      // dataSourceFactory: async (options) => {
+      //   const dataSource = await AppDataSource.initialize();
+      //   return dataSource;
+      // },
     }),
     GamesModule,
     UserModule,
