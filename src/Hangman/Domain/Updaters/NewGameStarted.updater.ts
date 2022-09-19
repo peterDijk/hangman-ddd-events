@@ -29,6 +29,7 @@ export class NewGameStartedUpdater
       dateCreated: event.dateCreated,
       dateModified: event.dateModified,
       lettersGuessed: [],
+      maxGuesses: event.maxGuesses,
     });
 
     await game.save();

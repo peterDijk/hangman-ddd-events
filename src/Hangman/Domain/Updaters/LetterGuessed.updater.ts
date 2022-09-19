@@ -18,6 +18,13 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
   private logger = new Logger(LetterGuessedUpdater.name);
 
   async handle(event: LetterGuessedEvent) {
+    /* is it ok the aggregate is not used here at all ??
+     * now we dont care about any aggregate logic at all,
+     * we just assume it's allright because the event got
+     * stored so it must have passed validation, so we just
+     * update the projection
+     *
+     */
     const projection = await this.gamesProjectionRepository.findOne(event.id);
     await this.gamesProjectionRepository.update(
       {

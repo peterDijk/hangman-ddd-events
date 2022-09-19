@@ -6,13 +6,17 @@ import {
   MinLength,
   Min,
 } from 'class-validator';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Logger } from '@nestjs/common';
 
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InvalidGameException } from '../../Exceptions';
 import { GameDto } from '../../Infrastructure/Dto/Game.dto';
-import { Field, ObjectType } from '@nestjs/graphql';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
-import { Logger } from '@nestjs/common';
+import { Word } from '../ValueObjects/Word.value-object';
+import { MaxGuesses } from '../ValueObjects/MaxGuesses.value-object';
+import { LettersGuessed } from '../ValueObjects/LettersGuessed.value-object';
+import { Letter } from '../ValueObjects/Letter.value-object';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -21,23 +25,13 @@ export class Game extends AggregateRoot {
   dateCreated: Date;
   dateModified: Date;
 
-  @Field()
   @IsString()
   @MinLength(2)
   playerId: string;
 
-  @Field()
-  @IsString()
-  @MinLength(3)
-  wordToGuess: string;
-
-  @Field()
-  @IsNumber()
-  @Min(1)
-  maxGuesses: number;
-
-  @Field((type) => [String])
-  lettersGuessed: string[];
+  wordToGuess: Word;
+  maxGuesses: MaxGuesses;
+  lettersGuessed: LettersGuessed;
 
   constructor(id: string) {
     super();
@@ -47,49 +41,46 @@ export class Game extends AggregateRoot {
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
-    // apply to be able to validate
     this.playerId = data.playerId;
-    this.wordToGuess = data.wordToGuess;
-    this.maxGuesses = data.maxGuesses;
-    this.lettersGuessed = [];
+    this.wordToGuess = await Word.create(data.wordToGuess);
+    this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
-    try {
-      await validateOrReject(this);
-
-      this.apply(
-        new NewGameStartedEvent(
-          this.id,
-          this.playerId,
-          this.wordToGuess,
-          this.maxGuesses,
-          this.dateCreated,
-          this.dateModified,
-        ),
-        false,
-      );
-    } catch (err) {
-      throw new InvalidGameException(err);
-    }
+    this.apply(
+      new NewGameStartedEvent(
+        this.id,
+        this.playerId,
+        this.wordToGuess.value,
+        this.maxGuesses.value,
+        this.dateCreated,
+        this.dateModified,
+      ),
+      false,
+    );
   }
 
   async guessLetter(letter: string) {
     // TODO: validate guess
+    // validation is done in LettersGuessed VA (length) and Letter VA (string, 1 char)
 
-    // better validation of course, quick check to see if this works
+    try {
+      const newLetter = await Letter.create(letter);
+      const lettersGuessed = await LettersGuessed.create(
+        [...this.lettersGuessed.value, newLetter],
+        this.maxGuesses,
+      );
+      const newLettersGuessed = lettersGuessed;
 
-    const newLettersGuessed = [...this.lettersGuessed, letter];
+      this.lettersGuessed = newLettersGuessed;
+      this.dateModified = new Date();
 
-    if (newLettersGuessed.length >= this.maxGuesses) {
-      throw new InvalidGameException('Max guesses, game over');
+      const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
+
+      this.apply(event, false);
+    } catch (err) {
+      throw new InvalidGameException(err);
     }
-
-    const dateModified = new Date();
-
-    const event = new LetterGuessedEvent(this.id, letter, dateModified);
-
-    this.apply(event, false);
   }
 
   // Replay event from history `loadFromHistory` function calls
@@ -97,15 +88,18 @@ export class Game extends AggregateRoot {
   // framework magic
   onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.playerId = event.playerId;
-    this.wordToGuess = event.wordToGuess;
-    this.maxGuesses = event.maxGuesses;
-    this.lettersGuessed = [];
+    this.wordToGuess = Word.createReplay(event.wordToGuess);
+    this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
+    this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
-    this.lettersGuessed.push(event.letter[0]);
+    this.lettersGuessed = LettersGuessed.createReplay([
+      ...this.lettersGuessed.value,
+      Letter.createReplay(event.letter[0]),
+    ]);
     this.dateModified = event.dateModified;
   }
 }
