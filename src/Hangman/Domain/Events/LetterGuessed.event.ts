@@ -1,6 +1,7 @@
 import { StorableEvent } from '@peterdijk/nestjs-eventstoredb';
 
 export class LetterGuessedEvent extends StorableEvent {
+  aggregateName = 'game';
   public eventVersion = 1;
 
   constructor(
