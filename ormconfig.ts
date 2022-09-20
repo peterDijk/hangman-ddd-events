@@ -4,9 +4,10 @@ import { NamingStrategyInterface } from 'typeorm/naming-strategy/NamingStrategyI
 import { snakeCase } from 'typeorm/util/StringUtils';
 import { config } from './config';
 
-class CustomNamingStrategy
+export class CustomNamingStrategy
   extends DefaultNamingStrategy
-  implements NamingStrategyInterface {
+  implements NamingStrategyInterface
+{
   tableName(targetName: string, userSpecifiedName: string): string {
     return userSpecifiedName ? userSpecifiedName : snakeCase(targetName) + 's';
   }
@@ -30,28 +31,9 @@ class CustomNamingStrategy
   }
 }
 
-const SOURCE_PATH = config.ENV === 'production' ? 'dist/src' : 'src';
+export const SOURCE_PATH = config.ENV === 'production' ? 'dist/src' : 'src';
 
-export const AppDataSource = new DataSource({
-  type: config.PROJECTION_DB_SETTINGS.type,
-  host: config.PROJECTION_DB_SETTINGS.hostname,
-  port: config.PROJECTION_DB_SETTINGS.port,
-  username: config.PROJECTION_DB_SETTINGS.credentials.username,
-  password: config.PROJECTION_DB_SETTINGS.credentials.password,
-  database: config.PROJECTION_DB_SETTINGS.database,
-  migrationsTableName: 'migration',
-  namingStrategy: new CustomNamingStrategy(),
-  synchronize: false,
-  logging: true,
-  entities: [`${SOURCE_PATH}/**/*.entity{.ts,.js}`],
-  migrations: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
-  subscribers: [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
-  ssl: config.ENV === 'production' && {
-    rejectUnauthorized: false,
-  },
-});
-
-export default {
+export const options = {
   type: config.PROJECTION_DB_SETTINGS.type,
   host: config.PROJECTION_DB_SETTINGS.hostname,
   port: config.PROJECTION_DB_SETTINGS.port,

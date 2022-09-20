@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import TypeOrmConfig from '../../../ormconfig';
+import { options } from '../../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
@@ -11,8 +11,6 @@ import { GamesModule } from './game.module';
 import { config } from '../../../config';
 import { UserModule } from './user.module';
 import { AppResolver } from '../resolvers/app.resolver';
-import GameProjectionUpdaters from '../../domains/Game/Updaters';
-import UserProjectionUpdaters from '../../domains/User/Updaters';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
@@ -40,13 +38,7 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       },
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async () => TypeOrmConfig as any,
-      // dataSource receives the configured DataSourceOptions
-      // and returns a Promise<DataSource>.
-      // dataSourceFactory: async (options) => {
-      //   const dataSource = await AppDataSource.initialize();
-      //   return dataSource;
-      // },
+      useFactory: async () => options as any,
     }),
     GamesModule,
     UserModule,
