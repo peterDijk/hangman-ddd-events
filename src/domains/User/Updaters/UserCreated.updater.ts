@@ -12,7 +12,10 @@ import { UserCreatedEvent } from '../Events/UserCreated.event';
 
 @ViewUpdaterHandler(UserCreatedEvent)
 export class UserCreatedUpdater implements IViewUpdater<UserCreatedEvent> {
-  constructor() {} // private userProjectionRepository: Repository<UserProjection>, // @InjectRepository(UserProjection)
+  constructor(
+    @InjectRepository(UserProjection)
+    private userProjectionRepository: Repository<UserProjection>,
+  ) {}
 
   private logger = new Logger(UserCreatedUpdater.name);
 
@@ -20,13 +23,13 @@ export class UserCreatedUpdater implements IViewUpdater<UserCreatedEvent> {
     this.logger.debug(`handle UserCreatedEvent`);
 
     try {
-      // const user = this.userProjectionRepository.create({
-      //   ...event,
-      //   userId: event.id,
-      //   username: event.userName,
-      //   password: event.password,
-      // });
-      // await user.save();
+      const user = this.userProjectionRepository.create({
+        ...event,
+        userId: event.id,
+        username: event.userName,
+        password: event.password,
+      });
+      await user.save();
     } catch (err) {
       this.logger.error(err);
     }

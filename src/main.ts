@@ -12,7 +12,7 @@ import { AllExceptionsFilter } from './infrastructure/exceptions/all-exceptions.
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['log', 'error', 'debug'],
+    logger: ['log', 'error', 'debug', 'warn'],
   });
   app.setGlobalPrefix(config.PREFIX);
   // app.useGlobalFilters(new AllExceptionsFilter());
