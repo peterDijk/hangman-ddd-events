@@ -12,9 +12,9 @@ import { GuessLetterCommand } from '../../domains/Game/Commands/GuessLetter.comm
 export class GamesService {
   constructor(
     private readonly commandBus: CommandBus,
-  ) // @InjectRepository(GameProjection)
-  // private gamesProjectionRepository: Repository<GameProjection>,
-  {}
+    @InjectRepository(GameProjection)
+    private gamesProjectionRepository: Repository<GameProjection>,
+  ) {}
   private readonly logger = new Logger(GamesService.name);
 
   async startNewGame(data: GameDto) {
@@ -31,16 +31,15 @@ export class GamesService {
     }
   }
 
-  // async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
-  //   this.logger.log('getAllGames');
-  //   const games = await this.gamesProjectionRepository.find({
-  //     order: { dateModified: 'DESC' },
-  //   });
-  //   return {
-  //     count: games.length,
-  //     games,
-  //   };
-  // }
+  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
+    const games = await this.gamesProjectionRepository.find({
+      order: { dateModified: 'DESC' },
+    });
+    return {
+      count: games.length,
+      games,
+    };
+  }
 
   async makeGuess(gameId: string, letter: string) {
     try {

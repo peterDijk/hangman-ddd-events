@@ -1,4 +1,4 @@
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { performance, PerformanceObserver } from 'perf_hooks';
@@ -22,17 +22,14 @@ export class GuessLetterCommandHandler
   ) {}
 
   async execute({ gameId, letter }: GuessLetterCommand) {
-    // performance.mark('start-guess');
-
+    this.logger.debug('execute command');
     const aggregate = await this.repository.findOneById(gameId);
     await aggregate.guessLetter(letter);
-
     // performance.mark('stop-guess');
-    // this.logger.log(
-    //   `total num guesses: ${aggregate.lettersGuessed.value.length}`,
-    // );
+    this.logger.log(
+      `total num guesses: ${aggregate.lettersGuessed.value.length}`,
+    );
     // performance.measure('Measurement', 'start-guess', 'stop-guess');
-
     const game = this.publisher.mergeObjectContext(aggregate);
     game.commit();
   }

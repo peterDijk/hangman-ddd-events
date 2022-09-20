@@ -27,7 +27,7 @@ export class GamesController {
   // @ApiResponse({ status: 200, description: 'List games' })
   // @Get('list')
   // async getAllGames() {
-  // return await this.gameService.getAllGames();
+  //   return await this.gameService.getAllGames();
   // }
 
   @ApiResponse({ status: 200, description: 'Guess made' })

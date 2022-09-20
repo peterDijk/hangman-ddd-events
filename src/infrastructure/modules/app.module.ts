@@ -11,6 +11,8 @@ import { GamesModule } from './game.module';
 import { config } from '../../../config';
 import { UserModule } from './user.module';
 import { AppResolver } from '../resolvers/app.resolver';
+import GameProjectionUpdaters from '../../domains/Game/Updaters';
+import UserProjectionUpdaters from '../../domains/User/Updaters';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
@@ -28,15 +30,15 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       port: config.EVENT_STORE_SETTINGS.httpPort,
       insecure: true,
     }),
-    // TypeOrmModule.forRootAsync({
-    //   useFactory: async () => TypeOrmConfig as any,
-    //   // dataSource receives the configured DataSourceOptions
-    //   // and returns a Promise<DataSource>.
-    //   dataSourceFactory: async (options) => {
-    //     const dataSource = await AppDataSource.initialize();
-    //     return dataSource;
-    //   },
-    // }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => TypeOrmConfig as any,
+      // dataSource receives the configured DataSourceOptions
+      // and returns a Promise<DataSource>.
+      // dataSourceFactory: async (options) => {
+      //   const dataSource = await AppDataSource.initialize();
+      //   return dataSource;
+      // },
+    }),
     GamesModule,
     UserModule,
   ],
