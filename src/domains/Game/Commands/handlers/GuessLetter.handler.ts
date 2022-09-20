@@ -22,17 +22,10 @@ export class GuessLetterCommandHandler
   ) {}
 
   async execute({ gameId, letter }: GuessLetterCommand) {
-    // performance.mark('start-guess');
-
     const aggregate = await this.repository.findOneById(gameId);
     await aggregate.guessLetter(letter);
-
     // performance.mark('stop-guess');
-    // this.logger.log(
-    //   `total num guesses: ${aggregate.lettersGuessed.value.length}`,
-    // );
     // performance.measure('Measurement', 'start-guess', 'stop-guess');
-
     const game = this.publisher.mergeObjectContext(aggregate);
     game.commit();
   }

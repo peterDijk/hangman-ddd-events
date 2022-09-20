@@ -3,7 +3,7 @@ import { Game as GameProjection } from '../../../infrastructure/read-models/game
 import { NewGameStartedEvent } from '../Events/NewGameStarted.event';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger, Scope } from '@nestjs/common';
 import {
   IViewUpdater,
   ViewUpdaterHandler,
@@ -21,18 +21,21 @@ export class NewGameStartedUpdater
   private logger = new Logger(NewGameStartedUpdater.name);
 
   async handle(event: NewGameStartedEvent) {
-    const game = this.gamesProjectionRepository.create({
-      ...event,
-      gameId: event.id,
-      playerId: event.playerId,
-      wordToGuess: event.wordToGuess,
-      playerName: '',
-      dateCreated: event.dateCreated,
-      dateModified: event.dateModified,
-      lettersGuessed: [],
-      maxGuesses: event.maxGuesses,
-    });
-
-    await game.save();
+    try {
+      const game = this.gamesProjectionRepository.create({
+        ...event,
+        gameId: event.id,
+        playerId: event.playerId,
+        wordToGuess: event.wordToGuess,
+        playerName: '',
+        dateCreated: event.dateCreated,
+        dateModified: event.dateModified,
+        lettersGuessed: [],
+        maxGuesses: event.maxGuesses,
+      });
+      await game.save();
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

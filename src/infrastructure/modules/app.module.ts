@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import TypeOrmConfig from '../../../ormconfig';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { options } from '../../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
@@ -9,27 +10,40 @@ import { AppService } from '../services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../../config';
 import { UserModule } from './user.module';
+import { AppResolver } from '../resolvers/app.resolver';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
     // AuthModule,
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
-      introspection: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
-      playground: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
+      introspection: config.GQL_PLAYGROUND,
+      playground: config.GQL_PLAYGROUND,
       cors: true,
     }),
     EventStoreModule.forRoot({
-      eventStoreUrl: `esdb://${config.EVENT_STORE_SETTINGS.hostname}:${config.EVENT_STORE_SETTINGS.httpPort}?tls=false`,
+      address: config.EVENT_STORE_SETTINGS.hostname,
+      port: config.EVENT_STORE_SETTINGS.httpPort,
+      insecure: true,
+      lastPositionStorage: {
+        set: (stream: string, position: Object) => {
+          console.log('setting last position', { stream, position });
+        },
+        get: (stream: string) => {
+          console.log('getting last position for: ', { stream });
+          return {};
+        },
+      },
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async () => TypeOrmConfig as any,
+      useFactory: async () => options as any,
     }),
     GamesModule,
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppResolver, AppService],
 })
 export class AppModule {}

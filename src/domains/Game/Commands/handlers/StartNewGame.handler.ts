@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
 import { StartNewGameCommand } from '../StartNewGame.command';
@@ -16,9 +16,8 @@ export class StartNewGameCommandHandler
   async execute({ data, uuid }: StartNewGameCommand) {
     const aggregate = new Game(uuid);
     await aggregate.startNewGame(data);
-
     const game = this.publisher.mergeObjectContext(aggregate);
-
+    this.logger.log(game);
     game.commit();
   }
 }

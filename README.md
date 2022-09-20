@@ -10,7 +10,23 @@ in a Docker setup using Eventstore
 
 ## TODO
 
-- [ ] store last processed event checkpoint, on app init only replay from checkpoint
+(new version for deps upgrade)
+
+- [x] NestJS new setup working latest version
+- [x] GQL working
+- [x] Games domain working via CQRS
+- [x] Dockerize the project
+- [x] Eventstore setup working
+- [x] Add Users domain
+- [x] TypeORM setup working
+- [x] Updaters are updating projections
+- [x] TypeORM migrations
+- [x] Merge updateDependencies branch to master
+- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
+- [ ] Add Auth module
+- [ ] Add User to Game
+- [ ] Swap projection database type
+
 - [ ] better filestructure
 - [ ] ...
 

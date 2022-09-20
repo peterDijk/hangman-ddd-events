@@ -7,6 +7,7 @@ import { UserEventSerializers } from '../../domains/User/Events/UserEventSeriali
 import { UserResolver } from '../resolvers/user.resolver';
 import UserProjectionUpdaters from '../../domains/User/Updaters/';
 import UserCommandHandlers from '../../domains/User/Commands/handlers';
+import UserEventHandlers from '../../domains/User/Events/handlers';
 import { User as UserProjection } from '../read-models/user.entity';
 
 @Module({
@@ -24,7 +25,7 @@ import { User as UserProjection } from '../read-models/user.entity';
     UserResolver,
     UserService,
     ...UserCommandHandlers,
-    // ...UserEventHandlers,
+    ...UserEventHandlers,
     ...UserProjectionUpdaters,
   ],
 })
