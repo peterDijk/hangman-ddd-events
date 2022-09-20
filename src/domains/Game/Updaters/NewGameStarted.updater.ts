@@ -9,6 +9,7 @@ import {
   ViewUpdaterHandler,
 } from '@peterdijk/nestjs-eventstoredb';
 
+@Injectable()
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater
   implements IViewUpdater<NewGameStartedEvent>

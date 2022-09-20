@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
 import { Injectable, Logger } from '@nestjs/common';
 
+@Injectable()
 @ViewUpdaterHandler(LetterGuessedEvent)
 export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
   constructor() {} // private gamesProjectionRepository: Repository<GameProjection>, // @InjectRepository(GameProjection)
