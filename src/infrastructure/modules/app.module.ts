@@ -29,6 +29,15 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       address: config.EVENT_STORE_SETTINGS.hostname,
       port: config.EVENT_STORE_SETTINGS.httpPort,
       insecure: true,
+      lastPositionStorage: {
+        set: (stream: string, position: Object) => {
+          console.log('setting last position', { stream, position });
+        },
+        get: (stream: string) => {
+          console.log('getting last position for: ', { stream });
+          return {};
+        },
+      },
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => TypeOrmConfig as any,

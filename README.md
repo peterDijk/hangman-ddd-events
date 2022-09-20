@@ -23,8 +23,9 @@ in a Docker setup using Eventstore
 - [ ] TypeORM migrations
 - [ ] Add Auth module
 - [ ] Add User to Game
+- [ ] Swap projection database type
 
-- [ ] store last processed event checkpoint, on app init only replay from checkpoint
+- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [ ] better filestructure
 - [ ] ...
 
