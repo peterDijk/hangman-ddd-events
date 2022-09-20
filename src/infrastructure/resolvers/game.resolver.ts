@@ -17,10 +17,10 @@ export class GamesResolver {
     return 'Hello Games!';
   }
 
-  @Query((returns) => AllGamesResponse)
-  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
-    return await this.gameService.getAllGames();
-  }
+  // @Query((returns) => AllGamesResponse)
+  // async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
+  //   return await this.gameService.getAllGames();
+  // }
 
   @Mutation((returns) => GameResponse)
   async startNewGame(@Args('input') gameDto: GameDto): Promise<GameResponse> {

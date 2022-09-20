@@ -20,7 +20,7 @@ import { EventSerializers } from '../../domains/Game/Events/EventSerializers';
       streamPrefix: 'game',
       eventSerializers: EventSerializers,
     }),
-    TypeOrmModule.forFeature([GameProjection]),
+    // TypeOrmModule.forFeature([GameProjection]),
   ],
   exports: [CqrsModule],
   controllers: [GamesController],

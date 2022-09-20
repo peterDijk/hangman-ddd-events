@@ -17,7 +17,7 @@ import { User as UserProjection } from '../read-models/user.entity';
       streamPrefix: 'user',
       eventSerializers: UserEventSerializers,
     }),
-    TypeOrmModule.forFeature([UserProjection]),
+    // TypeOrmModule.forFeature([UserProjection]),
   ],
   exports: [CqrsModule],
   // controllers: [UserController],
