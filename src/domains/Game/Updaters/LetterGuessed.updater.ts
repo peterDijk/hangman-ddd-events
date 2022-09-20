@@ -7,13 +7,11 @@ import { Game as GameProjection } from '../../../infrastructure/read-models/game
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LetterGuessedEvent } from '../Events/LetterGuessed.event';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @ViewUpdaterHandler(LetterGuessedEvent)
 export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
-  constructor() // @InjectRepository(GameProjection)
-  // private gamesProjectionRepository: Repository<GameProjection>,
-  {}
+  constructor() {} // private gamesProjectionRepository: Repository<GameProjection>, // @InjectRepository(GameProjection)
   private logger = new Logger(LetterGuessedUpdater.name);
 
   async handle(event: LetterGuessedEvent) {
