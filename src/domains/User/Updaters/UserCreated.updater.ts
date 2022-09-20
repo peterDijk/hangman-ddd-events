@@ -20,8 +20,6 @@ export class UserCreatedUpdater implements IViewUpdater<UserCreatedEvent> {
   private logger = new Logger(UserCreatedUpdater.name);
 
   async handle(event: UserCreatedEvent) {
-    this.logger.debug(`handle UserCreatedEvent`);
-
     try {
       const user = this.userProjectionRepository.create({
         ...event,

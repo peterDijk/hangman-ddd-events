@@ -9,7 +9,6 @@ import {
   ViewUpdaterHandler,
 } from '@peterdijk/nestjs-eventstoredb';
 
-@Injectable()
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater
   implements IViewUpdater<NewGameStartedEvent>
@@ -22,7 +21,6 @@ export class NewGameStartedUpdater
   private logger = new Logger(NewGameStartedUpdater.name);
 
   async handle(event: NewGameStartedEvent) {
-    this.logger.log('handle update projection');
     try {
       const game = this.gamesProjectionRepository.create({
         ...event,
