@@ -1,4 +1,3 @@
-import { DataSource } from 'typeorm';
 import { DefaultNamingStrategy } from 'typeorm/naming-strategy/DefaultNamingStrategy';
 import { NamingStrategyInterface } from 'typeorm/naming-strategy/NamingStrategyInterface';
 import { snakeCase } from 'typeorm/util/StringUtils';
