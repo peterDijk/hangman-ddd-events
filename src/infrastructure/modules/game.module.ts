@@ -22,7 +22,7 @@ import { EventSerializers } from '../../domains/Game/Events/EventSerializers';
     }),
     // TypeOrmModule.forFeature([GameProjection]),
   ],
-  exports: [CqrsModule, ...ProjectionUpdaters],
+  exports: [CqrsModule],
   controllers: [GamesController],
   providers: [
     GamesResolver,

@@ -43,15 +43,6 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
     UserModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppResolver,
-    AppService,
-    ...GameProjectionUpdaters,
-    // ...UserProjectionUpdaters,
-  ],
-  exports: [
-    ...GameProjectionUpdaters,
-    // ...UserProjectionUpdaters,
-  ],
+  providers: [AppResolver, AppService],
 })
 export class AppModule {}
