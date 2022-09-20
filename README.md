@@ -21,11 +21,11 @@ in a Docker setup using Eventstore
 - [x] TypeORM setup working
 - [x] Updaters are updating projections
 - [ ] TypeORM migrations
+- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [ ] Add Auth module
 - [ ] Add User to Game
 - [ ] Swap projection database type
 
-- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [ ] better filestructure
 - [ ] ...
 
