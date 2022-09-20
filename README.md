@@ -23,6 +23,7 @@ in a Docker setup using Eventstore
 - [x] TypeORM migrations
 - [x] Merge updateDependencies branch to master
 - [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
+- [ ] setup ConfigService
 - [ ] Add Auth module
 - [ ] Add User to Game
 - [ ] Swap projection database type

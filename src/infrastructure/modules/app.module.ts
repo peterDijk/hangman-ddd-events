@@ -11,6 +11,7 @@ import { GamesModule } from './game.module';
 import { config } from '../../../config';
 import { UserModule } from './user.module';
 import { AppResolver } from '../resolvers/app.resolver';
+import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
@@ -23,19 +24,11 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       playground: config.GQL_PLAYGROUND,
       cors: true,
     }),
-    EventStoreModule.forRoot({
+    EventStoreModule.forRootAsync({
       address: config.EVENT_STORE_SETTINGS.hostname,
       port: config.EVENT_STORE_SETTINGS.httpPort,
       insecure: true,
-      lastPositionStorage: {
-        set: (stream: string, position: Object) => {
-          console.log('setting last position', { stream, position });
-        },
-        get: (stream: string) => {
-          console.log('getting last position for: ', { stream });
-          return {};
-        },
-      },
+      lastPositionStorageFactory: MongoPositionStore,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => options as any,

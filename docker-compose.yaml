@@ -37,6 +37,31 @@ services:
     networks:
       - backend
 
+  hangman-position:
+    container_name: hangman-position
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: '${STORE_STATE_USERNAME}'
+      MONGO_INITDB_ROOT_PASSWORD: '${STORE_STATE_PASSWORD}'
+    ports:
+      - ${STORE_STATE_PORT}:${STORE_STATE_PORT}
+    networks:
+      - backend
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: '${STORE_STATE_USERNAME}'
+      ME_CONFIG_MONGODB_ADMINPASSWORD: '${STORE_STATE_PASSWORD}'
+      ME_CONFIG_MONGODB_URL: mongodb://${STORE_STATE_USERNAME}:${STORE_STATE_PASSWORD}@hangman-position:${STORE_STATE_PORT}/
+    networks:
+      - backend
+
   hangman:
     container_name: hangman
     build:
