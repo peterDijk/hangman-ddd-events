@@ -25,6 +25,11 @@ type GameResponse {
   status: Float!
 }
 
+type AllGamesResponse {
+  count: Float!
+  games: [Game!]
+}
+
 type UserResponse {
   userId: String!
   username: String!
@@ -32,6 +37,7 @@ type UserResponse {
 
 type Query {
   sayHello: String!
+  getAllGames: AllGamesResponse!
 }
 
 type Mutation {
