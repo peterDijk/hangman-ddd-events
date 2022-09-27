@@ -8,11 +8,14 @@ project to learn about DDD and Event Sourcing
 
 in a Docker setup using Eventstore
 
+Goal : Have a complete template application for a Domain Driven/ Event Sourced backend using NestJS.
+
 ## TODO
 
 (new version for deps upgrade)
 
 - [x] NestJS new setup working latest version
+- [x] better filestructure
 - [x] GQL working
 - [x] Games domain working via CQRS
 - [x] Dockerize the project
@@ -22,13 +25,21 @@ in a Docker setup using Eventstore
 - [x] Updaters are updating projections
 - [x] TypeORM migrations
 - [x] Merge updateDependencies branch to master
-- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
+- [ ] store last processed event checkpoint, on app init only replay from checkpoint
 - [ ] Add Auth module
 - [ ] Add User to Game
-- [ ] Swap projection database type
-
-- [ ] better filestructure
+- [ ] Swap projection database type for mongodb
+- [ ] Swap projection for a database type that GraphQL reads from directly (for actual performance improv. reason for GQL. Without it's only dev experience)
+- [ ] Implement actual hangman logic. Goal: backend is ready for comm with frontend
+- [ ] Setup websocket server
 - [ ] ...
+
+### Frontend:
+
+- [ ] setup hangman app in this dockerized project
+- [ ] add user login and start new game UI (pick wordToGuess from randomized public api)
+- [ ] setup websocket client: connect to server on login, receive init message in redux middleware, mutate state (after making guess, the backend sends the so far rightly guessed characters on the correct positions)
+- [ ]
 
 ## Installation
 
