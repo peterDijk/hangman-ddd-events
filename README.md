@@ -41,6 +41,8 @@ sept 2022
 - [x] Merge updateDependencies branch to master
 - [x] using latest dependencies versions complete, merge updateDependencies branch to master
 - [x] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
+- [ ] update dependencies
+- [ ] include config in repo instead of .env for easier sharing and running of project
 - [ ] setup ConfigService
 - [ ] endpoint and/ or script that runs replay of events from beginning
 - [ ] Add Auth module
@@ -87,6 +89,12 @@ PROJECTIONS_CREDENTIALS_USERNAME=root
 PROJECTIONS_CREDENTIALS_PASSWORD=example
 PROJECTIONS_DB_TYPE=mysql
 PROJECTIONS_DATABASE=hangman-projections
+STORE_STATE_DB_TYPE=mongodb
+STORE_STATE_HOSTNAME=hangman-position
+STORE_STATE_PORT=27017
+STORE_STATE_USERNAME=root
+STORE_STATE_PASSWORD=example
+STORE_STATE_DB=hangman-position
 MONGO_PROJECTIONS_HOSTNAME=hangman-projections
 MONGO_PROJECTIONS_PORT=27017
 MONGO_PROJECTIONS_CREDENTIALS_USERNAME=root
