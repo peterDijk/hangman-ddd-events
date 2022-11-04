@@ -40,7 +40,7 @@ sept 2022
 - [x] TypeORM migrations
 - [x] Merge updateDependencies branch to master
 - [x] using latest dependencies versions complete, merge updateDependencies branch to master
-- [ ] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
+- [x] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [ ] setup ConfigService
 - [ ] endpoint and/ or script that runs replay of events from beginning
 - [ ] Add Auth module
@@ -57,6 +57,10 @@ sept 2022
 - [ ] add user login and start new game UI (pick wordToGuess from randomized public api)
 - [ ] setup websocket client: connect to server on login, receive init message in redux middleware, mutate state (after making guess, the backend sends the so far rightly guessed characters on the correct positions)
 - [ ]
+
+## Known issues
+
+- when working on the npm package, `npm link` to test out the latest version of the package without publishing makes NestJS clash. something with peer dependencies?
 
 ## Installation
 
