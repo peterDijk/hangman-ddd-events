@@ -15,16 +15,25 @@ export async function MongoPositionStore() {
 
   return {
     set: async (streamName: string, position: Object) => {
-      console.log('-- updateOneOrCreate', { streamName, position });
+      console.log(
+        'MongoPositionStore -- storing position of latest processed event',
+        {
+          streamName,
+          position,
+        },
+      );
+
       const posObject = toObject(position);
-      const updateCheckpoint = await StoreStateModel.updateOneOrCreate({
+      await StoreStateModel.updateOneOrCreate({
         streamName,
         position: JSON.stringify(posObject),
       });
-      // return updateCheckpoint.position;
     },
     get: async (streamName: string) => {
-      console.log('getting position from mongodb for stream', { streamName });
+      console.log(
+        'MongoPositionStore -- getting position from mongodb for stream',
+        { streamName },
+      );
       const streamPosition = await StoreStateModel.findByStream({ streamName });
       if (streamPosition && streamPosition.position !== null) {
         return JSON.parse(streamPosition.position);
