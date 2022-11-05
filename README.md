@@ -41,9 +41,8 @@ sept 2022
 - [x] Merge updateDependencies branch to master
 - [x] using latest dependencies versions complete, merge updateDependencies branch to master
 - [x] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
-- [ ] update dependencies
-- [ ] include config in repo instead of .env for easier sharing and running of project
-- [ ] setup ConfigService
+- [x] update dependencies
+- [x] include config in repo instead of .env for easier sharing and running of project
 - [ ] endpoint and/ or script that runs replay of events from beginning
 - [ ] Add Auth module
 - [ ] Add User to Game
