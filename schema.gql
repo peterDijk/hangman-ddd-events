@@ -35,15 +35,31 @@ type UserResponse {
   username: String!
 }
 
+type LoginStatus {
+  username: String!
+  accessToken: String!
+}
+
 type Query {
   sayHello: String!
   getAllGames: AllGamesResponse!
 }
 
 type Mutation {
+  loginUser(input: LoginUserDto!): LoginStatus!
+  createNewUser(input: UserDto!): UserResponse!
   startNewGame(input: GameDto!): GameResponse!
   makeGuess(input: GuessDto!): GameResponse!
-  createNewUser(input: UserDto!): UserResponse!
+}
+
+input LoginUserDto {
+  username: String!
+  password: String!
+}
+
+input UserDto {
+  username: String!
+  password: String!
 }
 
 input GameDto {
@@ -55,9 +71,4 @@ input GameDto {
 input GuessDto {
   gameId: String!
   letter: String!
-}
-
-input UserDto {
-  username: String!
-  password: String!
 }
