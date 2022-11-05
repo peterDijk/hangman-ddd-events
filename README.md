@@ -43,7 +43,6 @@ sept 2022
 - [x] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [x] update dependencies
 - [x] include config in repo instead of .env for easier sharing and running of project
-- [ ] setup ConfigService
 - [ ] endpoint and/ or script that runs replay of events from beginning
 - [ ] Add Auth module
 - [ ] Add User to Game
