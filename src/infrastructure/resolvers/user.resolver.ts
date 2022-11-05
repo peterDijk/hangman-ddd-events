@@ -3,6 +3,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../services/user.service';
 import { UserDto, UserResponse } from '../dto/User.dto';
 import { User } from '../../domains/User/User.aggregate';
+import { LoginStatus, LoginUserDto } from '../dto/Auth.dto';
+import { AuthService } from '../services/auth.service';
 
 @Resolver((of) => User)
 export class UserResolver {

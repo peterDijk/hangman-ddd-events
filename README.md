@@ -43,7 +43,7 @@ sept 2022
 - [x] store last processed event checkpoint, on app init only replay from checkpoint (read checkpoint from stream)
 - [x] update dependencies
 - [x] include config in repo instead of .env for easier sharing and running of project
-- [ ] endpoint and/ or script that runs replay of events from beginning
+- [x] replay events: dangerous admin thing only anyway, so just remove position entries from mongodb and restart app
 - [ ] Add Auth module
 - [ ] Add User to Game
 - [ ] Swap projection database type for mongodb
