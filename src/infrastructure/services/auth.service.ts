@@ -25,7 +25,7 @@ export class AuthService {
     this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
 
     return {
-      username: user.username,
+      username: user.userName.value,
       accessToken: user.loginToken,
     };
   }
