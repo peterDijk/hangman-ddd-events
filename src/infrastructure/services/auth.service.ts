@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { JwtPayload, LoginStatus, LoginUserDto } from '../dto/Auth.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
