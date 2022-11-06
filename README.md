@@ -44,7 +44,8 @@ sept 2022
 - [x] update dependencies
 - [x] include config in repo instead of .env for easier sharing and running of project
 - [x] replay events: dangerous admin thing only anyway, so just remove position entries from mongodb and restart app
-- [ ] Add Auth module
+- [x] Add Auth module
+- [ ] add docker build in github checks
 - [ ] fix typeorm migration:generate in correct folder
 - [ ] Add User to Game
 - [ ] Swap projection database type for mongodb
