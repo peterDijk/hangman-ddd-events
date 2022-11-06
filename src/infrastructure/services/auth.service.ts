@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserCommand } from '../../domains/User/Commands/LoginUser.command';
 import { UserRepository } from '../../domains/User/User.repository';
 import { User } from '../../domains/User/User.aggregate';
+import { createToken } from '../../helpers/createToken';
 
 @Injectable()
 export class AuthService {
@@ -19,14 +20,16 @@ export class AuthService {
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
     const user = await this.commandBus.execute(
-      new LoginUserCommand(username, password, this.jwtService),
+      new LoginUserCommand(username, password),
     );
 
     this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
 
+    const { accessToken } = createToken(user.username, this.jwtService);
+
     return {
       username: user.userName.value,
-      accessToken: user.loginToken,
+      accessToken,
     };
   }
 
@@ -36,8 +39,13 @@ export class AuthService {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
 
-    if (user.currentlyLoggedIn && user.loginToken) {
+    if (user.currentlyLoggedIn) {
       return user;
+    } else {
+      throw new HttpException(
+        'User is logged out, please login again for new token',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 }

@@ -23,7 +23,6 @@ export class User extends AggregateRoot {
   lastLoggedIn: Date;
   numberLogins: number;
   currentlyLoggedIn: boolean;
-  loginToken: string; // other type?
 
   constructor(id: string) {
     super();
@@ -51,28 +50,22 @@ export class User extends AggregateRoot {
     }
   }
 
-  async login(password: string, jwtService: JwtService) {
+  async login(password: string) {
     const areEqual = await bcrypt.compare(password, this.password.value);
 
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    const { accessToken } = createToken(this.userName.value, jwtService);
-
     this.lastLoggedIn = new Date();
     this.numberLogins++;
     this.currentlyLoggedIn = true;
-    this.loginToken = accessToken;
 
     this.apply(new UserLoggedInEvent(this.id, new Date()));
   }
 
   logout() {
     this.currentlyLoggedIn = false;
-
-    // invalidate login token
-    this.loginToken = undefined;
 
     this.apply(new UserLoggedOutEvent(this.id, new Date()));
   }
@@ -87,7 +80,7 @@ export class User extends AggregateRoot {
   onUserLogginInEvent(event: UserLoggedInEvent) {
     this.lastLoggedIn = event.dateLoggedIn;
     this.numberLogins++;
-    this.currentlyLoggedIn = false; // on replay we don't want to store the user is currently logged in right
+    this.currentlyLoggedIn = true; // for validateUser we replay all events to see if the user is currently logged in
   }
 
   onUserLoggedOutEvent(event: UserLoggedOutEvent) {
