@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppService } from '../services/app.service';
 
@@ -11,5 +12,11 @@ export class AppController {
   @Get()
   getHealth(): Record<string, unknown> {
     return this.appService.getHealth();
+  }
+
+  @UseGuards(AuthGuard())
+  @Get('protectedHealth')
+  protectedHealth(): any {
+    return this.appService.getAuthHealth();
   }
 }

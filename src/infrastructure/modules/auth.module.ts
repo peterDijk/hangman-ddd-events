@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 // import { AuthResolver } from '../resolvers/auth.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthResolver } from '../resolvers/auth.resolver';
+import { AuthController } from '../controllers/auth.controller';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { AuthResolver } from '../resolvers/auth.resolver';
       },
     }),
   ],
-  // controllers: [AuthController],
+  controllers: [AuthController],
   providers: [AuthService, JwtStrategy, AuthResolver],
   exports: [PassportModule, JwtModule],
 })
