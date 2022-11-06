@@ -16,6 +16,9 @@ export class LoginUserDto {
 @ObjectType()
 export class LoginStatus {
   @Field()
+  userId: string;
+
+  @Field()
   username: string;
 
   @Field()

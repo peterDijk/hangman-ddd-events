@@ -7,6 +7,7 @@ import { LoginUserCommand } from '../../domains/User/Commands/LoginUser.command'
 import { UserRepository } from '../../domains/User/User.repository';
 import { User } from '../../domains/User/User.aggregate';
 import { createToken } from '../../helpers/createToken';
+import { LogoutUserCommand } from '../../domains/User/Commands/LogoutUser.command';
 
 @Injectable()
 export class AuthService {
@@ -19,18 +20,27 @@ export class AuthService {
   ) {}
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
-    const user = await this.commandBus.execute(
+    const user: User = await this.commandBus.execute(
       new LoginUserCommand(username, password),
     );
 
     this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
 
-    const { accessToken } = createToken(user.username, this.jwtService);
+    const { accessToken } = createToken(user.userName.value, this.jwtService);
 
     return {
+      userId: user.id,
       username: user.userName.value,
       accessToken,
     };
+  }
+
+  async logout(user: User) {
+    const loggedOutUser: User = await this.commandBus.execute(
+      new LogoutUserCommand(user),
+    );
+
+    this.logger.debug(`logged out user: ${JSON.stringify(loggedOutUser)}`);
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
@@ -38,6 +48,8 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
+
+    this.logger.debug(`validated user: ${JSON.stringify(user)}`);
 
     if (user.currentlyLoggedIn) {
       return user;

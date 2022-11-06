@@ -36,17 +36,26 @@ type UserResponse {
 }
 
 type LoginStatus {
+  userId: String!
   username: String!
   accessToken: String!
 }
 
+type MessageResponse {
+  message: String!
+}
+
 type Query {
   sayHello: String!
+  protectedHello: MessageResponse!
   getAllGames: AllGamesResponse!
 }
 
 type Mutation {
   loginUser(input: LoginUserDto!): LoginStatus!
+
+  """Authorized"""
+  logoutUser: String!
   createNewUser(input: UserDto!): UserResponse!
   startNewGame(input: GameDto!): GameResponse!
   makeGuess(input: GuessDto!): GameResponse!

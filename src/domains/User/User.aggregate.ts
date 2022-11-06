@@ -27,6 +27,7 @@ export class User extends AggregateRoot {
   constructor(id: string) {
     super();
     this.id = id;
+    this.numberLogins = 0;
   }
 
   async create(username: string, password: string) {
@@ -77,7 +78,8 @@ export class User extends AggregateRoot {
     this.dateModified = event.dateModified;
   }
 
-  onUserLogginInEvent(event: UserLoggedInEvent) {
+  onUserLoggedInEvent(event: UserLoggedInEvent) {
+    this.logger.debug(`onUserLoggedInEvent - ${JSON.stringify(event)}`);
     this.lastLoggedIn = event.dateLoggedIn;
     this.numberLogins++;
     this.currentlyLoggedIn = true; // for validateUser we replay all events to see if the user is currently logged in
@@ -85,5 +87,6 @@ export class User extends AggregateRoot {
 
   onUserLoggedOutEvent(event: UserLoggedOutEvent) {
     this.logger.debug(`onUserLoggedOutEvent - ${JSON.stringify(event)}`);
+    this.currentlyLoggedIn = false;
   }
 }
