@@ -1,3 +1,4 @@
 import { CreateNewUserHandler } from './CreateNewUser.handler';
+import { LoginUserHandler } from './LoginUser.handler';
 
-export default [CreateNewUserHandler];
+export default [CreateNewUserHandler, LoginUserHandler];

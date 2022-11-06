@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
-import { JwtService } from '@nestjs/jwt';
 
 import { Logger } from '@nestjs/common';
 import { CreateNewUserCommand } from '../CreateNewUser.command';
@@ -15,12 +14,15 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     private publisher: StoreEventPublisher,
     private repository: UserRepository,
-    private readonly jwtService: JwtService,
   ) {}
 
-  async execute({ username, password }: LoginUserCommand): Promise<User> {
+  async execute({
+    username,
+    password,
+    jwtService,
+  }: LoginUserCommand): Promise<User> {
     const aggregate = await this.repository.findOneByUsername(username);
-    await aggregate.login(password, this.jwtService);
+    await aggregate.login(password, jwtService);
 
     const user = this.publisher.mergeObjectContext(aggregate);
 

@@ -12,6 +12,7 @@ import { User as UserProjection } from '../read-models/user.entity';
 import { UserRepository } from '../../domains/User/User.repository';
 import { AuthModule } from './auth.module';
 import { AuthService } from '../services/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [

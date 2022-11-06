@@ -7,7 +7,6 @@ import { AuthService } from '../services/auth.service';
 // import { AuthResolver } from '../resolvers/auth.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthResolver } from '../resolvers/auth.resolver';
-import { LoginUserHandler } from '../../domains/User/Commands/handlers/LoginUser.handler';
 
 @Module({
   imports: [
@@ -18,20 +17,14 @@ import { LoginUserHandler } from '../../domains/User/Commands/handlers/LoginUser
       session: false,
     }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: 'process.env.JWT_SECRET',
       signOptions: {
-        expiresIn: process.env.EXPIRES_IN,
+        expiresIn: '7d', //process.env.EXPIRES_IN,
       },
     }),
   ],
   // controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    AuthResolver,
-    JwtService,
-    LoginUserHandler,
-  ],
+  providers: [AuthService, JwtStrategy, AuthResolver, JwtService],
   exports: [PassportModule, JwtModule, JwtService],
 })
 export class AuthModule {}

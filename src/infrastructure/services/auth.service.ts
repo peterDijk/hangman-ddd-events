@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtPayload, LoginStatus, LoginUserDto } from '../dto/Auth.dto';
 import { CommandBus } from '@nestjs/cqrs';
+import { JwtService } from '@nestjs/jwt';
+
 import { LoginUserCommand } from '../../domains/User/Commands/LoginUser.command';
 import { UserRepository } from '../../domains/User/User.repository';
 import { User } from '../../domains/User/User.aggregate';
@@ -12,11 +14,13 @@ export class AuthService {
   constructor(
     private readonly commandBus: CommandBus,
     private userRepository: UserRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
+    this.jwtService.sign(username);
     const user = await this.commandBus.execute(
-      new LoginUserCommand(username, password),
+      new LoginUserCommand(username, password, this.jwtService),
     );
 
     this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
