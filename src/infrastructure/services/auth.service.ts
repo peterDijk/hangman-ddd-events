@@ -18,7 +18,6 @@ export class AuthService {
   ) {}
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
-    this.jwtService.sign(username);
     const user = await this.commandBus.execute(
       new LoginUserCommand(username, password, this.jwtService),
     );

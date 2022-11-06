@@ -17,14 +17,14 @@ import { AuthResolver } from '../resolvers/auth.resolver';
       session: false,
     }),
     JwtModule.register({
-      secret: 'process.env.JWT_SECRET',
+      secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: '7d', //process.env.EXPIRES_IN,
+        expiresIn: process.env.EXPIRES_IN,
       },
     }),
   ],
   // controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AuthResolver, JwtService],
-  exports: [PassportModule, JwtModule, JwtService],
+  providers: [AuthService, JwtStrategy, AuthResolver],
+  exports: [PassportModule, JwtModule],
 })
 export class AuthModule {}
