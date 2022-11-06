@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from './user.module';
 import { AuthService } from '../services/auth.service';
@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 // import { AuthResolver } from '../resolvers/auth.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthResolver } from '../resolvers/auth.resolver';
+import { LoginUserHandler } from '../../domains/User/Commands/handlers/LoginUser.handler';
 
 @Module({
   imports: [
@@ -24,7 +25,13 @@ import { AuthResolver } from '../resolvers/auth.resolver';
     }),
   ],
   // controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AuthResolver],
-  exports: [PassportModule, JwtModule],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    AuthResolver,
+    JwtService,
+    LoginUserHandler,
+  ],
+  exports: [PassportModule, JwtModule, JwtService],
 })
 export class AuthModule {}
