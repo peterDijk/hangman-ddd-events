@@ -1,5 +1,4 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { JwtService } from '@nestjs/jwt';
 import { UserCreatedEvent } from './Events/UserCreated.event';
 import { Password } from './ValueObjects/Password.value-object';
 import { Username } from './ValueObjects/Username.value-object';
@@ -7,7 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
-import { createToken } from '../../helpers/createToken';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
@@ -59,10 +57,12 @@ export class User extends AggregateRoot {
     }
 
     this.lastLoggedIn = new Date();
-    this.numberLogins++;
+    this.numberLogins = this.numberLogins + 1;
     this.currentlyLoggedIn = true;
 
-    this.apply(new UserLoggedInEvent(this.id, new Date()));
+    this.apply(
+      new UserLoggedInEvent(this.id, new Date(), this.numberLogins, new Date()),
+    );
   }
 
   logout() {
@@ -79,14 +79,13 @@ export class User extends AggregateRoot {
   }
 
   onUserLoggedInEvent(event: UserLoggedInEvent) {
-    this.logger.debug(`onUserLoggedInEvent - ${JSON.stringify(event)}`);
     this.lastLoggedIn = event.dateLoggedIn;
-    this.numberLogins++;
+    this.numberLogins = event.numberLogins;
     this.currentlyLoggedIn = true; // for validateUser we replay all events to see if the user is currently logged in
+    this.dateModified = event.dateModified;
   }
 
   onUserLoggedOutEvent(event: UserLoggedOutEvent) {
-    this.logger.debug(`onUserLoggedOutEvent - ${JSON.stringify(event)}`);
     this.currentlyLoggedIn = false;
   }
 }

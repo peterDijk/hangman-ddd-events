@@ -32,8 +32,6 @@ export class UserRepository {
         where: { username },
       });
 
-      this.logger.debug(`findOneByUsername - ${userId}`);
-
       const user = new User(userId);
 
       const { events } = await this.eventStore.getEvents(
@@ -41,15 +39,8 @@ export class UserRepository {
         userId,
       );
 
-      this.logger.debug(
-        `got these events for found userid - ${JSON.stringify(events)}`,
-      );
-
       user.loadFromHistory(events);
 
-      this.logger.debug(
-        `state of user after last event - ${JSON.stringify(user)}`,
-      );
       return user;
     } catch (err) {
       throw new BadRequestException('no user found with username');

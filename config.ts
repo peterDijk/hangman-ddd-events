@@ -19,11 +19,10 @@ const configs = {
     VERSION: process.env.APP_VERSION || '1.0',
     API_EXPLORER_PATH: process.env.APP_API_EXPLORER_PATH || '/api',
     // Server
-    HOST: process.env.APP_HOST || '127.0.0.1',
+    HOST: process.env.APP_HOST || '0.0.0.0',
     PORT: process.env.CONTAINER_PORT || 3000, // internal container port
     EXT_PORT: process.env.APP_PORT || 3000,
-    GQL_PLAYGROUND:
-      process.env.GQL_PLAYGROUND === 'enabled' ? true : false ?? true,
+    GQL_PLAYGROUND: process.env.GQL_PLAYGROUND === 'enabled' ? true : false,
     // Event Store
     EVENT_STORE_SETTINGS: {
       protocol: process.env.EVENT_STORE_PROTOCOL || 'http',

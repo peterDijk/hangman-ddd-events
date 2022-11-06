@@ -12,8 +12,8 @@ export const UserEventSerializers = {
       dateModified,
     );
   },
-  UserLoggedInEvent: ({ id, dateLoggedIn }) => {
-    return new UserLoggedInEvent(id, dateLoggedIn);
+  UserLoggedInEvent: ({ id, dateLoggedIn, numberLogins, dateModified }) => {
+    return new UserLoggedInEvent(id, dateLoggedIn, numberLogins, dateModified);
   },
   UserLoggedOutEvent: ({ id, dateLoggedOut }) => {
     return new UserLoggedOutEvent(id, dateLoggedOut);

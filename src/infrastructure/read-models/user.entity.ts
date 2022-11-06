@@ -27,6 +27,22 @@ export class User extends BaseEntity {
 
   @Field()
   @Column({
+    type: 'int',
+    nullable: false,
+    default: 0,
+  })
+  numberLogins: number;
+
+  @Field()
+  @Column({
+    type: 'timestamp',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  lastLoggedIn: Date;
+
+  @Field()
+  @Column({
     type: 'timestamp',
     nullable: false,
     default: () => 'CURRENT_TIMESTAMP',

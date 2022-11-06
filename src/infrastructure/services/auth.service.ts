@@ -35,12 +35,12 @@ export class AuthService {
     };
   }
 
-  async logout(user: User) {
+  async logout(user: User): Promise<User> {
     const loggedOutUser: User = await this.commandBus.execute(
       new LogoutUserCommand(user),
     );
 
-    this.logger.debug(`logged out user: ${JSON.stringify(loggedOutUser)}`);
+    return loggedOutUser;
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
@@ -48,8 +48,6 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
-
-    this.logger.debug(`validated user: ${JSON.stringify(user)}`);
 
     if (user.currentlyLoggedIn) {
       return user;
