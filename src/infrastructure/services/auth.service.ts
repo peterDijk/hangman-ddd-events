@@ -1,10 +1,13 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { Cache } from 'node-ts-cache';
 import { JwtPayload, LoginStatus, LoginUserDto } from '../dto/Auth.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
@@ -23,14 +26,18 @@ export class AuthService {
     private readonly commandBus: CommandBus,
     private userRepository: UserRepository,
     private readonly jwtService: JwtService,
-  ) {}
+    @Inject(CACHE_MANAGER) private cacheManager: any,
+  ) {
+    this.logger.debug(`type of cacheManager: ${typeof this.cacheManager}`);
+  }
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
     const user: User = await this.commandBus.execute(
       new LoginUserCommand(username, password),
     );
 
-    this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
+    this.cacheManager.set(`${user.aggregateName}-${user.id}`, user);
+    this.cacheManager.set(`ID_BY_USERNAME-${user.userName}`, user.id);
 
     const { accessToken } = createToken(user.userName.value, this.jwtService);
 
@@ -50,8 +57,17 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    const user = await this.userRepository.findOneByUsername(payload.username);
+    const userId = this.cacheManager.get(`ID_BY_USERNAME-${payload.username}`);
+    this.logger.debug(
+      `userId from cache for username: ${payload.username} - `,
+      userId,
+    );
+    const user: User = this.cacheManager.get(`user-${userId}`);
+    // this.logger.debug(`User from cache: ${JSON.stringify(user)}`);
+
+    // const user = await this.userRepository.findOneByUsername(payload.username);
     if (!user) {
+      this.logger.debug(`couldnt find user`);
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
 

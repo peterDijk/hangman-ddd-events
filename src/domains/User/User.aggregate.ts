@@ -11,6 +11,7 @@ export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
 
   public readonly id: string;
+  public readonly aggregateName: string = 'user';
 
   dateCreated: Date;
   dateModified: Date;
