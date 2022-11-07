@@ -14,7 +14,7 @@ export class GamesRepository {
 
   async findOneById(aggregateId: string): Promise<Game> {
     const game = new Game(aggregateId);
-    const { events } = await this.eventStore.getEvents(
+    const { events } = await this.eventStore.getEventsForAggregate(
       this.aggregate,
       aggregateId,
     );

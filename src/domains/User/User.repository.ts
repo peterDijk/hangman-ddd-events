@@ -28,7 +28,7 @@ export class UserRepository {
 
   async findOneById(aggregateId: string): Promise<User> {
     const user = new User(aggregateId);
-    const { events } = await this.eventStore.getEvents(
+    const { events } = await this.eventStore.getEventsForAggregate(
       this.aggregate,
       aggregateId,
     );
@@ -42,22 +42,22 @@ export class UserRepository {
 
     if (!userId) {
       this.logger.debug(
-        `couldn't find userId in cache (cacheKey: ${cacheKey})`,
+        `couldn't find userId in cache (cacheKey: ${cacheKey}). Replaying events to find id and update cache`,
       );
 
-      // rebuild cache from eventstore ?
+      // rebuild cache from eventstore
       // - find key:value by property in all events from stream
-      // - get all events for stream 'user'
-      // - build aggregates
-      // - for each aggregate, write the username: id pair to the cache
+      // - get all events for event type stream 'UserCreatedEvent' and find the user id for username
+      // - write the username: id pair to the cache
+      // - return user id
 
-      const eventId = (await this.eventStore.getPropertyByKeyValueFromStream(
-        'user',
-        UserCreatedEvent.name,
-        'userName',
-        username,
-        'id',
-      )) as string;
+      const eventId = (await this.eventStore.getPropertyByKeyValueFromEvents({
+        streamPrefix: 'user',
+        searchEventName: UserCreatedEvent.name,
+        searchProperty: 'userName',
+        searchValue: username,
+        requestProperty: 'id',
+      })) as string;
 
       if (eventId) {
         this.logger.debug(`found id in events: ${eventId}`);
@@ -75,16 +75,12 @@ export class UserRepository {
   async findOneByUsername(username: string): Promise<User> {
     try {
       const userId = await this.findUserIdFromCacheOrEvents(username);
-      // @leon what is best strategy? get aggregate from cache, or build up aggregate from eventstore?
-
-      // const user: User = await this.cacheManager.get(
-      //   `${CACHE_KEYS.AGGREGATE_KEY}-user-${userId}`,
-      // );
 
       if (userId) {
         const user = new User(userId);
 
-        const { events } = await this.eventStore.getEvents(
+        // @leon what is best strategy? get aggregate from cache, or build up aggregate from eventstore?
+        const { events } = await this.eventStore.getEventsForAggregate(
           this.aggregate,
           userId,
         );
