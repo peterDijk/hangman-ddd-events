@@ -17,9 +17,7 @@ import { UserRepository } from '../../domains/User/User.repository';
 import { User } from '../../domains/User/User.aggregate';
 import { createToken } from '../../helpers/createToken';
 import { LogoutUserCommand } from '../../domains/User/Commands/LogoutUser.command';
-
-const CACHE_NO_EXPIRE = 0;
-
+import { CACHE_KEYS } from '../constants';
 @Injectable()
 export class AuthService {
   private logger = new Logger(AuthService.name);
@@ -39,15 +37,18 @@ export class AuthService {
     );
 
     await this.cacheManager.set(
-      `${user.aggregateName}-${user.id}`,
+      `${CACHE_KEYS.AGGREGATE_KEY}-${user.aggregateName}-${user.id}`,
       user,
-      CACHE_NO_EXPIRE,
+      3600 * 60,
     );
-    await this.cacheManager.set(
-      `ID_BY_USERNAME-${user.userName.value}`,
-      user.id,
-      CACHE_NO_EXPIRE,
-    );
+
+    const cacheKeyUserId = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${user.userName.value}`;
+    this.logger.debug({ cacheKeyUserId, 'user.id': user.id });
+    await this.cacheManager.set(cacheKeyUserId, user.id, 3600 * 60);
+
+    const result = await this.cacheManager.get(cacheKeyUserId);
+
+    this.logger.debug({ result });
 
     const { accessToken } = createToken(user.userName.value, this.jwtService);
 
@@ -67,13 +68,21 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    const cacheKey = `ID_BY_USERNAME-${payload.username}`;
+    this.logger.debug(`validateUser payload: ${JSON.stringify(payload)}`);
+    const cacheKey = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${payload.username}`;
     const userId = await this.cacheManager.get(cacheKey);
-    this.logger.debug(`value for ${cacheKey}:`, userId);
-    const user: User = await this.cacheManager.get(`user-${userId}`);
-    this.logger.debug(`User from cache: ${JSON.stringify(user)}`);
+    this.logger.debug(`${cacheKey}: ${userId}`);
 
-    // const user = await this.userRepository.findOneByUsername(payload.username);
+    if (!userId) {
+      this.logger.debug(
+        `couldn't find userId in cache (cacheKey: ${cacheKey})`,
+      );
+    }
+
+    const user: User = await this.cacheManager.get(
+      `${CACHE_KEYS.AGGREGATE_KEY}-user-${userId}`,
+    );
+
     if (!user) {
       this.logger.debug(`couldnt find user`);
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
