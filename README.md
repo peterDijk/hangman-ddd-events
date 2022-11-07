@@ -46,7 +46,7 @@ sept 2022
 - [x] replay events: dangerous admin thing only anyway, so just remove position entries from mongodb and restart app
 - [x] Add Auth module
 - [x] add docker build in github checks
-- [ ] cache-manager to store username:userId pairs in memory
+- [x] cache-manager to store username:userId pairs in memory
 - [ ] store session for user in redis. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
 - [ ] cache-manager use redis
 - [ ] createUser check username doesn't exist

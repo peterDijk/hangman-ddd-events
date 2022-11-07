@@ -24,10 +24,7 @@ export class AuthService {
     private readonly commandBus: CommandBus,
     private userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {
-    this.logger.debug(`type of cacheManager: ${typeof this.cacheManager}`);
-  }
+  ) {}
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
     const user: User = await this.commandBus.execute(
