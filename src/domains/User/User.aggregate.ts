@@ -62,7 +62,13 @@ export class User extends AggregateRoot {
     this.currentlyLoggedIn = true;
 
     this.apply(
-      new UserLoggedInEvent(this.id, new Date(), this.numberLogins, new Date()),
+      new UserLoggedInEvent(
+        this.id,
+        this.userName.value,
+        new Date(),
+        this.numberLogins,
+        new Date(),
+      ),
     );
   }
 

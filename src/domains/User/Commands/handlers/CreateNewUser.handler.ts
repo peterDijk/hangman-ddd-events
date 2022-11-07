@@ -1,9 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Cache } from 'cache-manager';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
-import { Logger } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Logger } from '@nestjs/common';
 import { CreateNewUserCommand } from '../CreateNewUser.command';
 import { User } from '../../User.aggregate';
+import { CACHE_KEYS } from '../../../../infrastructure/constants';
 
 @CommandHandler(CreateNewUserCommand)
 export class CreateNewUserHandler

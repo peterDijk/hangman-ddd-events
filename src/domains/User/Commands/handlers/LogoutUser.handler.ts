@@ -28,12 +28,6 @@ export class LogoutUserHandler implements ICommandHandler<LogoutUserCommand> {
 
     loggedOutUser.commit();
 
-    await this.cacheManager.set(
-      `${CACHE_KEYS.AGGREGATE_KEY}-user-${user.id}`,
-      loggedOutUser,
-      CACHE_NO_EXPIRE,
-    );
-
     return loggedOutUser;
   }
 }

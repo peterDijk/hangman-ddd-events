@@ -3,21 +3,21 @@ import { CACHE_MANAGER, Inject, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { UserCreatedEvent } from '../UserCreated.event';
 import { CACHE_KEYS } from '../../../../infrastructure/constants';
+import { UserLoggedInEvent } from '../UserLoggedIn.event';
+import { UserLoggedOutEvent } from '../UserLoggedOut.event';
 
-@EventsHandler(UserCreatedEvent)
-export class UserCreatedEventHandler
-  implements IEventHandler<UserCreatedEvent>
+@EventsHandler(UserLoggedOutEvent)
+export class UserLoggedOutEventHandler
+  implements IEventHandler<UserLoggedOutEvent>
 {
-  private readonly logger = new Logger(UserCreatedEventHandler.name);
+  private readonly logger = new Logger(UserLoggedOutEventHandler.name);
 
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-  async handle(event: UserCreatedEvent) {
+  async handle(event: UserLoggedOutEvent) {
     try {
       this.logger.log(`handling event ${event.eventName}`);
 
-      const cacheKeyUserId = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${event.userName}`;
-      await this.cacheManager.set(cacheKeyUserId, event.id, 3600 * 60);
       // send websocket
     } catch (err) {
       this.logger.error(`cant save to projection: ${err}`);

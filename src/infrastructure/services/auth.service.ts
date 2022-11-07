@@ -36,20 +36,6 @@ export class AuthService {
       new LoginUserCommand(username, password),
     );
 
-    await this.cacheManager.set(
-      `${CACHE_KEYS.AGGREGATE_KEY}-${user.aggregateName}-${user.id}`,
-      user,
-      3600 * 60,
-    );
-
-    const cacheKeyUserId = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${user.userName.value}`;
-    this.logger.debug({ cacheKeyUserId, 'user.id': user.id });
-    await this.cacheManager.set(cacheKeyUserId, user.id, 3600 * 60);
-
-    const result = await this.cacheManager.get(cacheKeyUserId);
-
-    this.logger.debug({ result });
-
     const { accessToken } = createToken(user.userName.value, this.jwtService);
 
     return {
@@ -68,20 +54,20 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    this.logger.debug(`validateUser payload: ${JSON.stringify(payload)}`);
-    const cacheKey = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${payload.username}`;
-    const userId = await this.cacheManager.get(cacheKey);
-    this.logger.debug(`${cacheKey}: ${userId}`);
+    // const cacheKey = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${payload.username}`;
+    // const userId = await this.cacheManager.get(cacheKey);
 
-    if (!userId) {
-      this.logger.debug(
-        `couldn't find userId in cache (cacheKey: ${cacheKey})`,
-      );
-    }
+    // if (!userId) {
+    //   this.logger.debug(
+    //     `couldn't find userId in cache (cacheKey: ${cacheKey})`,
+    //   );
+    // }
 
-    const user: User = await this.cacheManager.get(
-      `${CACHE_KEYS.AGGREGATE_KEY}-user-${userId}`,
-    );
+    // const user: User = await this.cacheManager.get(
+    //   `${CACHE_KEYS.AGGREGATE_KEY}-user-${userId}`,
+    // );
+
+    const user = await this.userRepository.findOneByUsername(payload.username);
 
     if (!user) {
       this.logger.debug(`couldnt find user`);
