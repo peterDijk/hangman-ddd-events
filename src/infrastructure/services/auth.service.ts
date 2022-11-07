@@ -7,7 +7,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Cache } from 'node-ts-cache';
+import { Cache } from 'cache-manager';
 import { JwtPayload, LoginStatus, LoginUserDto } from '../dto/Auth.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
@@ -18,6 +18,8 @@ import { User } from '../../domains/User/User.aggregate';
 import { createToken } from '../../helpers/createToken';
 import { LogoutUserCommand } from '../../domains/User/Commands/LogoutUser.command';
 
+const CACHE_NO_EXPIRE = 0;
+
 @Injectable()
 export class AuthService {
   private logger = new Logger(AuthService.name);
@@ -26,7 +28,7 @@ export class AuthService {
     private readonly commandBus: CommandBus,
     private userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    @Inject(CACHE_MANAGER) private cacheManager: any,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.logger.debug(`type of cacheManager: ${typeof this.cacheManager}`);
   }
@@ -36,8 +38,16 @@ export class AuthService {
       new LoginUserCommand(username, password),
     );
 
-    this.cacheManager.set(`${user.aggregateName}-${user.id}`, user);
-    this.cacheManager.set(`ID_BY_USERNAME-${user.userName}`, user.id);
+    await this.cacheManager.set(
+      `${user.aggregateName}-${user.id}`,
+      user,
+      CACHE_NO_EXPIRE,
+    );
+    await this.cacheManager.set(
+      `ID_BY_USERNAME-${user.userName.value}`,
+      user.id,
+      CACHE_NO_EXPIRE,
+    );
 
     const { accessToken } = createToken(user.userName.value, this.jwtService);
 
@@ -57,13 +67,11 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    const userId = this.cacheManager.get(`ID_BY_USERNAME-${payload.username}`);
-    this.logger.debug(
-      `userId from cache for username: ${payload.username} - `,
-      userId,
-    );
-    const user: User = this.cacheManager.get(`user-${userId}`);
-    // this.logger.debug(`User from cache: ${JSON.stringify(user)}`);
+    const cacheKey = `ID_BY_USERNAME-${payload.username}`;
+    const userId = await this.cacheManager.get(cacheKey);
+    this.logger.debug(`value for ${cacheKey}:`, userId);
+    const user: User = await this.cacheManager.get(`user-${userId}`);
+    this.logger.debug(`User from cache: ${JSON.stringify(user)}`);
 
     // const user = await this.userRepository.findOneByUsername(payload.username);
     if (!user) {
