@@ -18,3 +18,5 @@ jobs:
       run: docker compose build
     - name: Run the Docker images
       run: docker compose up -d
+    - name: Clean up the Docker images
+      run: docker compose stop && docker compose remove
