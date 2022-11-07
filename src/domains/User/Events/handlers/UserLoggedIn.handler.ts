@@ -17,8 +17,6 @@ export class UserLoggedInEventHandler
     try {
       this.logger.log(`handling event ${event.eventName}`);
 
-      const cacheKeyUserId = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${event.userName}`;
-      await this.cacheManager.set(cacheKeyUserId, event.id, 3600 * 60);
       // send websocket
     } catch (err) {
       this.logger.error(`cant save to projection: ${err}`);

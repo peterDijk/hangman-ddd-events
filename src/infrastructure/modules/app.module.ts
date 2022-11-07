@@ -18,8 +18,8 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
 @Module({
   imports: [
     CacheModule.register({
-      // ttl: 3600 * 4,
-      // max: 1000 * 1000,
+      ttl: 3600 * 60 * 24,
+      // max: 1000 * 1000 * 1000 * 1000,
       isGlobal: true,
     }),
     AuthModule,
@@ -44,6 +44,5 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
   ],
   controllers: [AppController],
   providers: [AppResolver, AppService],
-  // exports: [CacheModule],
 })
 export class AppModule {}

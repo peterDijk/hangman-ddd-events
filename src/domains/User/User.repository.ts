@@ -63,7 +63,8 @@ export class UserRepository {
         this.logger.debug(`found id in events: ${eventId}`);
         userId = eventId;
 
-        this.cacheManager.set(cacheKey, userId);
+        this.cacheManager.set(cacheKey, userId, 3600 * 60);
+        this.logger.debug(`set username:userId pair in cache`);
       }
 
       return userId;
