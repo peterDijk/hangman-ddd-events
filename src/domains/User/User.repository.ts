@@ -45,16 +45,6 @@ export class UserRepository {
         `couldn't find userId in cache (cacheKey: ${cacheKey})`,
       );
 
-      // const userProjection = await this.userProjectionRepository.findOne({
-      //   where: {
-      //     username,
-      //   },
-      // });
-
-      // userId = userProjection.userId;
-
-      // this.logger.debug({ userId });
-
       // rebuild cache from eventstore ?
       // - find key:value by property in all events from stream
       // - get all events for stream 'user'
@@ -72,9 +62,9 @@ export class UserRepository {
       if (eventId) {
         this.logger.debug(`found id in events: ${eventId}`);
         userId = eventId;
-      }
 
-      this.cacheManager.set(cacheKey, userId);
+        this.cacheManager.set(cacheKey, userId);
+      }
 
       return userId;
     }
