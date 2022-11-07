@@ -45,8 +45,9 @@ sept 2022
 - [x] include config in repo instead of .env for easier sharing and running of project
 - [x] replay events: dangerous admin thing only anyway, so just remove position entries from mongodb and restart app
 - [x] Add Auth module
-- [ ] add docker build in github checks
+- [x] add docker build in github checks
 - [ ] fix typeorm migration:generate in correct folder
+- [ ] redis for in memory aggregate store ?
 - [ ] Add User to Game
 - [ ] Swap projection database type for mongodb
 - [ ] Swap projection for a database type that GraphQL reads from directly (for actual performance improv. reason for GQL. Without it's only dev experience)
