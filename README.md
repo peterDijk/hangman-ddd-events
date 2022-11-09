@@ -47,7 +47,8 @@ sept 2022
 - [x] Add Auth module
 - [x] add docker build in github checks
 - [x] cache-manager to store username:userId pairs in memory
-- [ ] store session for user in redis. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
+- [ ] store session for user in cache. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
+- [ ] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
 - [ ] cache-manager use redis
 - [ ] createUser check username doesn't exist
 - [ ] fix typeorm migration:generate in correct folder
