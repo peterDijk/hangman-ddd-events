@@ -8,9 +8,7 @@ import {
 import { Cache } from 'cache-manager';
 import { User } from './User.aggregate';
 import { EventStore } from '@peterdijk/nestjs-eventstoredb';
-import { Repository } from 'typeorm';
-import { User as UserProjection } from '../../infrastructure/read-models/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { CACHE_KEYS } from '../../infrastructure/constants';
 import { UserCreatedEvent } from './Events/UserCreated.event';
 
@@ -20,24 +18,70 @@ export class UserRepository {
 
   constructor(
     private readonly eventStore: EventStore,
-    @InjectRepository(UserProjection)
-    private userProjectionRepository: Repository<UserProjection>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   private logger = new Logger(UserRepository.name);
 
-  async findOneById(aggregateId: string): Promise<User> {
-    const user = new User(aggregateId);
-    const { events } = await this.eventStore.getEventsForAggregate(
-      this.aggregate,
-      aggregateId,
+  async updateOrCreate(user: User): Promise<void> {
+    const cacheKey = this.getCacheKey({ userId: user.id });
+    const serializedUser = JSON.stringify(instanceToPlain(user));
+    this.logger.debug(serializedUser);
+
+    // await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    // this.logger.debug(`set User in cache`);
+
+    await this.cacheManager.set(
+      this.getCacheKey({ username: user.userName.value }),
+      user.id,
+      3600 * 60,
     );
-    user.loadFromHistory(events);
-    return user;
+    this.logger.debug(`set username:userId pair in cache`);
+  }
+
+  async findOneById(aggregateId: string): Promise<User> {
+    const userFromCache = (await this.cacheManager.get(
+      this.getCacheKey({ userId: aggregateId }),
+    )) as string;
+
+    if (userFromCache) {
+      const deserializedUser = plainToInstance(User, JSON.parse(userFromCache));
+
+      this.logger.debug(`returing User from cache`);
+      return deserializedUser;
+    } else {
+      // build up aggregate from all past aggregate events
+      const user = new User(aggregateId);
+      const { events } = await this.eventStore.getEventsForAggregate(
+        this.aggregate,
+        aggregateId,
+      );
+      user.loadFromHistory(events);
+      this.updateOrCreate(user);
+      this.logger.debug(`returning rebuilt User from events`);
+      return user;
+    }
+  }
+
+  async findOneByUsername(username: string): Promise<User> {
+    try {
+      const userId = await this.findUserIdFromCacheOrEvents(username);
+
+      if (userId) {
+        // comes from either cache or events
+        const user = await this.findOneById(userId);
+
+        return user;
+      } else {
+        // throw new BadRequestException('no userid to work with');
+      }
+    } catch (err) {
+      this.logger.error(err);
+      // throw new BadRequestException('no user found with username');
+    }
   }
 
   async findUserIdFromCacheOrEvents(username: string): Promise<string> {
-    const cacheKey = `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${username}`;
+    const cacheKey = this.getCacheKey({ username });
     let userId: string = await this.cacheManager.get(cacheKey);
 
     if (!userId) {
@@ -62,9 +106,6 @@ export class UserRepository {
       if (eventId) {
         this.logger.debug(`found id in events: ${eventId}`);
         userId = eventId;
-
-        this.cacheManager.set(cacheKey, userId, 3600 * 60);
-        this.logger.debug(`set username:userId pair in cache`);
       }
 
       return userId;
@@ -73,28 +114,13 @@ export class UserRepository {
     return userId;
   }
 
-  async findOneByUsername(username: string): Promise<User> {
-    try {
-      const userId = await this.findUserIdFromCacheOrEvents(username);
+  getCacheKey({ username, userId }: { username?: string; userId?: string }) {
+    if (username) {
+      return `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${username}`;
+    }
 
-      if (userId) {
-        const user = new User(userId);
-
-        // @leon what is best strategy? get aggregate from cache, or build up aggregate from eventstore?
-        const { events } = await this.eventStore.getEventsForAggregate(
-          this.aggregate,
-          userId,
-        );
-
-        user.loadFromHistory(events);
-
-        return user;
-      } else {
-        throw new BadRequestException('no userid to work with');
-      }
-    } catch (err) {
-      this.logger.error(err);
-      throw new BadRequestException('no user found with username');
+    if (userId) {
+      return `${CACHE_KEYS.AGGREGATE_KEY}-${userId}`;
     }
   }
 }

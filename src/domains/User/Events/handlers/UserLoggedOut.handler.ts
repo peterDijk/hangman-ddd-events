@@ -1,9 +1,6 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { CACHE_MANAGER, Inject, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { UserCreatedEvent } from '../UserCreated.event';
-import { CACHE_KEYS } from '../../../../infrastructure/constants';
-import { UserLoggedInEvent } from '../UserLoggedIn.event';
 import { UserLoggedOutEvent } from '../UserLoggedOut.event';
 
 @EventsHandler(UserLoggedOutEvent)

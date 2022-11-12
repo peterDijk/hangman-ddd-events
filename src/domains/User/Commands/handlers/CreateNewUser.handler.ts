@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
-import { Logger } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { CreateNewUserCommand } from '../CreateNewUser.command';
 import { User } from '../../User.aggregate';
+import { UserRepository } from '../../User.repository';
 
 @CommandHandler(CreateNewUserCommand)
 export class CreateNewUserHandler
@@ -11,14 +12,25 @@ export class CreateNewUserHandler
 {
   private readonly logger = new Logger(CreateNewUserHandler.name);
 
-  constructor(private publisher: StoreEventPublisher) {}
+  constructor(
+    private publisher: StoreEventPublisher,
+    private userRepository: UserRepository,
+  ) {}
 
   async execute({ data, uuid }: CreateNewUserCommand) {
-    const aggregate = new User(uuid);
-    await aggregate.create(data.username, data.password);
+    // validate username
+    const alreadyExists = await this.userRepository.findOneByUsername(
+      data.username,
+    );
 
-    const user = this.publisher.mergeObjectContext(aggregate);
-
-    user.commit();
+    if (!alreadyExists) {
+      const aggregate = new User(uuid);
+      await aggregate.create(data.username, data.password);
+      const user = this.publisher.mergeObjectContext(aggregate);
+      user.commit();
+      this.userRepository.updateOrCreate(user);
+    } else {
+      throw new BadRequestException('username already exists');
+    }
   }
 }
