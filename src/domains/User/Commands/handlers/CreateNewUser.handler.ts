@@ -23,14 +23,14 @@ export class CreateNewUserHandler
       data.username,
     );
 
-    if (!alreadyExists) {
-      const aggregate = new User(uuid);
-      await aggregate.create(data.username, data.password);
-      const user = this.publisher.mergeObjectContext(aggregate);
-      user.commit();
-      this.userRepository.updateOrCreate(user);
-    } else {
+    if (alreadyExists) {
       throw new BadRequestException('username already exists');
     }
+
+    const aggregate = new User(uuid);
+    await aggregate.create(data.username, data.password);
+    const user = this.publisher.mergeObjectContext(aggregate);
+    user.commit();
+    this.userRepository.updateOrCreate(user);
   }
 }

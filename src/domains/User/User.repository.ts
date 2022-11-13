@@ -24,11 +24,11 @@ export class UserRepository {
 
   async updateOrCreate(user: User): Promise<void> {
     const cacheKey = this.getCacheKey({ userId: user.id });
-    const serializedUser = JSON.stringify(instanceToPlain(user));
+    const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
     this.logger.debug(serializedUser);
 
-    // await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
-    // this.logger.debug(`set User in cache`);
+    await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    this.logger.debug(`set User in cache`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
@@ -111,6 +111,7 @@ export class UserRepository {
       return userId;
     }
 
+    this.logger.debug(`found id for user in cache`);
     return userId;
   }
 

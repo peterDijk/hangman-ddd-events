@@ -51,6 +51,9 @@ export class User extends AggregateRoot {
   }
 
   async login(password: string) {
+    this.logger.debug(`this.password.value: ${this.password.value}`);
+    this.logger.debug(`password: ${password}`);
+
     const areEqual = await bcrypt.compare(password, this.password.value);
 
     if (!areEqual) {
