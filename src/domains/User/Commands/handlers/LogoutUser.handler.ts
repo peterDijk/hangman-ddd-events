@@ -1,10 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
-
 import { Logger } from '@nestjs/common';
-import { CreateNewUserCommand } from '../CreateNewUser.command';
 import { User } from '../../User.aggregate';
-import { LoginUserCommand } from '../LoginUser.command';
 import { UserRepository } from '../../User.repository';
 import { LogoutUserCommand } from '../LogoutUser.command';
 
@@ -14,17 +11,18 @@ export class LogoutUserHandler implements ICommandHandler<LogoutUserCommand> {
 
   constructor(
     private publisher: StoreEventPublisher,
-    private repository: UserRepository,
+    private userRepository: UserRepository,
   ) {}
 
   async execute({ user }: LogoutUserCommand): Promise<User> {
-    const aggregate = await this.repository.findOneById(user.id);
+    const aggregate = await this.userRepository.findOneById(user.id);
     aggregate.logout();
 
     const loggedOutUser = this.publisher.mergeObjectContext(aggregate);
 
     loggedOutUser.commit();
 
+    this.userRepository.updateOrCreate(loggedOutUser);
     return loggedOutUser;
   }
 }

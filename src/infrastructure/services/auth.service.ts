@@ -1,10 +1,12 @@
 import {
-  BadRequestException,
+  CACHE_MANAGER,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { JwtPayload, LoginStatus, LoginUserDto } from '../dto/Auth.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
@@ -14,7 +16,6 @@ import { UserRepository } from '../../domains/User/User.repository';
 import { User } from '../../domains/User/User.aggregate';
 import { createToken } from '../../helpers/createToken';
 import { LogoutUserCommand } from '../../domains/User/Commands/LogoutUser.command';
-
 @Injectable()
 export class AuthService {
   private logger = new Logger(AuthService.name);
@@ -29,8 +30,6 @@ export class AuthService {
     const user: User = await this.commandBus.execute(
       new LoginUserCommand(username, password),
     );
-
-    this.logger.debug(`logged in user: ${JSON.stringify(user)}`);
 
     const { accessToken } = createToken(user.userName.value, this.jwtService);
 
@@ -51,10 +50,13 @@ export class AuthService {
 
   async validateUser(payload: JwtPayload): Promise<User> {
     const user = await this.userRepository.findOneByUsername(payload.username);
+
     if (!user) {
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      this.logger.debug(`couldnt find user`);
+      throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
 
+    // TODO: check against session stored in redis
     if (user.currentlyLoggedIn) {
       return user;
     } else {

@@ -6,6 +6,7 @@ export class UserLoggedInEvent extends StorableEvent {
 
   constructor(
     public readonly id: string,
+    public readonly userName: string,
     public readonly dateLoggedIn: Date,
     public numberLogins: number,
     public dateModified: Date,

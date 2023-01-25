@@ -46,8 +46,12 @@ sept 2022
 - [x] replay events: dangerous admin thing only anyway, so just remove position entries from mongodb and restart app
 - [x] Add Auth module
 - [x] add docker build in github checks
+- [x] cache-manager to store username:userId pairs in memory
+- [ ] store session for user in cache. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
+- [ ] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
+- [ ] cache-manager use redis
+- [ ] createUser check username doesn't exist
 - [ ] fix typeorm migration:generate in correct folder
-- [ ] redis for in memory aggregate store ?
 - [ ] Add User to Game
 - [ ] Swap projection database type for mongodb
 - [ ] Swap projection for a database type that GraphQL reads from directly (for actual performance improv. reason for GQL. Without it's only dev experience)

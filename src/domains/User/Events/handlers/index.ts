@@ -1,9 +1,11 @@
 import { UserLoggedInEvent } from '../UserLoggedIn.event';
 import { UserLoggedOutEvent } from '../UserLoggedOut.event';
-import { UserCreatedEventEventHandler } from './UserCreated.handler';
+import { UserCreatedEventHandler } from './UserCreated.handler';
+import { UserLoggedInEventHandler } from './UserLoggedIn.handler';
+import { UserLoggedOutEventHandler } from './UserLoggedOut.handler';
 
 export default [
-  UserCreatedEventEventHandler,
-  UserLoggedInEvent,
-  UserLoggedOutEvent,
+  UserCreatedEventHandler,
+  UserLoggedInEventHandler,
+  UserLoggedOutEventHandler,
 ];

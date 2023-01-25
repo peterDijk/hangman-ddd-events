@@ -8,9 +8,8 @@ import { UserRepository } from '../../domains/User/User.repository';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly commandBus: CommandBus,
-  ) // private userRepository: UserRepository,
-  {}
+    private readonly commandBus: CommandBus, // private userRepository: UserRepository,
+  ) {}
   private readonly logger = new Logger(UserService.name);
 
   async createUser(data: UserDto) {
@@ -28,25 +27,4 @@ export class UserService {
       throw new BadRequestException(err);
     }
   }
-
-  // async findByLogin({ username, password }: LoginUserDto): Promise<UserDto> {
-  //   const user = await this.userRepository.findOneByUsername(username);
-
-  //   if (!user) {
-  //     throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
-  //   }
-
-  //   // compare passwords
-  //   const areEqual = await bcrypt.compare(password, user.password);
-
-  //   if (!areEqual) {
-  //     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-  //   }
-
-  //   return {
-  //     id: user.id,
-  //     email: user.email,
-  //     username: user.username,
-  //   };
-  // }
 }

@@ -11,6 +11,7 @@ export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
 
   public readonly id: string;
+  public readonly aggregateName: string = 'user';
 
   dateCreated: Date;
   dateModified: Date;
@@ -50,6 +51,9 @@ export class User extends AggregateRoot {
   }
 
   async login(password: string) {
+    this.logger.debug(`this.password.value: ${this.password.value}`);
+    this.logger.debug(`password: ${password}`);
+
     const areEqual = await bcrypt.compare(password, this.password.value);
 
     if (!areEqual) {
@@ -61,7 +65,13 @@ export class User extends AggregateRoot {
     this.currentlyLoggedIn = true;
 
     this.apply(
-      new UserLoggedInEvent(this.id, new Date(), this.numberLogins, new Date()),
+      new UserLoggedInEvent(
+        this.id,
+        this.userName.value,
+        new Date(),
+        this.numberLogins,
+        new Date(),
+      ),
     );
   }
 
