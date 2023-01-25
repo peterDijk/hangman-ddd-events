@@ -19,6 +19,13 @@ export class GamesRepository {
     const cacheKey = this.getCacheKey(game.id);
     const serializedGame = JSON.stringify(instanceToPlain(game));
     // return this.cacheManager.set(cacheKey, serializedGame);
+
+    // TODO: commented out because the object we recreate from the
+    // cache is not a complete working Aggregate, it doesn't have
+    // working methods.
+    // Find a way to retrieve the Aggregate and instanciate
+    // incl all past events on it, so that we don't always have
+    // to rebuild the Aggregate from all past events for every action
   }
 
   async findOneById(aggregateId: string): Promise<Game> {

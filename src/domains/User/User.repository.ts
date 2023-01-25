@@ -30,7 +30,7 @@ export class UserRepository {
     // disabling this because getting the object from cache doesnt
     // give a complete Aggregate at the moment
     await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
-    this.logger.debug(`set User in cache`);
+    this.logger.debug(`set User in cache: ${serializedUser}`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
