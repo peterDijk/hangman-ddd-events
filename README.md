@@ -47,8 +47,8 @@ sept 2022
 - [x] Add Auth module
 - [x] add docker build in github checks
 - [x] cache-manager to store username:userId pairs in memory
-- [ ] store session for user in cache. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
 - [ ] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
+- [ ] store session for user in cache. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
 - [ ] cache-manager use redis
 - [ ] createUser check username doesn't exist
 - [ ] fix typeorm migration:generate in correct folder
@@ -73,6 +73,8 @@ sept 2022
 ## Installation
 
 ### prepare `.env` file for environment variables with content:
+
+(for testing purposes, .env is included in the repository)
 
 ```bash
 DIR_DATA_PATH="$PWD"
@@ -101,13 +103,15 @@ STORE_STATE_PORT=27017
 STORE_STATE_USERNAME=root
 STORE_STATE_PASSWORD=example
 STORE_STATE_DB=hangman-position
-MONGO_PROJECTIONS_HOSTNAME=hangman-projections
+MONGO_PROJECTIONS_HOSTNAME=127.0.0.1
 MONGO_PROJECTIONS_PORT=27017
 MONGO_PROJECTIONS_CREDENTIALS_USERNAME=root
 MONGO_PROJECTIONS_CREDENTIALS_PASSWORD=example
 MONGO_PROJECTIONS_DB_TYPE=mongodb
 MONGO_PROJECTIONS_DATABASE=hangman-projections-mongo
 GQL_PLAYGROUND=enabled
+JWT_SECRET=test
+EXPIRES_IN=1h
 ```
 
 ### Migrations
@@ -136,9 +140,9 @@ $ docker-compose up
 
 ## Interfaces
 
-- graphql: http://localhost:7070/graphql
+- graphql: http://localhost:5050/graphql
 - eventstore: https://localhost:2113
-- rest api: see Swagger documentation on http://localhost:7070/api
+- rest api: see Swagger documentation on http://localhost:5050/api
 
 ## Test
 

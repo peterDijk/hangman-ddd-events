@@ -10,9 +10,7 @@ import UserCommandHandlers from '../../domains/User/Commands/handlers';
 import UserEventHandlers from '../../domains/User/Events/handlers';
 import { User as UserProjection } from '../read-models/user.entity';
 import { UserRepository } from '../../domains/User/User.repository';
-import { AuthModule } from './auth.module';
-import { AuthService } from '../services/auth.service';
-import { JwtService } from '@nestjs/jwt';
+import { UsersController } from '../controllers/user.controller';
 
 @Module({
   imports: [
@@ -24,7 +22,7 @@ import { JwtService } from '@nestjs/jwt';
     TypeOrmModule.forFeature([UserProjection]),
   ],
   exports: [CqrsModule, UserRepository],
-  // controllers: [UserController],
+  controllers: [UsersController],
   providers: [
     UserResolver,
     UserService,
