@@ -9,6 +9,8 @@ import UserProjectionUpdaters from '../../domains/User/Updaters/';
 import UserCommandHandlers from '../../domains/User/Commands/handlers';
 import UserEventHandlers from '../../domains/User/Events/handlers';
 import { User as UserProjection } from '../read-models/user.entity';
+import { UserRepository } from '../../domains/User/User.repository';
+import { UsersController } from '../controllers/user.controller';
 
 @Module({
   imports: [
@@ -19,11 +21,12 @@ import { User as UserProjection } from '../read-models/user.entity';
     }),
     TypeOrmModule.forFeature([UserProjection]),
   ],
-  exports: [CqrsModule],
-  // controllers: [UserController],
+  exports: [CqrsModule, UserRepository],
+  controllers: [UsersController],
   providers: [
     UserResolver,
     UserService,
+    UserRepository,
     ...UserCommandHandlers,
     ...UserEventHandlers,
     ...UserProjectionUpdaters,

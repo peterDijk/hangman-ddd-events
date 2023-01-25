@@ -5,6 +5,7 @@ import {
   Logger,
   // ValidationPipe,
 } from '@nestjs/common';
+import 'reflect-metadata';
 
 import { AppModule } from './infrastructure/modules/app.module';
 import { config } from '../config';

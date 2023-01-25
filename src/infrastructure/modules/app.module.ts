@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { options } from '../../../ormconfig';
@@ -10,13 +10,19 @@ import { AppService } from '../services/app.service';
 import { GamesModule } from './game.module';
 import { config } from '../../../config';
 import { UserModule } from './user.module';
+import { AuthModule } from './auth.module';
 import { AppResolver } from '../resolvers/app.resolver';
 import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
 
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
-    // AuthModule,
+    CacheModule.register({
+      ttl: 3600 * 60 * 24,
+      // max: 1000 * 1000 * 1000 * 1000,
+      isGlobal: true,
+    }),
+    AuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
