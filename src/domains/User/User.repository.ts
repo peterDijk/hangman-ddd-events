@@ -82,7 +82,7 @@ export class UserRepository {
 
         return user;
       } else {
-        // throw new BadRequestException('no userid to work with');
+        throw new BadRequestException('no userid to work with');
       }
     } catch (err) {
       this.logger.error(err);
