@@ -1,8 +1,8 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+import * as bcrypt from 'bcrypt';
 import { UserCreatedEvent } from './Events/UserCreated.event';
 import { Password } from './ValueObjects/Password.value-object';
 import { Username } from './ValueObjects/Username.value-object';
-import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';

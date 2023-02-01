@@ -1,4 +1,8 @@
-import { Inject } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Inject,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../services/user.service';
 import { UserDto, UserResponse } from '../dto/User.dto';
@@ -21,6 +25,7 @@ export class UserResolver {
   }
 
   @Query((returns) => AllUsersResponse)
+  @UseInterceptors(ClassSerializerInterceptor)
   async getAllUsers(): Promise<{ count: number; users: UserProjection[] }> {
     return await this.userService.getAllUsers();
   }
