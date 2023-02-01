@@ -18,7 +18,14 @@ export class GamesRepository {
   async updateOrCreate(game: Game): Promise<void> {
     const cacheKey = this.getCacheKey(game.id);
     const serializedGame = JSON.stringify(instanceToPlain(game));
-    // return this.cacheManager.set(cacheKey, serializedGame);
+    await this.cacheManager.set(cacheKey, serializedGame);
+  }
+
+  async findOneById(aggregateId: string): Promise<Game> {
+    // const gameFromCache: string = null;
+    const gameFromCache = (await this.cacheManager.get(
+      this.getCacheKey(aggregateId),
+    )) as string;
 
     // TODO: commented out because the object we recreate from the
     // cache is not a complete working Aggregate, it doesn't have
@@ -26,12 +33,6 @@ export class GamesRepository {
     // Find a way to retrieve the Aggregate and instanciate
     // incl all past events on it, so that we don't always have
     // to rebuild the Aggregate from all past events for every action
-  }
-
-  async findOneById(aggregateId: string): Promise<Game> {
-    const gameFromCache = (await this.cacheManager.get(
-      this.getCacheKey(aggregateId),
-    )) as string;
 
     if (gameFromCache) {
       const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));

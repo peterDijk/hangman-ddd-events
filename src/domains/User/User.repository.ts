@@ -27,8 +27,6 @@ export class UserRepository {
     const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
     this.logger.debug(serializedUser);
 
-    // disabling this because getting the object from cache doesnt
-    // give a complete Aggregate at the moment
     await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
     this.logger.debug(`set User in cache: ${serializedUser}`);
 
@@ -41,10 +39,11 @@ export class UserRepository {
   }
 
   async findOneById(aggregateId: string): Promise<User> {
-    let userFromCache: string = null;
-    // const userFromCache = (await this.cacheManager.get(
-    //   this.getCacheKey({ userId: aggregateId }),
-    // )) as string;
+    let userFromCache = (await this.cacheManager.get(
+      this.getCacheKey({ userId: aggregateId }),
+    )) as string;
+
+    // userFromCache = null;
 
     // TODO: commented out because the object we recreate from the
     // cache is not a complete working Aggregate, it doesn't have
@@ -60,6 +59,7 @@ export class UserRepository {
       return deserializedUser;
     } else {
       // build up aggregate from all past aggregate events
+      //
       const user = new User(aggregateId);
       const { events } = await this.eventStore.getEventsForAggregate(
         this.aggregate,
