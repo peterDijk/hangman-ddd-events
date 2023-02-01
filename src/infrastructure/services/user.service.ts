@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ClassSerializerInterceptor,
-  Injectable,
-  Logger,
-  UseInterceptors,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from 'src/infrastructure/dto/User.dto';
