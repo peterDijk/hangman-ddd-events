@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Logger, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Logger,
+  Get,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UserDto } from '../dto/User.dto';
 import { UserService } from '../services/user.service';
@@ -21,6 +29,7 @@ export class UsersController {
 
   @ApiResponse({ status: 200, description: 'List games' })
   @Get('list')
+  @UseInterceptors(ClassSerializerInterceptor)
   async getAllUsers() {
     return await this.userService.getAllUsers();
   }

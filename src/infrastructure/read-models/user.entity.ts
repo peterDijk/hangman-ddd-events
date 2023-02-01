@@ -19,7 +19,6 @@ export class User extends BaseEntity {
   })
   username: string;
 
-  @Field()
   @Column({
     type: 'varchar',
     nullable: false,
