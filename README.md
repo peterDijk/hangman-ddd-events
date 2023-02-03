@@ -47,16 +47,14 @@ sept 2022
 - [x] Add Auth module
 - [x] add docker build in github checks
 - [x] cache-manager to store username:userId pairs in memory
-- [ ] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
-- [ ] store session for user in cache. invalidate on logout. validateUser should verify again redis session in stead of user.currentlyLoggedIn
-- [ ] cache-manager use redis
-- [ ] createUser check username doesn't exist
-- [ ] fix typeorm migration:generate in correct folder
+- [x] createUser check username doesn't exist
+- [x] won't do, node.js not the right tool for this. store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
 - [ ] Add User to Game
 - [ ] Swap projection database type for mongodb
 - [ ] Swap projection for a database type that GraphQL reads from directly (for actual performance improv. reason for GQL. Without it's only dev experience)
 - [ ] Implement actual hangman logic. Goal: backend is ready for comm with frontend
 - [ ] Setup websocket server
+- [ ] fix typeorm migration:generate in correct folder
 - [ ] ...
 
 ### Frontend:
