@@ -6,6 +6,7 @@ import { Username } from './ValueObjects/Username.value-object';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
+import { UserNameChangedEvent } from './Events/UserNameChanged.event';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
@@ -45,6 +46,15 @@ export class User extends AggregateRoot {
           this.dateModified,
         ),
       );
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async changeUsername(newUsername: string) {
+    try {
+      this.userName = await Username.create(newUsername);
+      this.apply(new UserNameChangedEvent(this.id, this.userName.value));
     } catch (err) {
       throw new Error(err);
     }

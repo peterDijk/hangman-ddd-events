@@ -9,8 +9,10 @@ import UserProjectionUpdaters from '../../domains/User/Updaters/';
 import UserCommandHandlers from '../../domains/User/Commands/handlers';
 import UserEventHandlers from '../../domains/User/Events/handlers';
 import { User as UserProjection } from '../read-models/user.entity';
+import { Game as GameProjection } from '../read-models/game.entity';
 import { UserRepository } from '../../domains/User/User.repository';
 import { UsersController } from '../controllers/user.controller';
+import { GamesRepository } from '../../domains/Game/Games.repository';
 
 @Module({
   imports: [
@@ -19,13 +21,14 @@ import { UsersController } from '../controllers/user.controller';
       streamPrefix: 'user',
       eventSerializers: UserEventSerializers,
     }),
-    TypeOrmModule.forFeature([UserProjection]),
+    TypeOrmModule.forFeature([UserProjection, GameProjection]),
   ],
   exports: [CqrsModule, UserRepository],
   controllers: [UsersController],
   providers: [
     UserResolver,
     UserService,
+    GamesRepository,
     UserRepository,
     ...UserCommandHandlers,
     ...UserEventHandlers,

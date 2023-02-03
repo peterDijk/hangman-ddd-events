@@ -27,6 +27,15 @@ export class UsersController {
     return await this.userService.createUser(userDto);
   }
 
+  @ApiResponse({ status: 204, description: 'Username changed' })
+  @Post('update')
+  async changeUsername(
+    @Body()
+    { userId, newUsername }: { userId: string; newUsername: string },
+  ) {
+    return await this.userService.changeUsername(userId, newUsername);
+  }
+
   @ApiResponse({ status: 200, description: 'List games' })
   @Get('list')
   @UseInterceptors(ClassSerializerInterceptor)

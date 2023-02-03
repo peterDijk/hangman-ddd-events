@@ -24,6 +24,14 @@ export class UserResolver {
     return await this.userService.createUser(userDto);
   }
 
+  @Mutation((returns) => UserResponse)
+  async changeUsername(
+    @Args('userId') userId: string,
+    @Args('newUsername') newUsername: string,
+  ): Promise<UserResponse> {
+    return await this.userService.changeUsername(userId, newUsername);
+  }
+
   @Query((returns) => AllUsersResponse)
   @UseInterceptors(ClassSerializerInterceptor)
   async getAllUsers(): Promise<{ count: number; users: UserProjection[] }> {

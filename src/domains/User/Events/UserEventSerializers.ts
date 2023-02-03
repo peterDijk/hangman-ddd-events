@@ -1,6 +1,7 @@
 import { UserCreatedEvent } from './UserCreated.event';
 import { UserLoggedInEvent } from './UserLoggedIn.event';
 import { UserLoggedOutEvent } from './UserLoggedOut.event';
+import { UserNameChangedEvent } from './UserNameChanged.event';
 
 export const UserEventSerializers = {
   UserCreatedEvent: ({ id, userName, password, dateCreated, dateModified }) => {
@@ -29,5 +30,8 @@ export const UserEventSerializers = {
   },
   UserLoggedOutEvent: ({ id, dateLoggedOut }) => {
     return new UserLoggedOutEvent(id, dateLoggedOut);
+  },
+  UserNameChangedEvent: ({ id, newUserName }) => {
+    return new UserNameChangedEvent(id, newUserName);
   },
 };
