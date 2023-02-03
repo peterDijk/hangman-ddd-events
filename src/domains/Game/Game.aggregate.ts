@@ -82,12 +82,12 @@ export class Game extends AggregateRoot {
   // onNameOfEvent
   // framework magic
   async onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.player = await this.userRepository.findOneById(event.playerId);
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
     this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
+    this.player = await this.userRepository.findOneById(event.playerId);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {

@@ -19,7 +19,7 @@ export class GamesRepository {
 
   async updateOrCreate(game: Game): Promise<void> {
     const cacheKey = this.getCacheKey(game.id);
-    const serializedGame = JSON.stringify(instanceToPlain(game));
+    // const serializedGame = JSON.stringify(instanceToPlain(game));
     // return this.cacheManager.set(cacheKey, serializedGame);
 
     // TODO: commented out because the object we recreate from the
@@ -47,7 +47,7 @@ export class GamesRepository {
         aggregateId,
       );
       game.loadFromHistory(events);
-      this.updateOrCreate(game);
+      // this.updateOrCreate(game);
       this.logger.debug(`returning rebuilt Game from events`);
       return game;
     }

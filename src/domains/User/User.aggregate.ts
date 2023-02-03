@@ -3,13 +3,20 @@ import * as bcrypt from 'bcrypt';
 import { UserCreatedEvent } from './Events/UserCreated.event';
 import { Password } from './ValueObjects/Password.value-object';
 import { Username } from './ValueObjects/Username.value-object';
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
 import { UserNameChangedEvent } from './Events/UserNameChanged.event';
+import { UserRepository } from './User.repository';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
+  private userRepository: UserRepository;
 
   public readonly id: string;
   public readonly aggregateName: string = 'user';
@@ -24,10 +31,12 @@ export class User extends AggregateRoot {
   numberLogins: number;
   currentlyLoggedIn: boolean;
 
-  constructor(id: string) {
+  constructor(id: string, userRepository: UserRepository) {
     super();
     this.id = id;
     this.numberLogins = 0;
+
+    this.userRepository = userRepository;
   }
 
   async create(username: string, password: string) {
@@ -53,6 +62,14 @@ export class User extends AggregateRoot {
 
   async changeUsername(newUsername: string) {
     try {
+      const alreadyExists = await this.userRepository.findOneByUsername(
+        newUsername,
+      );
+
+      if (alreadyExists) {
+        throw new BadRequestException('username already exists');
+      }
+
       this.userName = await Username.create(newUsername);
       this.apply(new UserNameChangedEvent(this.id, this.userName.value));
     } catch (err) {
