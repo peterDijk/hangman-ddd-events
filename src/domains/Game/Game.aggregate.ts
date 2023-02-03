@@ -27,16 +27,21 @@ export class Game extends AggregateRoot {
   maxGuesses: MaxGuesses;
   lettersGuessed: LettersGuessed;
 
-  constructor(id: string, userRepository: UserRepository) {
+  constructor(id: string, userRepository: UserRepository, user?: User) {
     super();
     this.id = id;
     this.userRepository = userRepository;
+    // if (user) {
+    this.player = user;
+    // }
   }
 
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
-    this.player = await this.userRepository.findOneById(data.playerId);
+    // if (!this.player) {
+    //   this.player = await this.userRepository.findOneById(data.playerId);
+    // }
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.dateCreated = new Date();
@@ -87,6 +92,7 @@ export class Game extends AggregateRoot {
     this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
+    // error when this line is on top. buggy, should be improved
     this.player = await this.userRepository.findOneById(event.playerId);
   }
 
