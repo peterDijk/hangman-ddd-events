@@ -8,6 +8,7 @@ import {
   IViewUpdater,
   ViewUpdaterHandler,
 } from '@peterdijk/nestjs-eventstoredb';
+import { UserRepository } from '../../../domains/User/User.repository';
 
 @ViewUpdaterHandler(NewGameStartedEvent)
 export class NewGameStartedUpdater
@@ -16,18 +17,21 @@ export class NewGameStartedUpdater
   constructor(
     @InjectRepository(GameProjection)
     private gamesProjectionRepository: Repository<GameProjection>,
+    private userRepository: UserRepository,
   ) {}
 
   private logger = new Logger(NewGameStartedUpdater.name);
 
   async handle(event: NewGameStartedEvent) {
     try {
+      const player = await this.userRepository.findOneById(event.playerId);
+
       const game = this.gamesProjectionRepository.create({
         ...event,
         gameId: event.id,
         playerId: event.playerId,
         wordToGuess: event.wordToGuess,
-        playerName: '',
+        playerName: player.userName.value,
         dateCreated: event.dateCreated,
         dateModified: event.dateModified,
         lettersGuessed: [],

@@ -12,6 +12,7 @@ import ProjectionUpdaters from '../../domains/Game/Updaters';
 import { GamesResolver } from '../resolvers/game.resolver';
 import { Game as GameProjection } from '../read-models/game.entity';
 import { EventSerializers } from '../../domains/Game/Events/EventSerializers';
+import { UserRepository } from '../../domains/User/User.repository';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EventSerializers } from '../../domains/Game/Events/EventSerializers';
   providers: [
     GamesResolver,
     GamesService,
+    UserRepository,
     GamesRepository,
     ...CommandHandlers,
     ...EventHandlers,

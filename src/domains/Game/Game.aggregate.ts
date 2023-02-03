@@ -1,12 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import {
-  IsString,
-  validateOrReject,
-  IsNumber,
-  MinLength,
-  Min,
-} from 'class-validator';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
 import { Logger } from '@nestjs/common';
 
 import { NewGameStartedEvent } from './Events/NewGameStarted.event';
@@ -17,31 +10,33 @@ import { Word } from './ValueObjects/Word.value-object';
 import { MaxGuesses } from './ValueObjects/MaxGuesses.value-object';
 import { LettersGuessed } from './ValueObjects/LettersGuessed.value-object';
 import { Letter } from './ValueObjects/Letter.value-object';
+import { User } from '../User/User.aggregate';
+import { UserRepository } from '../User/User.repository';
 
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
+  private userRepository: UserRepository;
 
   dateCreated: Date;
   dateModified: Date;
 
-  @IsString()
-  @MinLength(2)
-  playerId: string;
+  player: User;
 
   wordToGuess: Word;
   maxGuesses: MaxGuesses;
   lettersGuessed: LettersGuessed;
 
-  constructor(id: string) {
+  constructor(id: string, userRepository: UserRepository) {
     super();
     this.id = id;
+    this.userRepository = userRepository;
   }
 
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto) {
-    this.playerId = data.playerId;
+    this.player = await this.userRepository.findOneById(data.playerId);
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.dateCreated = new Date();
@@ -50,7 +45,7 @@ export class Game extends AggregateRoot {
     this.apply(
       new NewGameStartedEvent(
         this.id,
-        this.playerId,
+        this.player.id,
         this.wordToGuess.value,
         this.maxGuesses.value,
         this.dateCreated,
@@ -86,8 +81,8 @@ export class Game extends AggregateRoot {
   // Replay event from history `loadFromHistory` function calls
   // onNameOfEvent
   // framework magic
-  onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.playerId = event.playerId;
+  async onNewGameStartedEvent(event: NewGameStartedEvent) {
+    this.player = await this.userRepository.findOneById(event.playerId);
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
     this.lettersGuessed = LettersGuessed.createReplay([]);

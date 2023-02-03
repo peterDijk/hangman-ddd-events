@@ -59,16 +59,20 @@ export class UserRepository {
       this.logger.debug(`returing User from cache`);
       return deserializedUser;
     } else {
-      // build up aggregate from all past aggregate events
-      const user = new User(aggregateId);
-      const { events } = await this.eventStore.getEventsForAggregate(
-        this.aggregate,
-        aggregateId,
-      );
-      user.loadFromHistory(events);
-      this.updateOrCreate(user);
-      this.logger.debug(`returning rebuilt User from events`);
-      return user;
+      try {
+        // build up aggregate from all past aggregate events
+        const user = new User(aggregateId);
+        const { events } = await this.eventStore.getEventsForAggregate(
+          this.aggregate,
+          aggregateId,
+        );
+        user.loadFromHistory(events);
+        this.updateOrCreate(user);
+        this.logger.debug(`returning rebuilt User from events`);
+        return user;
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 
