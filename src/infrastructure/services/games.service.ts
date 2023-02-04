@@ -8,6 +8,7 @@ import { Game as GameProjection } from '../read-models/game.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { GuessLetterCommand } from '../../domains/Game/Commands/GuessLetter.command';
 import { User } from '../../domains/User/User.aggregate';
+import { Game } from '../../domains/Game/Game.aggregate';
 
 @Injectable()
 export class GamesService {
@@ -21,10 +22,19 @@ export class GamesService {
   async startNewGame(data: GameDto, user: User) {
     const gameId = uuidv4();
 
-    await this.commandBus.execute(new StartNewGameCommand(data, gameId, user));
+    const game: Game = await this.commandBus.execute(
+      new StartNewGameCommand(data, gameId, user),
+    );
     try {
       this.logger.log(`New game started; ${gameId}`);
-      return { message: 'success', status: 201, gameId, data };
+      return {
+        message: 'success',
+        status: 201,
+        gameId,
+        loggedInUsername: user.userName.value,
+        wordToGuess: game.wordToGuess.value,
+        // lettersGuessed: game.lettersGuessed.value,
+      };
     } catch (err) {
       this.logger.log(err);
       this.logger.error(err.name, err.stack);
@@ -42,11 +52,29 @@ export class GamesService {
     };
   }
 
-  async makeGuess(gameId: string, letter: string) {
+  async makeGuess(gameId: string, letter: string, loggedInUser: User) {
     try {
-      await this.commandBus.execute(new GuessLetterCommand(gameId, letter));
+      const game: Game = await this.commandBus.execute(
+        new GuessLetterCommand(gameId, letter, loggedInUser),
+      );
 
-      return { message: 'success', status: 200, gameId, letter };
+      this.logger.warn('----------------------');
+      this.logger.warn(game.lettersGuessed.value);
+
+      return {
+        message: 'success',
+        status: 200,
+        gameId,
+        letter,
+        loggedInUsername: loggedInUser.userName.value,
+        // wordToGuess: game.wordToGuess.value,
+        gameModified: game.dateModified,
+        gameCreated: game.dateCreated,
+        // info on the game
+        // letters guess
+        // creation and modified dates
+        // game.user.userName.value
+      };
     } catch (err) {
       this.logger.error(err.name, err.stack);
 

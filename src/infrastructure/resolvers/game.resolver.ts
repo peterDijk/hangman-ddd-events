@@ -33,8 +33,16 @@ export class GamesResolver {
     return await this.gameService.startNewGame(gameDto, user);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation((returns) => GameResponse)
-  async makeGuess(@Args('input') guesDto: GuessDto): Promise<GameResponse> {
-    return await this.gameService.makeGuess(guesDto.gameId, guesDto.letter);
+  async makeGuess(
+    @Args('input') guesDto: GuessDto,
+    @CurrentUser() user: User,
+  ): Promise<GameResponse> {
+    return await this.gameService.makeGuess(
+      guesDto.gameId,
+      guesDto.letter,
+      user,
+    );
   }
 }

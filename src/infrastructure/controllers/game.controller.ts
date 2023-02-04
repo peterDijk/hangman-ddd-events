@@ -41,7 +41,8 @@ export class GamesController {
     @Param() { id },
     @Body()
     { letter }: GuessDto,
+    @CurrentUser() user: User,
   ) {
-    return await this.gameService.makeGuess(id, letter);
+    return await this.gameService.makeGuess(id, letter, user);
   }
 }

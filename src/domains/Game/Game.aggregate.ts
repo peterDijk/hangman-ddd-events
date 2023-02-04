@@ -60,7 +60,7 @@ export class Game extends AggregateRoot {
     );
   }
 
-  async guessLetter(letter: string) {
+  async guessLetter(letter: string): Promise<Game> {
     // TODO: validate guess
     // validation is done in LettersGuessed VA (length) and Letter VA (string, 1 char)
 
@@ -72,12 +72,19 @@ export class Game extends AggregateRoot {
       );
       const newLettersGuessed = lettersGuessed;
 
+      this.logger.debug(`newLettersGuessed: ${newLettersGuessed.value}`);
+
       this.lettersGuessed = newLettersGuessed;
       this.dateModified = new Date();
 
       const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
 
+      this.logger.warn(')))))))))');
+      this.logger.warn(this.lettersGuessed.value);
+
       this.apply(event, false);
+
+      return this;
     } catch (err) {
       throw new InvalidGameException(err);
     }
@@ -93,7 +100,7 @@ export class Game extends AggregateRoot {
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
     // error when this line is on top. buggy, should be improved
-    this.player = await this.userRepository.findOneById(event.playerId);
+    // this.player = await this.userRepository.findOneById(event.playerId);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {

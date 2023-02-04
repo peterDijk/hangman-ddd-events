@@ -5,6 +5,7 @@ import { EventStore } from '@peterdijk/nestjs-eventstoredb';
 import { CACHE_KEYS } from '../../infrastructure/constants';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { UserRepository } from '../User/User.repository';
+import { User } from '../User/User.aggregate';
 
 @Injectable()
 export class GamesRepository {
@@ -30,18 +31,17 @@ export class GamesRepository {
     // to rebuild the Aggregate from all past events for every action
   }
 
-  async findOneById(aggregateId: string): Promise<Game> {
+  async findOneById(aggregateId: string, user?: User): Promise<Game> {
     const gameFromCache = (await this.cacheManager.get(
       this.getCacheKey(aggregateId),
     )) as string;
 
     if (gameFromCache) {
-      const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));
-
-      this.logger.debug(`returing Game from cache`);
-      return deserializedGame;
+      // const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));
+      // this.logger.debug(`returing Game from cache`);
+      // return deserializedGame;
     } else {
-      const game = new Game(aggregateId, this.userRepository);
+      const game = new Game(aggregateId, this.userRepository, user);
       const { events } = await this.eventStore.getEventsForAggregate(
         this.aggregate,
         aggregateId,

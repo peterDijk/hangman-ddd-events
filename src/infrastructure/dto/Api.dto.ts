@@ -15,6 +15,12 @@ export class GameResponse {
 
   @Field()
   status: number;
+
+  @Field((type) => String, { nullable: true })
+  loggedInUsername: string;
+
+  // @Field((type) => Array<string>, { nullable: true })
+  // lettersGuessed: string[];
 }
 
 @ObjectType()
