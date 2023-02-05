@@ -41,11 +41,12 @@ export class UserService {
       this.logger.log(
         `user '${user.userName.value}' wants to change their username to '${newUsername}'`,
       );
+      const oldUsername = user.userName.value;
       await this.commandBus.execute(
         new ChangeUserNameCommand(user, newUsername),
       );
       return {
-        message: `username updated from '${user.userName.value}' to ${newUsername}`,
+        message: `username updated from '${oldUsername}' to ${newUsername}`,
         status: 204,
         userId: user.id,
         username: newUsername,

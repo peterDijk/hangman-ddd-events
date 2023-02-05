@@ -67,7 +67,7 @@ export class User extends AggregateRoot {
         newUsername,
       );
 
-      if (alreadyExists) {
+      if (alreadyExists && alreadyExists.userName.value === newUsername) {
         throw new BadRequestException('username already exists');
       }
 
@@ -125,5 +125,9 @@ export class User extends AggregateRoot {
 
   onUserLoggedOutEvent(event: UserLoggedOutEvent) {
     this.currentlyLoggedIn = false;
+  }
+
+  onUserNameChangedEvent(event: UserNameChangedEvent) {
+    this.userName = Username.createReplay(event.newUserName);
   }
 }
