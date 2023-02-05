@@ -17,14 +17,14 @@ export class ChangeUserNameHandler
     private userRepository: UserRepository,
   ) {}
 
-  async execute({ userId, newUsername }: ChangeUserNameCommand): Promise<User> {
-    const aggregate = await this.userRepository.findOneById(userId);
-    await aggregate.changeUsername(newUsername);
+  async execute({ user, newUsername }: ChangeUserNameCommand): Promise<User> {
+    // const aggregate = await this.userRepository.findOneById(userId);
+    await user.changeUsername(newUsername);
 
-    const user = this.publisher.mergeObjectContext(aggregate);
+    const updatedUser = this.publisher.mergeObjectContext(user);
 
-    user.commit();
-    this.userRepository.updateOrCreate(user);
-    return user;
+    updatedUser.commit();
+    this.userRepository.updateOrCreate(updatedUser);
+    return updatedUser;
   }
 }

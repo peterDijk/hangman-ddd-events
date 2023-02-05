@@ -8,7 +8,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { User } from '../../domains/User/User.aggregate';
 import { UserDto } from '../dto/User.dto';
+import { CurrentUser } from '../modules/graphql.guard';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
@@ -32,8 +34,9 @@ export class UsersController {
   async changeUsername(
     @Body()
     { userId, newUsername }: { userId: string; newUsername: string },
+    @CurrentUser() user: User,
   ) {
-    return await this.userService.changeUsername(userId, newUsername);
+    return await this.userService.changeUsername(user, newUsername);
   }
 
   @ApiResponse({ status: 200, description: 'List games' })

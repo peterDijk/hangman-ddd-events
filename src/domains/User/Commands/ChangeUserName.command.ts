@@ -1,5 +1,6 @@
 import { ICommand } from '@nestjs/cqrs';
+import { User } from '../User.aggregate';
 
 export class ChangeUserNameCommand implements ICommand {
-  constructor(public userId: string, public newUsername: string) {}
+  constructor(public user: User, public newUsername: string) {}
 }

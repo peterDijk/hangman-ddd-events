@@ -62,6 +62,7 @@ export class User extends AggregateRoot {
 
   async changeUsername(newUsername: string) {
     try {
+      this.logger.debug(`newUsername: ${newUsername}`);
       const alreadyExists = await this.userRepository.findOneByUsername(
         newUsername,
       );

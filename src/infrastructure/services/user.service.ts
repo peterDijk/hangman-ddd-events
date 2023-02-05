@@ -8,6 +8,7 @@ import { UserRepository } from '../../domains/User/User.repository';
 import { User as UserProjection } from '../read-models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../../domains/User/User.aggregate';
 
 @Injectable()
 export class UserService {
@@ -35,16 +36,18 @@ export class UserService {
     }
   }
 
-  async changeUsername(userId: string, newUsername: string) {
+  async changeUsername(user: User, newUsername: string) {
     try {
-      const user = await this.userRepository.findOneById(userId);
+      this.logger.log(
+        `user '${user.userName.value}' wants to change their username to '${newUsername}'`,
+      );
       await this.commandBus.execute(
-        new ChangeUserNameCommand(userId, newUsername),
+        new ChangeUserNameCommand(user, newUsername),
       );
       return {
         message: `username updated from '${user.userName.value}' to ${newUsername}`,
         status: 204,
-        userId: userId,
+        userId: user.id,
         username: newUsername,
       };
     } catch (err) {

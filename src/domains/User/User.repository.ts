@@ -109,6 +109,10 @@ export class UserRepository {
       // - write the username: id pair to the cache
       // - return user id
 
+      // - oh oh, user could have changed it's username??
+      // - maybe we should not allow changing username ?
+      // - or you just cant change to an earlier used username
+
       const eventId = (await this.eventStore.getPropertyByKeyValueFromEvents({
         streamPrefix: 'user',
         searchEventName: UserCreatedEvent.name,
