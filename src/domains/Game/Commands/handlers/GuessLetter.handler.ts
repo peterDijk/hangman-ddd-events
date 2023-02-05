@@ -28,8 +28,11 @@ export class GuessLetterCommandHandler
 
     const aggregate = await this.repository.findOneById(gameId);
 
+    this.logger.debug(JSON.stringify(aggregate.player));
     if (aggregate.player.id !== loggedInUser.id) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'not allowed to make a guess for a game owned by another player',
+      );
     }
     await aggregate.guessLetter(letter);
     // performance.mark('stop-guess');

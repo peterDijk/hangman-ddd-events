@@ -100,7 +100,7 @@ export class Game extends AggregateRoot {
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
     // error when this line is on top. buggy, should be improved
-    // this.player = await this.userRepository.findOneById(event.playerId);
+    this.player = await this.userRepository.findOneById(event.playerId);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {
