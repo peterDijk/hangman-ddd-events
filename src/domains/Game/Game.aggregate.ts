@@ -27,25 +27,23 @@ export class Game extends AggregateRoot {
   maxGuesses: MaxGuesses;
   lettersGuessed: LettersGuessed;
 
-  constructor(id: string, userRepository: UserRepository, user?: User) {
+  constructor(id: string, userRepository: UserRepository) {
     super();
     this.id = id;
     this.userRepository = userRepository;
     // if (user) {
-    this.player = user;
+    // this.player = user;
     // }
   }
 
   private logger = new Logger(Game.name);
 
-  async startNewGame(data: GameDto) {
-    // if (!this.player) {
-    //   this.player = await this.userRepository.findOneById(data.playerId);
-    // }
+  async startNewGame(data: GameDto, user: User) {
     this.wordToGuess = await Word.create(data.wordToGuess);
     this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
     this.dateCreated = new Date();
     this.dateModified = new Date();
+    this.player = user;
 
     this.apply(
       new NewGameStartedEvent(
@@ -90,9 +88,6 @@ export class Game extends AggregateRoot {
     }
   }
 
-  // Replay event from history `loadFromHistory` function calls
-  // onNameOfEvent
-  // framework magic
   async onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
@@ -100,7 +95,7 @@ export class Game extends AggregateRoot {
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
     // error when this line is on top. buggy, should be improved
-    this.player = await this.userRepository.findOneById(event.playerId);
+    this.player = new User(event.playerId, this.userRepository);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {

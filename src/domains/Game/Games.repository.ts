@@ -41,7 +41,7 @@ export class GamesRepository {
       // this.logger.debug(`returing Game from cache`);
       // return deserializedGame;
     } else {
-      const game = new Game(aggregateId, this.userRepository, user);
+      const game = new Game(aggregateId, this.userRepository);
       const { events } = await this.eventStore.getEventsForAggregate(
         this.aggregate,
         aggregateId,

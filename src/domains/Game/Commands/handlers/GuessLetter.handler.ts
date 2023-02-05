@@ -22,23 +22,24 @@ export class GuessLetterCommandHandler
     private readonly repository: GamesRepository,
   ) {}
 
-  async execute({ gameId, letter, user }: GuessLetterCommand): Promise<Game> {
+  async execute({
+    gameId,
+    letter,
+    user: loggedInUser,
+  }: GuessLetterCommand): Promise<Game> {
     // is logged in user allowed to make the guess ?
-    const loggedInUser = user;
 
-    const aggregate = await this.repository.findOneById(gameId);
+    const game = await this.repository.findOneById(gameId);
 
-    this.logger.debug(JSON.stringify(aggregate.player));
-    if (aggregate.player.id !== loggedInUser.id) {
+    if (game.player.id !== loggedInUser.id) {
       throw new UnauthorizedException(
         'not allowed to make a guess for a game owned by another player',
       );
     }
-    await aggregate.guessLetter(letter);
-    // performance.mark('stop-guess');
-    // performance.measure('Measurement', 'start-guess', 'stop-guess');
-    const game = this.publisher.mergeObjectContext(aggregate);
+    await game.guessLetter(letter);
+    this.publisher.mergeObjectContext(game);
     game.commit();
+
     return game;
   }
 }

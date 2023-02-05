@@ -18,8 +18,8 @@ export class StartNewGameCommandHandler
   ) {}
 
   async execute({ data, uuid, user }: StartNewGameCommand): Promise<Game> {
-    const aggregate = new Game(uuid, this.userRepository, user);
-    await aggregate.startNewGame(data);
+    const aggregate = new Game(uuid, this.userRepository);
+    await aggregate.startNewGame(data, user);
     const game = this.publisher.mergeObjectContext(aggregate);
     this.logger.log(game);
     game.commit();
