@@ -33,7 +33,7 @@ export class GamesService {
         gameId,
         loggedInUsername: user.userName.value,
         wordToGuess: game.wordToGuess.value,
-        // lettersGuessed: game.lettersGuessed.value,
+        lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
       };
     } catch (err) {
       this.logger.log(err);
@@ -66,14 +66,10 @@ export class GamesService {
         status: 200,
         gameId,
         letter,
+        lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
         loggedInUsername: loggedInUser.userName.value,
-        // wordToGuess: game.wordToGuess.value,
-        gameModified: game.dateModified,
-        gameCreated: game.dateCreated,
-        // info on the game
-        // letters guess
-        // creation and modified dates
-        // game.user.userName.value
+        // gameModified: game.dateModified,
+        // gameCreated: game.dateCreated,
       };
     } catch (err) {
       this.logger.error(err.name, err.stack);

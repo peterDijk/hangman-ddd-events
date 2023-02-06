@@ -19,8 +19,8 @@ export class GameResponse {
   @Field((type) => String, { nullable: true })
   loggedInUsername: string;
 
-  // @Field((type) => Array<string>, { nullable: true })
-  // lettersGuessed: string[];
+  @Field((type) => [String], { nullable: true })
+  lettersGuessed: string[];
 }
 
 @ObjectType()
