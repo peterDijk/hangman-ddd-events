@@ -31,9 +31,6 @@ export class Game extends AggregateRoot {
     super();
     this.id = id;
     this.userRepository = userRepository;
-    // if (user) {
-    // this.player = user;
-    // }
   }
 
   private logger = new Logger(Game.name);
@@ -94,7 +91,7 @@ export class Game extends AggregateRoot {
     this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
-    // error when this line is on top. buggy, should be improved
+    // creating new user with id only, because can't wait for async user repository
     this.player = new User(event.playerId, this.userRepository);
   }
 
