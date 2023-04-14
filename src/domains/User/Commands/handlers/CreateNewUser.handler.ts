@@ -28,7 +28,7 @@ export class CreateNewUserHandler
     }
 
     const aggregate = new User(uuid, this.userRepository);
-    await aggregate.create(data.username, data.password);
+    await aggregate.create(data.username, data.password, data.fullName);
     const user = this.publisher.mergeObjectContext(aggregate);
     user.commit();
     this.userRepository.updateOrCreate(user);

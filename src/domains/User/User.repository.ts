@@ -66,6 +66,7 @@ export class UserRepository {
           this.aggregate,
           aggregateId,
         );
+
         user.loadFromHistory(events);
         this.updateOrCreate(user);
         this.logger.debug(`returning rebuilt User from events`);

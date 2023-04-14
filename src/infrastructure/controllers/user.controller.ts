@@ -29,14 +29,14 @@ export class UsersController {
     return await this.userService.createUser(userDto);
   }
 
-  @ApiResponse({ status: 204, description: 'Username changed' })
+  @ApiResponse({ status: 204, description: 'Full name changed' })
   @Post('update')
-  async changeUsername(
+  async changeFullName(
     @Body()
-    { userId, newUsername }: { userId: string; newUsername: string },
+    { userId, newFullName }: { userId: string; newFullName: string },
     @CurrentUser() user: User,
   ) {
-    return await this.userService.changeUsername(user, newUsername);
+    return await this.userService.changeFullName(user, newFullName);
   }
 
   @ApiResponse({ status: 200, description: 'List games' })

@@ -28,6 +28,13 @@ export class User extends BaseEntity {
 
   @Field()
   @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  fullName: string;
+
+  @Field()
+  @Column({
     type: 'int',
     nullable: false,
     default: 0,

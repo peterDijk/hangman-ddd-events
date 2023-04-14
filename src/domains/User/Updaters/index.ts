@@ -1,11 +1,11 @@
 import { UserCreatedUpdater } from './UserCreated.updater';
 import { UserLoggedInUpdater } from './UserLoggedIn.updater';
-import { UserNameChangedUpdater } from './UserNameChanged.updater';
+import { FullNameChangedUpdater } from './FullNameChanged.updater';
 
 const StateUpdaters = [
   UserCreatedUpdater,
   UserLoggedInUpdater,
-  UserNameChangedUpdater,
+  FullNameChangedUpdater,
 ];
 
 export default StateUpdaters;

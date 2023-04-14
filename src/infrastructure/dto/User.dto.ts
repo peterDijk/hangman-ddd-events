@@ -10,6 +10,10 @@ export class UserDto {
   @ApiProperty()
   @Field()
   password: string;
+
+  @ApiProperty()
+  @Field()
+  fullName: string;
 }
 
 @ObjectType()

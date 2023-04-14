@@ -11,8 +11,9 @@ import {
 } from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
-import { UserNameChangedEvent } from './Events/UserNameChanged.event';
 import { UserRepository } from './User.repository';
+import { FullName } from './ValueObjects/FullName.value-object';
+import { FullNameChangedEvent } from './Events/FullNameChanged.event';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
@@ -27,6 +28,8 @@ export class User extends AggregateRoot {
   userName: Username;
   password: Password;
 
+  fullName: FullName;
+
   lastLoggedIn: Date;
   numberLogins: number;
   currentlyLoggedIn: boolean;
@@ -39,9 +42,10 @@ export class User extends AggregateRoot {
     this.userRepository = userRepository;
   }
 
-  async create(username: string, password: string) {
+  async create(username: string, password: string, fullName: string) {
     this.userName = await Username.create(username);
     this.password = await Password.create(password);
+    this.fullName = await FullName.create(fullName);
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
@@ -51,6 +55,7 @@ export class User extends AggregateRoot {
           this.id,
           this.userName.value,
           this.password.value,
+          this.fullName.value,
           this.dateCreated,
           this.dateModified,
         ),
@@ -60,19 +65,12 @@ export class User extends AggregateRoot {
     }
   }
 
-  async changeUsername(newUsername: string) {
+  async changeFullName(newFullName: string) {
     try {
-      this.logger.debug(`newUsername: ${newUsername}`);
-      const alreadyExists = await this.userRepository.findOneByUsername(
-        newUsername,
-      );
+      this.logger.debug(`newFullName: ${newFullName}`);
 
-      if (alreadyExists && alreadyExists.userName.value === newUsername) {
-        throw new BadRequestException('username already exists');
-      }
-
-      this.userName = await Username.create(newUsername);
-      this.apply(new UserNameChangedEvent(this.id, this.userName.value));
+      this.fullName = await FullName.create(newFullName);
+      this.apply(new FullNameChangedEvent(this.id, this.fullName.value));
     } catch (err) {
       throw new Error(err);
     }
@@ -112,6 +110,7 @@ export class User extends AggregateRoot {
   onUserCreatedEvent(event: UserCreatedEvent) {
     this.userName = Username.createReplay(event.userName);
     this.password = Password.createReplay(event.password);
+    this.fullName = FullName.createReplay(event.fullName);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
@@ -127,7 +126,7 @@ export class User extends AggregateRoot {
     this.currentlyLoggedIn = false;
   }
 
-  onUserNameChangedEvent(event: UserNameChangedEvent) {
-    this.userName = Username.createReplay(event.newUserName);
+  onFullNameChangedEvent(event: FullNameChangedEvent) {
+    this.fullName = FullName.createReplay(event.newFullName);
   }
 }

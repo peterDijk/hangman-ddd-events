@@ -3,7 +3,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from 'src/infrastructure/dto/User.dto';
 import { CreateNewUserCommand } from '../../domains/User/Commands/CreateNewUser.command';
-import { ChangeUserNameCommand } from '../../domains/User/Commands/ChangeUserName.command';
+import { ChangeFullNameCommand } from '../../domains/User/Commands/ChangeFullName.command';
 import { UserRepository } from '../../domains/User/User.repository';
 import { User as UserProjection } from '../read-models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,20 +36,22 @@ export class UserService {
     }
   }
 
-  async changeUsername(user: User, newUsername: string) {
+  async changeFullName(user: User, newFullName: string) {
     try {
+      this.logger.log(user.fullName);
       this.logger.log(
-        `user '${user.userName.value}' wants to change their username to '${newUsername}'`,
+        `user '${user.userName.value}' (${user.fullName.value}) wants to change their full name to '${newFullName}'`,
       );
-      const oldUsername = user.userName.value;
+      const oldFullName = user.fullName.value;
       await this.commandBus.execute(
-        new ChangeUserNameCommand(user, newUsername),
+        new ChangeFullNameCommand(user, newFullName),
       );
       return {
-        message: `username updated from '${oldUsername}' to ${newUsername}`,
+        message: `full name updated from '${oldFullName}' to ${newFullName}`,
         status: 204,
         userId: user.id,
-        username: newUsername,
+        username: user.userName.value,
+        fullName: user.fullName.value,
       };
     } catch (err) {
       throw new BadRequestException(err);

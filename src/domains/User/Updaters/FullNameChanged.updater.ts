@@ -8,11 +8,11 @@ import {
   IViewUpdater,
   ViewUpdaterHandler,
 } from '@peterdijk/nestjs-eventstoredb';
-import { UserNameChangedEvent } from '../Events/UserNameChanged.event';
+import { FullNameChangedEvent } from '../Events/FullNameChanged.event';
 
-@ViewUpdaterHandler(UserNameChangedEvent)
-export class UserNameChangedUpdater
-  implements IViewUpdater<UserNameChangedEvent>
+@ViewUpdaterHandler(FullNameChangedEvent)
+export class FullNameChangedUpdater
+  implements IViewUpdater<FullNameChangedEvent>
 {
   constructor(
     @InjectRepository(UserProjection)
@@ -21,16 +21,17 @@ export class UserNameChangedUpdater
     private gameProjectionRepository: Repository<GameProjection>,
   ) {}
 
-  private logger = new Logger(UserNameChangedUpdater.name);
+  private logger = new Logger(FullNameChangedUpdater.name);
 
-  async handle(event: UserNameChangedEvent) {
+  async handle(event: FullNameChangedEvent) {
     try {
+      this.logger.log(JSON.stringify(event));
       await this.userProjectionRepository.update(
         {
           userId: event.id,
         },
         {
-          username: event.newUserName,
+          fullName: event.newFullName,
         },
       );
 
@@ -39,7 +40,7 @@ export class UserNameChangedUpdater
           playerId: event.id,
         },
         {
-          playerName: event.newUserName,
+          playerName: event.newFullName,
         },
       );
     } catch (err) {

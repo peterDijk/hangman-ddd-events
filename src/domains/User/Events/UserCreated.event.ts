@@ -8,6 +8,7 @@ export class UserCreatedEvent extends StorableEvent {
     public readonly id: string,
     public readonly userName: string,
     public readonly password: string,
+    public readonly fullName: string,
     public readonly dateCreated: Date,
     public readonly dateModified: Date,
   ) {
