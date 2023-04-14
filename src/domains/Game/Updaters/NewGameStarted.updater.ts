@@ -31,7 +31,7 @@ export class NewGameStartedUpdater
         gameId: event.id,
         playerId: event.playerId,
         wordToGuess: event.wordToGuess,
-        playerName: player.userName.value,
+        playerName: player.fullName.value,
         dateCreated: event.dateCreated,
         dateModified: event.dateModified,
         lettersGuessed: [],
