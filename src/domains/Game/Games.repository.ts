@@ -14,7 +14,6 @@ export class GamesRepository {
   constructor(
     private readonly eventStore: EventStore,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private userRepository: UserRepository,
   ) {}
   private logger = new Logger(GamesRepository.name);
 
@@ -22,7 +21,6 @@ export class GamesRepository {
     const cacheKey = this.getCacheKey(game.id);
     const serializedGame = instanceToPlain(game);
     this.logger.debug(`adding game to cache`);
-    this.logger.debug(serializedGame);
     return this.cacheManager.set(cacheKey, serializedGame);
 
     // TODO: commented out because the object we recreate from the
@@ -42,7 +40,6 @@ export class GamesRepository {
       const deserializedGame = plainToInstance(Game, gameFromCache);
 
       this.logger.debug(`returing Game from cache`);
-      this.logger.debug(deserializedGame.lettersGuessed);
 
       return deserializedGame;
     } else {

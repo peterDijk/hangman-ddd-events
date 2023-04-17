@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ObjectType } from '@nestjs/graphql';
 import { Logger } from '@nestjs/common';
+import { Transform } from 'class-transformer';
 
 import { NewGameStartedEvent } from './Events/NewGameStarted.event';
 import { InvalidGameException } from '../../infrastructure/exceptions';
@@ -21,8 +22,28 @@ export class Game extends AggregateRoot {
 
   player: User;
 
+  @Transform(({ value }) => Word.createReplay(value._value), {
+    toClassOnly: true,
+  })
   wordToGuess: Word;
+
+  @Transform(({ value }) => MaxGuesses.createReplay(value._value), {
+    toClassOnly: true,
+  })
   maxGuesses: MaxGuesses;
+
+  @Transform(
+    ({ value }) => {
+      return LettersGuessed.createReplay(
+        value.props.value.map((letter) =>
+          Letter.createReplay(letter.props.value),
+        ),
+      );
+    },
+    {
+      toClassOnly: true,
+    },
+  )
   lettersGuessed: LettersGuessed;
 
   constructor(id: string) {
