@@ -22,6 +22,7 @@ export class UserFullNameChangedUpdater
 
   async handle(event: FullNameChangedEvent) {
     try {
+      this.logger.log(JSON.stringify(event));
       await this.gameProjectionRepository.update(
         {
           playerId: event.id,

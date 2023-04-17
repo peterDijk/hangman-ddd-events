@@ -65,8 +65,8 @@ export class User extends AggregateRoot {
     try {
       this.logger.debug(`newFullName: ${newFullName}`);
 
-      this.fullName = await FullName.create(newFullName);
-      this.apply(new FullNameChangedEvent(this.id, this.fullName.value));
+      const fullName = await FullName.create(newFullName);
+      this.apply(new FullNameChangedEvent(this.id, fullName.value));
     } catch (err) {
       throw new Error(err);
     }
@@ -82,16 +82,14 @@ export class User extends AggregateRoot {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    this.lastLoggedIn = new Date();
-    this.numberLogins = this.numberLogins + 1;
-    this.currentlyLoggedIn = true;
+    const numberLogins = this.numberLogins + 1;
 
     this.apply(
       new UserLoggedInEvent(
         this.id,
         this.userName.value,
         new Date(),
-        this.numberLogins,
+        numberLogins,
         new Date(),
       ),
     );

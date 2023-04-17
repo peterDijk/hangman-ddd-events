@@ -68,9 +68,9 @@ export class Game extends AggregateRoot {
         this.maxGuesses,
       );
 
-      this.dateModified = new Date();
+      const dateModified = new Date();
 
-      const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
+      const event = new LetterGuessedEvent(this.id, letter, dateModified);
 
       this.apply(event, false);
 
