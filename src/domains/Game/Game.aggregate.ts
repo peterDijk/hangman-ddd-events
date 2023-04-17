@@ -36,23 +36,28 @@ export class Game extends AggregateRoot {
   private logger = new Logger(Game.name);
 
   async startNewGame(data: GameDto, user: User) {
-    this.wordToGuess = await Word.create(data.wordToGuess);
-    this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
-    this.dateCreated = new Date();
-    this.dateModified = new Date();
-    this.player = user;
+    try {
+      const wordToGuess = await Word.create(data.wordToGuess);
+      const maxGuesses = await MaxGuesses.create(data.maxGuesses);
+      const dateCreated = new Date();
+      const dateModified = new Date();
 
-    this.apply(
-      new NewGameStartedEvent(
-        this.id,
-        this.player.id,
-        this.wordToGuess.value,
-        this.maxGuesses.value,
-        this.dateCreated,
-        this.dateModified,
-      ),
-      false,
-    );
+      this.apply(
+        new NewGameStartedEvent(
+          this.id,
+          user.id,
+          wordToGuess.value,
+          maxGuesses.value,
+          dateCreated,
+          dateModified,
+        ),
+        false,
+      );
+
+      return this;
+    } catch (err) {
+      return new InvalidGameException(err);
+    }
   }
 
   async guessLetter(letter: string): Promise<Game> {
@@ -61,21 +66,14 @@ export class Game extends AggregateRoot {
 
     try {
       const newLetter = await Letter.create(letter);
-      const lettersGuessed = await LettersGuessed.create(
+      await LettersGuessed.create(
         [...this.lettersGuessed.value, newLetter],
         this.maxGuesses,
       );
-      const newLettersGuessed = lettersGuessed;
 
-      this.logger.debug(`newLettersGuessed: ${newLettersGuessed.value}`);
-
-      this.lettersGuessed = newLettersGuessed;
       this.dateModified = new Date();
 
       const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
-
-      this.logger.warn(')))))))))');
-      this.logger.warn(this.lettersGuessed.value);
 
       this.apply(event, false);
 

@@ -21,6 +21,9 @@ export class GameResponse {
 
   @Field((type) => [String], { nullable: true })
   lettersGuessed: string[];
+
+  @Field((type) => String, { nullable: false })
+  wordToGuess: string;
 }
 
 @ObjectType()

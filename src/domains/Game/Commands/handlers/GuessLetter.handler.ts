@@ -1,5 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { performance, PerformanceObserver } from 'perf_hooks';
 
@@ -30,6 +34,10 @@ export class GuessLetterCommandHandler
     // is logged in user allowed to make the guess ?
 
     const game = await this.repository.findOneById(gameId);
+
+    if (!game) {
+      throw new BadRequestException('Cant find game with this ID');
+    }
 
     if (game.player.id !== loggedInUser.id) {
       throw new UnauthorizedException(

@@ -58,18 +58,16 @@ export class GamesService {
         new GuessLetterCommand(gameId, letter, loggedInUser),
       );
 
-      this.logger.warn('----------------------');
-      this.logger.warn(game.lettersGuessed.value);
-
       return {
         message: 'success',
         status: 200,
         gameId,
         letter,
+        wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
         loggedInUsername: loggedInUser.userName.value,
-        // gameModified: game.dateModified,
-        // gameCreated: game.dateCreated,
+        gameModified: game.dateModified,
+        gameCreated: game.dateCreated,
       };
     } catch (err) {
       this.logger.error(err.name, err.stack);
