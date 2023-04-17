@@ -1,5 +1,4 @@
 import { User as UserProjection } from '../../../infrastructure/read-models/user.entity';
-import { Game as GameProjection } from '../../../infrastructure/read-models/game.entity';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,8 +16,6 @@ export class FullNameChangedUpdater
   constructor(
     @InjectRepository(UserProjection)
     private userProjectionRepository: Repository<UserProjection>,
-    @InjectRepository(GameProjection)
-    private gameProjectionRepository: Repository<GameProjection>,
   ) {}
 
   private logger = new Logger(FullNameChangedUpdater.name);
@@ -32,15 +29,6 @@ export class FullNameChangedUpdater
         },
         {
           fullName: event.newFullName,
-        },
-      );
-
-      await this.gameProjectionRepository.update(
-        {
-          playerId: event.id,
-        },
-        {
-          playerName: event.newFullName,
         },
       );
     } catch (err) {

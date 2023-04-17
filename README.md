@@ -51,6 +51,7 @@ sept 2022
 - [x] [won't do, node.js not the right tool for this] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
 - [x] Add User to Game
 - [x] Change user info flow incl update all (both at this point) projections
+- [ ] Support multiple updaters for one event (each domain can have it's own updater for the same event) lib change
 - [ ] Try again revive aggregate from json
 - [ ] update dependencies
 - [ ] Swap projection database type for mongodb
