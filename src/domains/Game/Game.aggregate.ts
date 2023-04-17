@@ -11,12 +11,10 @@ import { MaxGuesses } from './ValueObjects/MaxGuesses.value-object';
 import { LettersGuessed } from './ValueObjects/LettersGuessed.value-object';
 import { Letter } from './ValueObjects/Letter.value-object';
 import { User } from '../User/User.aggregate';
-import { UserRepository } from '../User/User.repository';
 
 @ObjectType()
 export class Game extends AggregateRoot {
   public readonly id: string;
-  private userRepository: UserRepository;
 
   dateCreated: Date;
   dateModified: Date;
@@ -27,10 +25,9 @@ export class Game extends AggregateRoot {
   maxGuesses: MaxGuesses;
   lettersGuessed: LettersGuessed;
 
-  constructor(id: string, userRepository: UserRepository) {
+  constructor(id: string) {
     super();
     this.id = id;
-    this.userRepository = userRepository;
   }
 
   private logger = new Logger(Game.name);
@@ -90,7 +87,7 @@ export class Game extends AggregateRoot {
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
     // creating new user with id only, because can't wait for async user repository
-    this.player = new User(event.playerId, this.userRepository);
+    this.player = new User(event.playerId);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {

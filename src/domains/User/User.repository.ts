@@ -61,7 +61,7 @@ export class UserRepository {
     } else {
       try {
         // build up aggregate from all past aggregate events
-        const user = new User(aggregateId, this);
+        const user = new User(aggregateId);
         const { events } = await this.eventStore.getEventsForAggregate(
           this.aggregate,
           aggregateId,
@@ -109,10 +109,6 @@ export class UserRepository {
       // - get all events for event type stream 'UserCreatedEvent' and find the user id for username
       // - write the username: id pair to the cache
       // - return user id
-
-      // - oh oh, user could have changed it's username??
-      // - maybe we should not allow changing username ?
-      // - or you just cant change to an earlier used username
 
       const eventId = (await this.eventStore.getPropertyByKeyValueFromEvents({
         streamPrefix: 'user',

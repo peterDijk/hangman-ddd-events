@@ -27,7 +27,7 @@ export class CreateNewUserHandler
       throw new BadRequestException('username already exists');
     }
 
-    const aggregate = new User(uuid, this.userRepository);
+    const aggregate = new User(uuid);
     await aggregate.create(data.username, data.password, data.fullName);
     const user = this.publisher.mergeObjectContext(aggregate);
     user.commit();

@@ -11,13 +11,11 @@ import {
 } from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
-import { UserRepository } from './User.repository';
 import { FullName } from './ValueObjects/FullName.value-object';
 import { FullNameChangedEvent } from './Events/FullNameChanged.event';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
-  private userRepository: UserRepository;
 
   public readonly id: string;
   public readonly aggregateName: string = 'user';
@@ -34,12 +32,10 @@ export class User extends AggregateRoot {
   numberLogins: number;
   currentlyLoggedIn: boolean;
 
-  constructor(id: string, userRepository: UserRepository) {
+  constructor(id: string) {
     super();
     this.id = id;
     this.numberLogins = 0;
-
-    this.userRepository = userRepository;
   }
 
   async create(username: string, password: string, fullName: string) {

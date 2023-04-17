@@ -4,7 +4,6 @@ import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { StartNewGameCommand } from '../StartNewGame.command';
 import { Logger } from '@nestjs/common';
 import { Game } from '../../Game.aggregate';
-import { UserRepository } from '../../../User/User.repository';
 
 @CommandHandler(StartNewGameCommand)
 export class StartNewGameCommandHandler
@@ -12,13 +11,10 @@ export class StartNewGameCommandHandler
 {
   private readonly logger = new Logger(StartNewGameCommandHandler.name);
 
-  constructor(
-    private publisher: StoreEventPublisher,
-    private userRepository: UserRepository,
-  ) {}
+  constructor(private publisher: StoreEventPublisher) {}
 
   async execute({ data, uuid, user }: StartNewGameCommand): Promise<Game> {
-    const aggregate = new Game(uuid, this.userRepository);
+    const aggregate = new Game(uuid);
     await aggregate.startNewGame(data, user);
     const game = this.publisher.mergeObjectContext(aggregate);
     this.logger.log(game);
