@@ -47,7 +47,7 @@ export class GuessLetterCommandHandler
     await game.guessLetter(letter);
     this.publisher.mergeObjectContext(game);
     game.commit();
-
+    this.repository.updateOrCreate(game);
     return game;
   }
 }

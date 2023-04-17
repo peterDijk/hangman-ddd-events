@@ -18,17 +18,21 @@ export class GamesRepository {
   private logger = new Logger(GamesRepository.name);
 
   async updateOrCreate(game: Game): Promise<void> {
-    const cacheKey = this.getCacheKey(game.id);
-    const serializedGame = instanceToPlain(game);
-    this.logger.debug(`adding game to cache`);
-    return this.cacheManager.set(cacheKey, serializedGame);
+    try {
+      const cacheKey = this.getCacheKey(game.id);
+      // const serializedGame = instanceToPlain(game);
+      // this.logger.debug(`adding game to cache`);
+      // return this.cacheManager.set(cacheKey, serializedGame);
 
-    // TODO: commented out because the object we recreate from the
-    // cache is not a complete working Aggregate, it doesn't have
-    // working methods.
-    // Find a way to retrieve the Aggregate and instanciate
-    // incl all past events on it, so that we don't always have
-    // to rebuild the Aggregate from all past events for every action
+      // TODO: commented out because the object we recreate from the
+      // cache is not a complete working Aggregate, it doesn't have
+      // working methods.
+      // Find a way to retrieve the Aggregate and instanciate
+      // incl all past events on it, so that we don't always have
+      // to rebuild the Aggregate from all past events for every action
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   async findOneById(aggregateId: string): Promise<Game> {
