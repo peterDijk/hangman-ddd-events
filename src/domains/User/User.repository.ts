@@ -24,13 +24,13 @@ export class UserRepository {
 
   async updateOrCreate(user: User): Promise<void> {
     const cacheKey = this.getCacheKey({ userId: user.id });
-    const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
-    this.logger.debug(serializedUser);
+    // const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
+    // this.logger.debug(serializedUser);
 
     // disabling this because getting the object from cache doesnt
     // give a complete Aggregate at the moment
-    await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
-    this.logger.debug(`set User in cache: ${serializedUser}`);
+    // await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    // this.logger.debug(`set User in cache: ${serializedUser}`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
@@ -59,16 +59,21 @@ export class UserRepository {
       this.logger.debug(`returing User from cache`);
       return deserializedUser;
     } else {
-      // build up aggregate from all past aggregate events
-      const user = new User(aggregateId);
-      const { events } = await this.eventStore.getEventsForAggregate(
-        this.aggregate,
-        aggregateId,
-      );
-      user.loadFromHistory(events);
-      this.updateOrCreate(user);
-      this.logger.debug(`returning rebuilt User from events`);
-      return user;
+      try {
+        // build up aggregate from all past aggregate events
+        const user = new User(aggregateId);
+        const { events } = await this.eventStore.getEventsForAggregate(
+          this.aggregate,
+          aggregateId,
+        );
+
+        user.loadFromHistory(events);
+        this.updateOrCreate(user);
+        this.logger.debug(`returning rebuilt User from events`);
+        return user;
+      } catch (err) {
+        this.logger.error(err);
+      }
     }
   }
 

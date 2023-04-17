@@ -48,10 +48,15 @@ sept 2022
 - [x] add docker build in github checks
 - [x] cache-manager to store username:userId pairs in memory
 - [x] createUser check username doesn't exist
-- [x] won't do, node.js not the right tool for this. store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
-- [ ] Add User to Game
+- [x] [won't do, node.js not the right tool for this] store aggregate in cache and keep updated on changes. So the aggregate doesnt have to be built up from all events when the aggregate is needed
+- [x] Add User to Game
+- [x] Change user info flow incl update all (both at this point) projections
+- [x] Support multiple updaters for one event (each domain can have it's own updater for the same event) lib change
+- [ ] Try again revive aggregate from json
+- [ ] update dependencies
 - [ ] Swap projection database type for mongodb
-- [ ] Swap projection for a database type that GraphQL reads from directly (for actual performance improv. reason for GQL. Without it's only dev experience)
+- [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)
+- [ ] eventstore lib: Fix uncaught in promise on game-id not found
 - [ ] Implement actual hangman logic. Goal: backend is ready for comm with frontend
 - [ ] Setup websocket server
 - [ ] fix typeorm migration:generate in correct folder

@@ -13,11 +13,12 @@ export class StartNewGameCommandHandler
 
   constructor(private publisher: StoreEventPublisher) {}
 
-  async execute({ data, uuid }: StartNewGameCommand) {
+  async execute({ data, uuid, user }: StartNewGameCommand): Promise<Game> {
     const aggregate = new Game(uuid);
-    await aggregate.startNewGame(data);
+    await aggregate.startNewGame(data, user);
     const game = this.publisher.mergeObjectContext(aggregate);
     this.logger.log(game);
     game.commit();
+    return game;
   }
 }

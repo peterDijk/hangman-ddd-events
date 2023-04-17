@@ -3,6 +3,8 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { GuessDto } from '../dto/Guess.dto';
 import { GamesService } from '../services/games.service';
 import { GameDto } from '../dto/Game.dto';
+import { CurrentUser } from '../modules/graphql.guard';
+import { User } from '../../domains/User/User.aggregate';
 
 @Controller('games')
 @ApiTags('Games')
@@ -15,20 +17,23 @@ export class GamesController {
   @Post('new')
   async startNewGame(
     @Body()
-    { playerId, wordToGuess, maxGuesses }: GameDto,
+    { wordToGuess, maxGuesses }: GameDto,
+    @CurrentUser() user: User,
   ) {
-    return await this.gameService.startNewGame({
-      playerId,
-      wordToGuess,
-      maxGuesses,
-    });
+    return await this.gameService.startNewGame(
+      {
+        wordToGuess,
+        maxGuesses,
+      },
+      user,
+    );
   }
 
-  // @ApiResponse({ status: 200, description: 'List games' })
-  // @Get('list')
-  // async getAllGames() {
-  //   return await this.gameService.getAllGames();
-  // }
+  @ApiResponse({ status: 200, description: 'List games' })
+  @Get('list')
+  async getAllGames() {
+    return await this.gameService.getAllGames();
+  }
 
   @ApiResponse({ status: 200, description: 'Guess made' })
   @Post('/:id/guess')
@@ -36,7 +41,8 @@ export class GamesController {
     @Param() { id },
     @Body()
     { letter }: GuessDto,
+    @CurrentUser() user: User,
   ) {
-    return await this.gameService.makeGuess(id, letter);
+    return await this.gameService.makeGuess(id, letter, user);
   }
 }

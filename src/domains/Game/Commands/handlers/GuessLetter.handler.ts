@@ -1,10 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 import { performance, PerformanceObserver } from 'perf_hooks';
 
 import { GamesRepository } from '../../Games.repository';
 import { GuessLetterCommand } from '../GuessLetter.command';
+import { Game } from '../../Game.aggregate';
 
 @CommandHandler(GuessLetterCommand)
 export class GuessLetterCommandHandler
@@ -21,12 +26,28 @@ export class GuessLetterCommandHandler
     private readonly repository: GamesRepository,
   ) {}
 
-  async execute({ gameId, letter }: GuessLetterCommand) {
-    const aggregate = await this.repository.findOneById(gameId);
-    await aggregate.guessLetter(letter);
-    // performance.mark('stop-guess');
-    // performance.measure('Measurement', 'start-guess', 'stop-guess');
-    const game = this.publisher.mergeObjectContext(aggregate);
+  async execute({
+    gameId,
+    letter,
+    user: loggedInUser,
+  }: GuessLetterCommand): Promise<Game> {
+    // is logged in user allowed to make the guess ?
+
+    const game = await this.repository.findOneById(gameId);
+
+    if (!game) {
+      throw new BadRequestException('Cant find game with this ID');
+    }
+
+    if (game.player.id !== loggedInUser.id) {
+      throw new UnauthorizedException(
+        'not allowed to make a guess for a game owned by another player',
+      );
+    }
+    await game.guessLetter(letter);
+    this.publisher.mergeObjectContext(game);
     game.commit();
+
+    return game;
   }
 }

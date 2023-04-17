@@ -4,6 +4,8 @@ import { Game } from './Game.aggregate';
 import { EventStore } from '@peterdijk/nestjs-eventstoredb';
 import { CACHE_KEYS } from '../../infrastructure/constants';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { UserRepository } from '../User/User.repository';
+import { User } from '../User/User.aggregate';
 
 @Injectable()
 export class GamesRepository {
@@ -12,12 +14,13 @@ export class GamesRepository {
   constructor(
     private readonly eventStore: EventStore,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private userRepository: UserRepository,
   ) {}
   private logger = new Logger(GamesRepository.name);
 
   async updateOrCreate(game: Game): Promise<void> {
     const cacheKey = this.getCacheKey(game.id);
-    const serializedGame = JSON.stringify(instanceToPlain(game));
+    // const serializedGame = JSON.stringify(instanceToPlain(game));
     // return this.cacheManager.set(cacheKey, serializedGame);
 
     // TODO: commented out because the object we recreate from the
@@ -28,16 +31,15 @@ export class GamesRepository {
     // to rebuild the Aggregate from all past events for every action
   }
 
-  async findOneById(aggregateId: string): Promise<Game> {
+  async findOneById(aggregateId: string, user?: User): Promise<Game> {
     const gameFromCache = (await this.cacheManager.get(
       this.getCacheKey(aggregateId),
     )) as string;
 
     if (gameFromCache) {
-      const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));
-
-      this.logger.debug(`returing Game from cache`);
-      return deserializedGame;
+      // const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));
+      // this.logger.debug(`returing Game from cache`);
+      // return deserializedGame;
     } else {
       const game = new Game(aggregateId);
       const { events } = await this.eventStore.getEventsForAggregate(
@@ -45,7 +47,7 @@ export class GamesRepository {
         aggregateId,
       );
       game.loadFromHistory(events);
-      this.updateOrCreate(game);
+      // this.updateOrCreate(game);
       this.logger.debug(`returning rebuilt Game from events`);
       return game;
     }

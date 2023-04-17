@@ -5,10 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class GameDto {
   @ApiProperty()
   @Field()
-  playerId?: string;
-
-  @ApiProperty()
-  @Field()
   wordToGuess?: string;
 
   @ApiProperty()

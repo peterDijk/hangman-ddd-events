@@ -1,12 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import {
-  IsString,
-  validateOrReject,
-  IsNumber,
-  MinLength,
-  Min,
-} from 'class-validator';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
 import { Logger } from '@nestjs/common';
 
 import { NewGameStartedEvent } from './Events/NewGameStarted.event';
@@ -17,6 +10,7 @@ import { Word } from './ValueObjects/Word.value-object';
 import { MaxGuesses } from './ValueObjects/MaxGuesses.value-object';
 import { LettersGuessed } from './ValueObjects/LettersGuessed.value-object';
 import { Letter } from './ValueObjects/Letter.value-object';
+import { User } from '../User/User.aggregate';
 
 @ObjectType()
 export class Game extends AggregateRoot {
@@ -25,9 +19,7 @@ export class Game extends AggregateRoot {
   dateCreated: Date;
   dateModified: Date;
 
-  @IsString()
-  @MinLength(2)
-  playerId: string;
+  player: User;
 
   wordToGuess: Word;
   maxGuesses: MaxGuesses;
@@ -40,59 +32,62 @@ export class Game extends AggregateRoot {
 
   private logger = new Logger(Game.name);
 
-  async startNewGame(data: GameDto) {
-    this.playerId = data.playerId;
-    this.wordToGuess = await Word.create(data.wordToGuess);
-    this.maxGuesses = await MaxGuesses.create(data.maxGuesses);
-    this.dateCreated = new Date();
-    this.dateModified = new Date();
+  async startNewGame(data: GameDto, user: User) {
+    try {
+      const wordToGuess = await Word.create(data.wordToGuess);
+      const maxGuesses = await MaxGuesses.create(data.maxGuesses);
+      const dateCreated = new Date();
+      const dateModified = new Date();
 
-    this.apply(
-      new NewGameStartedEvent(
-        this.id,
-        this.playerId,
-        this.wordToGuess.value,
-        this.maxGuesses.value,
-        this.dateCreated,
-        this.dateModified,
-      ),
-      false,
-    );
+      this.apply(
+        new NewGameStartedEvent(
+          this.id,
+          user.id,
+          wordToGuess.value,
+          maxGuesses.value,
+          dateCreated,
+          dateModified,
+        ),
+        false,
+      );
+
+      return this;
+    } catch (err) {
+      return new InvalidGameException(err);
+    }
   }
 
-  async guessLetter(letter: string) {
+  async guessLetter(letter: string): Promise<Game> {
     // TODO: validate guess
     // validation is done in LettersGuessed VA (length) and Letter VA (string, 1 char)
 
     try {
       const newLetter = await Letter.create(letter);
-      const lettersGuessed = await LettersGuessed.create(
+      await LettersGuessed.create(
         [...this.lettersGuessed.value, newLetter],
         this.maxGuesses,
       );
-      const newLettersGuessed = lettersGuessed;
 
-      this.lettersGuessed = newLettersGuessed;
-      this.dateModified = new Date();
+      const dateModified = new Date();
 
-      const event = new LetterGuessedEvent(this.id, letter, this.dateModified);
+      const event = new LetterGuessedEvent(this.id, letter, dateModified);
 
       this.apply(event, false);
+
+      return this;
     } catch (err) {
       throw new InvalidGameException(err);
     }
   }
 
-  // Replay event from history `loadFromHistory` function calls
-  // onNameOfEvent
-  // framework magic
-  onNewGameStartedEvent(event: NewGameStartedEvent) {
-    this.playerId = event.playerId;
+  async onNewGameStartedEvent(event: NewGameStartedEvent) {
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
     this.lettersGuessed = LettersGuessed.createReplay([]);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
+    // creating new user with id only, because can't wait for async user repository
+    this.player = new User(event.playerId);
   }
 
   onLetterGuessedEvent(event: LetterGuessedEvent) {

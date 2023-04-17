@@ -3,9 +3,16 @@ import * as bcrypt from 'bcrypt';
 import { UserCreatedEvent } from './Events/UserCreated.event';
 import { Password } from './ValueObjects/Password.value-object';
 import { Username } from './ValueObjects/Username.value-object';
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
+import { FullName } from './ValueObjects/FullName.value-object';
+import { FullNameChangedEvent } from './Events/FullNameChanged.event';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
@@ -19,6 +26,8 @@ export class User extends AggregateRoot {
   userName: Username;
   password: Password;
 
+  fullName: FullName;
+
   lastLoggedIn: Date;
   numberLogins: number;
   currentlyLoggedIn: boolean;
@@ -29,9 +38,10 @@ export class User extends AggregateRoot {
     this.numberLogins = 0;
   }
 
-  async create(username: string, password: string) {
+  async create(username: string, password: string, fullName: string) {
     this.userName = await Username.create(username);
     this.password = await Password.create(password);
+    this.fullName = await FullName.create(fullName);
     this.dateCreated = new Date();
     this.dateModified = new Date();
 
@@ -41,10 +51,22 @@ export class User extends AggregateRoot {
           this.id,
           this.userName.value,
           this.password.value,
+          this.fullName.value,
           this.dateCreated,
           this.dateModified,
         ),
       );
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async changeFullName(newFullName: string) {
+    try {
+      this.logger.debug(`newFullName: ${newFullName}`);
+
+      const fullName = await FullName.create(newFullName);
+      this.apply(new FullNameChangedEvent(this.id, fullName.value));
     } catch (err) {
       throw new Error(err);
     }
@@ -60,16 +82,14 @@ export class User extends AggregateRoot {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    this.lastLoggedIn = new Date();
-    this.numberLogins = this.numberLogins + 1;
-    this.currentlyLoggedIn = true;
+    const numberLogins = this.numberLogins + 1;
 
     this.apply(
       new UserLoggedInEvent(
         this.id,
         this.userName.value,
         new Date(),
-        this.numberLogins,
+        numberLogins,
         new Date(),
       ),
     );
@@ -84,6 +104,7 @@ export class User extends AggregateRoot {
   onUserCreatedEvent(event: UserCreatedEvent) {
     this.userName = Username.createReplay(event.userName);
     this.password = Password.createReplay(event.password);
+    this.fullName = FullName.createReplay(event.fullName);
     this.dateCreated = event.dateCreated;
     this.dateModified = event.dateModified;
   }
@@ -97,5 +118,9 @@ export class User extends AggregateRoot {
 
   onUserLoggedOutEvent(event: UserLoggedOutEvent) {
     this.currentlyLoggedIn = false;
+  }
+
+  onFullNameChangedEvent(event: FullNameChangedEvent) {
+    this.fullName = FullName.createReplay(event.newFullName);
   }
 }
