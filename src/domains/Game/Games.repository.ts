@@ -20,8 +20,10 @@ export class GamesRepository {
 
   async updateOrCreate(game: Game): Promise<void> {
     const cacheKey = this.getCacheKey(game.id);
-    // const serializedGame = JSON.stringify(instanceToPlain(game));
-    // return this.cacheManager.set(cacheKey, serializedGame);
+    const serializedGame = instanceToPlain(game);
+    this.logger.debug(`adding game to cache`);
+    this.logger.debug(serializedGame);
+    return this.cacheManager.set(cacheKey, serializedGame);
 
     // TODO: commented out because the object we recreate from the
     // cache is not a complete working Aggregate, it doesn't have
@@ -31,15 +33,18 @@ export class GamesRepository {
     // to rebuild the Aggregate from all past events for every action
   }
 
-  async findOneById(aggregateId: string, user?: User): Promise<Game> {
+  async findOneById(aggregateId: string): Promise<Game> {
     const gameFromCache = (await this.cacheManager.get(
       this.getCacheKey(aggregateId),
     )) as string;
 
     if (gameFromCache) {
-      // const deserializedGame = plainToInstance(Game, JSON.parse(gameFromCache));
-      // this.logger.debug(`returing Game from cache`);
-      // return deserializedGame;
+      const deserializedGame = plainToInstance(Game, gameFromCache);
+
+      this.logger.debug(`returing Game from cache`);
+      this.logger.debug(deserializedGame.lettersGuessed);
+
+      return deserializedGame;
     } else {
       const game = new Game(aggregateId);
       const { events } = await this.eventStore.getEventsForAggregate(
@@ -47,7 +52,7 @@ export class GamesRepository {
         aggregateId,
       );
       game.loadFromHistory(events);
-      // this.updateOrCreate(game);
+      this.updateOrCreate(game);
       this.logger.debug(`returning rebuilt Game from events`);
       return game;
     }

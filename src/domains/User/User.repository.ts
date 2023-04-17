@@ -24,13 +24,12 @@ export class UserRepository {
 
   async updateOrCreate(user: User): Promise<void> {
     const cacheKey = this.getCacheKey({ userId: user.id });
-    // const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
-    // this.logger.debug(serializedUser);
+    const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
 
     // disabling this because getting the object from cache doesnt
     // give a complete Aggregate at the moment
-    // await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
-    // this.logger.debug(`set User in cache: ${serializedUser}`);
+    await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    this.logger.debug(`set User in cache: ${serializedUser}`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
@@ -52,6 +51,9 @@ export class UserRepository {
     // Find a way to retrieve the Aggregate and instanciate
     // incl all past events on it, so that we don't always have
     // to rebuild the Aggregate from all past events for every action
+    // edit 17-4-2023: we dont need the events on the aggregate. Our aggregate sets
+    // its properties on incoming events, so if we always make sure we call updateOrCreate
+    // the aggregate should be in its latest state
 
     if (userFromCache) {
       const deserializedUser = plainToInstance(User, JSON.parse(userFromCache));
