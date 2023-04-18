@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { StoreEventPublisher } from '@peterdijk/nestjs-eventstoredb';
 
-import { Logger } from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import { User } from '../../User.aggregate';
 import { LoginUserCommand } from '../LoginUser.command';
 import { UserRepository } from '../../User.repository';
@@ -16,13 +16,24 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   ) {}
 
   async execute({ username, password }: LoginUserCommand): Promise<User> {
-    const aggregate = await this.userRepository.findOneByUsername(username);
-    await aggregate.login(password);
+    try {
+      const aggregate = await this.userRepository.findOneByUsername(username);
 
-    const user = this.publisher.mergeObjectContext(aggregate);
+      if (!aggregate) {
+        throw new BadRequestException(
+          `no user found with username '${username}'`,
+        );
+      }
 
-    user.commit();
-    this.userRepository.updateOrCreate(user);
-    return user;
+      await aggregate.login(password);
+
+      const user = this.publisher.mergeObjectContext(aggregate);
+
+      user.commit();
+      this.userRepository.updateOrCreate(user);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -31,7 +31,6 @@ export class UserResolver {
   }
 
   @Query((returns) => AllUsersResponse)
-  // @UseInterceptors(ClassSerializerInterceptor)
   async getAllUsers(): Promise<{ count: number; users: UserProjection[] }> {
     return await this.userService.getAllUsers();
   }
