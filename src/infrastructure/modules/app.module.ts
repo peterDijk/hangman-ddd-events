@@ -15,7 +15,6 @@ import { AuthModule } from './auth.module';
 import { AppResolver } from '../resolvers/app.resolver';
 import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
 
-export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
     CacheModule.registerAsync<any>({
@@ -44,8 +43,21 @@ export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_
       insecure: true,
       lastPositionStorageFactory: MongoPositionStore,
     }),
-    TypeOrmModule.forRootAsync({
-      useFactory: async () => options as any,
+    // TypeOrmModule.forRootAsync({
+    //   useFactory: async () => options as any,
+    // }),
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      host: process.env.MONGO_HOST,
+      port: parseInt(process.env.MONGO_CONTAINER_PORT),
+      username: process.env.MONGO_USER,
+      password: process.env.MONGO_PASSWORD,
+      database: process.env.MONGO_DB,
+      useUnifiedTopology: true,
+      synchronize: true,
+      logger: 'debug',
+      autoLoadEntities: true,
+      // entities: [`dist/src/**/*.entity{.js}`],
     }),
     GamesModule,
     UserModule,

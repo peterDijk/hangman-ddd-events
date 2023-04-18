@@ -3,21 +3,19 @@ version: '3.4'
 services:
   hangman-projections:
     container_name: hangman-projections
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    image: mongo
+    command: mongod --port 27016
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${PROJECTIONS_CREDENTIALS_PASSWORD}
-      MYSQL_DATABASE: ${PROJECTIONS_DATABASE}
-      MYSQL_TCP_PORT: ${PROJECTIONS_PORT}
-    networks:
-      - backend
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: hangman-projections
     ports:
-      - ${PROJECTIONS_PORT}:${PROJECTIONS_PORT}
+      - 27016:27016
     volumes:
-      - type: volume
-        source: projections-volume-data
-        target: /var/lib/projections
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - backend    
 
   hangman-eventstore:
     container_name: hangman-eventstore

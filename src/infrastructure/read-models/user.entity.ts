@@ -1,36 +1,34 @@
-import { Entity, BaseEntity, Column, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Column,
+  PrimaryColumn,
+  ObjectIdColumn,
+  ObjectID,
+} from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
 
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
+
   @Field()
-  @PrimaryColumn({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   userId: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   username: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   @Exclude({ toPlainOnly: true })
   password: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   fullName: string;
 
   @Field()

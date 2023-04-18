@@ -55,8 +55,8 @@ sept 2022
 - [x] eventstore lib: Fix uncaught in promise on game-id not found
 - [x] Try again revive aggregate from json
 - [x] Use Redis for cache
-- [ ] update dependencies
 - [ ] Swap projection database type for mongodb
+- [ ] update dependencies
 - [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)
 - [ ] add snapshot functionality to eventstore library
 - [ ] Implement actual hangman logic. Goal: backend is ready for comm with frontend

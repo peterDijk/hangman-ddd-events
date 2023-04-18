@@ -1,49 +1,41 @@
-import { Entity, BaseEntity, Column, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Column,
+  PrimaryColumn,
+  ObjectIdColumn,
+  ObjectID,
+} from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
 export class Game extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
+
   @Field()
-  @PrimaryColumn({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   gameId: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   playerId: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   playerName: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   wordToGuess: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   maxGuesses: number;
 
   @Field((type) => [String], { nullable: true })
-  @Column({
-    type: 'json',
-    nullable: true,
-  })
+  @Column()
   lettersGuessed: string[];
 
   @Field()
