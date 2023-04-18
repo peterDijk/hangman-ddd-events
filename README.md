@@ -54,7 +54,7 @@ sept 2022
 - [x] Support multiple updaters for one event (each domain can have it's own updater for the same event) lib change
 - [x] eventstore lib: Fix uncaught in promise on game-id not found
 - [x] Try again revive aggregate from json
-- [ ] Use Redis for cache
+- [x] Use Redis for cache
 - [ ] update dependencies
 - [ ] Swap projection database type for mongodb
 - [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)

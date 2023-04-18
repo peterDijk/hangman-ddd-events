@@ -17,6 +17,7 @@ import { Transform } from 'class-transformer';
 import { arePasswordsEqual } from '../../helpers/passwordsAreEqual';
 
 export class User extends AggregateRoot {
+  @Transform(() => new Logger(User.name), { toClassOnly: true })
   private readonly logger = new Logger(User.name);
 
   public readonly id: string;

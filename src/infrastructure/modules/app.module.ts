@@ -18,16 +18,11 @@ import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
-    // CacheModule.register({
-    //   ttl: 3600 * 60 * 24,
-    //   // max: 1000 * 1000 * 1000 * 1000,
-    //   isGlobal: true,
-    // }),
     CacheModule.registerAsync<any>({
       isGlobal: true,
       useFactory: async () => {
         const store = await redisStore({
-          url: 'redis://redis:6379',
+          url: `redis://${config.REDIS_SETTINGS.host}:${config.REDIS_SETTINGS.port}`,
           ttl: 0,
         });
         return {
