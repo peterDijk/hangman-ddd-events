@@ -24,13 +24,10 @@ export class UserRepository {
 
   async updateOrCreate(user: User): Promise<void> {
     const cacheKey = this.getCacheKey({ userId: user.id });
-    // const serializedUser = JSON.stringify(instanceToPlain(user)); // during instanceToPlain applied events get published ?
-    // this.logger.debug(serializedUser);
+    const serializedUser = instanceToPlain(user);
 
-    // disabling this because getting the object from cache doesnt
-    // give a complete Aggregate at the moment
-    // await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
-    // this.logger.debug(`set User in cache: ${serializedUser}`);
+    await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    this.logger.debug(`set User in cache`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
@@ -41,20 +38,12 @@ export class UserRepository {
   }
 
   async findOneById(aggregateId: string): Promise<User> {
-    let userFromCache: string = null;
-    // const userFromCache = (await this.cacheManager.get(
-    //   this.getCacheKey({ userId: aggregateId }),
-    // )) as string;
-
-    // TODO: commented out because the object we recreate from the
-    // cache is not a complete working Aggregate, it doesn't have
-    // working methods.
-    // Find a way to retrieve the Aggregate and instanciate
-    // incl all past events on it, so that we don't always have
-    // to rebuild the Aggregate from all past events for every action
+    const userFromCache = (await this.cacheManager.get(
+      this.getCacheKey({ userId: aggregateId }),
+    )) as string;
 
     if (userFromCache) {
-      const deserializedUser = plainToInstance(User, JSON.parse(userFromCache));
+      const deserializedUser = plainToInstance(User, userFromCache);
 
       this.logger.debug(`returing User from cache`);
       return deserializedUser;

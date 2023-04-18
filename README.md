@@ -52,11 +52,13 @@ sept 2022
 - [x] Add User to Game
 - [x] Change user info flow incl update all (both at this point) projections
 - [x] Support multiple updaters for one event (each domain can have it's own updater for the same event) lib change
-- [ ] Try again revive aggregate from json
+- [x] eventstore lib: Fix uncaught in promise on game-id not found
+- [x] Try again revive aggregate from json
+- [ ] Use Redis for cache
 - [ ] update dependencies
 - [ ] Swap projection database type for mongodb
 - [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)
-- [ ] eventstore lib: Fix uncaught in promise on game-id not found
+- [ ] add snapshot functionality to eventstore library
 - [ ] Implement actual hangman logic. Goal: backend is ready for comm with frontend
 - [ ] Setup websocket server
 - [ ] fix typeorm migration:generate in correct folder

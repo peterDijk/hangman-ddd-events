@@ -13,6 +13,8 @@ import { UserLoggedInEvent } from './Events/UserLoggedIn.event';
 import { UserLoggedOutEvent } from './Events/UserLoggedOut.event';
 import { FullName } from './ValueObjects/FullName.value-object';
 import { FullNameChangedEvent } from './Events/FullNameChanged.event';
+import { Transform } from 'class-transformer';
+import { arePasswordsEqual } from '../../helpers/passwordsAreEqual';
 
 export class User extends AggregateRoot {
   private readonly logger = new Logger(User.name);
@@ -23,9 +25,19 @@ export class User extends AggregateRoot {
   dateCreated: Date;
   dateModified: Date;
 
+  @Transform(({ value }) => Username.createReplay(value.props.value), {
+    toClassOnly: true,
+  })
   userName: Username;
+
+  @Transform(({ value }) => Password.createReplay(value.props.value), {
+    toClassOnly: true,
+  })
   password: Password;
 
+  @Transform(({ value }) => FullName.createReplay(value.props.value), {
+    toClassOnly: true,
+  })
   fullName: FullName;
 
   lastLoggedIn: Date;
@@ -73,10 +85,7 @@ export class User extends AggregateRoot {
   }
 
   async login(password: string) {
-    this.logger.debug(`this.password.value: ${this.password.value}`);
-    this.logger.debug(`password: ${password}`);
-
-    const areEqual = await bcrypt.compare(password, this.password.value);
+    const areEqual = await arePasswordsEqual(password, this.password.value);
 
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
