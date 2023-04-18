@@ -22,24 +22,23 @@ export class Game extends AggregateRoot {
 
   player: User;
 
-  @Transform(({ value }) => Word.createReplay(value._value), {
+  @Transform(({ value }) => Word.createReplay(value.props.value), {
     toClassOnly: true,
   })
   wordToGuess: Word;
 
-  @Transform(({ value }) => MaxGuesses.createReplay(value._value), {
+  @Transform(({ value }) => MaxGuesses.createReplay(value.props.value), {
     toClassOnly: true,
   })
   maxGuesses: MaxGuesses;
 
   @Transform(
-    ({ value }) => {
-      return LettersGuessed.createReplay(
+    ({ value }) =>
+      LettersGuessed.createReplay(
         value.props.value.map((letter) =>
           Letter.createReplay(letter.props.value),
         ),
-      );
-    },
+      ),
     {
       toClassOnly: true,
     },

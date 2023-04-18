@@ -4,8 +4,6 @@ import { Game } from './Game.aggregate';
 import { EventStore } from '@peterdijk/nestjs-eventstoredb';
 import { CACHE_KEYS } from '../../infrastructure/constants';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { UserRepository } from '../User/User.repository';
-import { User } from '../User/User.aggregate';
 
 @Injectable()
 export class GamesRepository {
@@ -20,16 +18,9 @@ export class GamesRepository {
   async updateOrCreate(game: Game): Promise<void> {
     try {
       const cacheKey = this.getCacheKey(game.id);
-      // const serializedGame = instanceToPlain(game);
-      // this.logger.debug(`adding game to cache`);
-      // return this.cacheManager.set(cacheKey, serializedGame);
-
-      // TODO: commented out because the object we recreate from the
-      // cache is not a complete working Aggregate, it doesn't have
-      // working methods.
-      // Find a way to retrieve the Aggregate and instanciate
-      // incl all past events on it, so that we don't always have
-      // to rebuild the Aggregate from all past events for every action
+      const serializedGame = instanceToPlain(game);
+      this.logger.debug(`set Game in cache`);
+      return this.cacheManager.set(cacheKey, serializedGame);
     } catch (error) {
       this.logger.error(error);
     }
