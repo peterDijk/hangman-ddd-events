@@ -38,7 +38,6 @@ export class UserRepository {
   }
 
   async findOneById(aggregateId: string): Promise<User> {
-    // let userFromCache: string = null;
     const userFromCache = (await this.cacheManager.get(
       this.getCacheKey({ userId: aggregateId }),
     )) as string;

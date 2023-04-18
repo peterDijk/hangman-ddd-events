@@ -85,8 +85,6 @@ export class User extends AggregateRoot {
   }
 
   async login(password: string) {
-    console.log(password, this.password.value);
-
     const areEqual = await arePasswordsEqual(password, this.password.value);
 
     if (!areEqual) {
