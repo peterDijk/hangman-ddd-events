@@ -16,24 +16,20 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   ) {}
 
   async execute({ username, password }: LoginUserCommand): Promise<User> {
-    try {
-      const aggregate = await this.userRepository.findOneByUsername(username);
+    const aggregate = await this.userRepository.findOneByUsername(username);
 
-      if (!aggregate) {
-        throw new BadRequestException(
-          `no user found with username '${username}'`,
-        );
-      }
-
-      await aggregate.login(password);
-
-      const user = this.publisher.mergeObjectContext(aggregate);
-
-      user.commit();
-      this.userRepository.updateOrCreate(user);
-      return user;
-    } catch (error) {
-      throw error;
+    if (!aggregate) {
+      throw new BadRequestException(
+        `no user found with username '${username}'`,
+      );
     }
+
+    await aggregate.login(password);
+
+    const user = this.publisher.mergeObjectContext(aggregate);
+
+    user.commit();
+    this.userRepository.updateOrCreate(user);
+    return user;
   }
 }
