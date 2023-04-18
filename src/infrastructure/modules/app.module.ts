@@ -1,3 +1,4 @@
+import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -17,10 +18,17 @@ import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
 export const mongoDbUri = `${config.STORE_STATE_SETTINGS.type}://${config.STORE_STATE_SETTINGS.credentials.username}:${config.STORE_STATE_SETTINGS.credentials.password}@${config.STORE_STATE_SETTINGS.hostname}:${config.STORE_STATE_SETTINGS.port}`;
 @Module({
   imports: [
-    CacheModule.register({
-      ttl: 3600 * 60 * 24,
-      // max: 1000 * 1000 * 1000 * 1000,
+    CacheModule.registerAsync<any>({
       isGlobal: true,
+      useFactory: async () => {
+        const store = await redisStore({
+          url: `redis://${config.REDIS_SETTINGS.host}:${config.REDIS_SETTINGS.port}`,
+          ttl: 0,
+        });
+        return {
+          store: () => store,
+        };
+      },
     }),
     AuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

@@ -27,17 +27,21 @@ export class AuthService {
   ) {}
 
   async login({ username, password }: LoginUserDto): Promise<LoginStatus> {
-    const user: User = await this.commandBus.execute(
-      new LoginUserCommand(username, password),
-    );
+    try {
+      const user: User = await this.commandBus.execute(
+        new LoginUserCommand(username, password),
+      );
 
-    const { accessToken } = createToken(user.userName.value, this.jwtService);
+      const { accessToken } = createToken(user.userName.value, this.jwtService);
 
-    return {
-      userId: user.id,
-      username: user.userName.value,
-      accessToken,
-    };
+      return {
+        userId: user.id,
+        username: user.userName.value,
+        accessToken,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async logout(user: User): Promise<User> {

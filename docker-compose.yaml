@@ -54,13 +54,35 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - 8091:8091
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: '${STORE_STATE_USERNAME}'
       ME_CONFIG_MONGODB_ADMINPASSWORD: '${STORE_STATE_PASSWORD}'
       ME_CONFIG_MONGODB_URL: mongodb://${STORE_STATE_USERNAME}:${STORE_STATE_PASSWORD}@hangman-position:${STORE_STATE_PORT}/
     networks:
       - backend
+
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - backend
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "8081:8081"
+    depends_on:
+        - redis    
+    networks:
+      - backend  
 
   hangman:
     container_name: hangman

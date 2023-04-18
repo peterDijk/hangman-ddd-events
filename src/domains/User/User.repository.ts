@@ -26,13 +26,12 @@ export class UserRepository {
     const cacheKey = this.getCacheKey({ userId: user.id });
     const serializedUser = instanceToPlain(user);
 
-    await this.cacheManager.set(cacheKey, serializedUser, 3600 * 60);
+    await this.cacheManager.set(cacheKey, serializedUser);
     this.logger.debug(`set User in cache`);
 
     await this.cacheManager.set(
       this.getCacheKey({ username: user.userName.value }),
       user.id,
-      3600 * 60,
     );
     this.logger.debug(`set username:userId pair in cache`);
   }
@@ -67,20 +66,13 @@ export class UserRepository {
   }
 
   async findOneByUsername(username: string): Promise<User> {
-    try {
-      const userId = await this.findUserIdFromCacheOrEvents(username);
+    const userId = await this.findUserIdFromCacheOrEvents(username);
 
-      if (userId) {
-        // comes from either cache or events
-        const user = await this.findOneById(userId);
+    if (userId) {
+      // comes from either cache or events
+      const user = await this.findOneById(userId);
 
-        return user;
-      } else {
-        // throw new BadRequestException('no userid to work with');
-      }
-    } catch (err) {
-      this.logger.error(err);
-      // throw new BadRequestException('no user found with username');
+      return user;
     }
   }
 
@@ -99,20 +91,25 @@ export class UserRepository {
       // - write the username: id pair to the cache
       // - return user id
 
-      const eventId = (await this.eventStore.getPropertyByKeyValueFromEvents({
-        streamPrefix: 'user',
-        searchEventName: UserCreatedEvent.name,
-        searchProperty: 'userName',
-        searchValue: username,
-        requestProperty: 'id',
-      })) as string;
+      try {
+        const eventId = (await this.eventStore.getPropertyByKeyValueFromEvents({
+          streamPrefix: 'user',
+          searchEventName: UserCreatedEvent.name,
+          searchProperty: 'userName',
+          searchValue: username,
+          requestProperty: 'id',
+        })) as string;
 
-      if (eventId) {
-        this.logger.debug(`found id in events: ${eventId}`);
-        userId = eventId;
+        if (eventId) {
+          this.logger.debug(`found id in events: ${eventId}`);
+          userId = eventId;
+        }
+
+        return userId;
+      } catch (error) {
+        this.logger.error(error);
+        return;
       }
-
-      return userId;
     }
 
     this.logger.debug(`found id for user in cache`);
@@ -121,11 +118,11 @@ export class UserRepository {
 
   getCacheKey({ username, userId }: { username?: string; userId?: string }) {
     if (username) {
-      return `${CACHE_KEYS.CACHE_ID_BY_USERNAME_KEY}-${username}`;
+      return `${CACHE_KEYS.CACHE_ID_BY_USERNAME}-${username}`;
     }
 
     if (userId) {
-      return `${CACHE_KEYS.AGGREGATE_KEY}-${userId}`;
+      return `${CACHE_KEYS.AGGREGATE}-User-${userId}`;
     }
   }
 }

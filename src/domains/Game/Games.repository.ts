@@ -51,6 +51,6 @@ export class GamesRepository {
   }
 
   getCacheKey(gameId: string) {
-    return `${CACHE_KEYS.AGGREGATE_KEY}-game-${gameId}`;
+    return `${CACHE_KEYS.AGGREGATE}-Game-${gameId}`;
   }
 }

@@ -58,6 +58,10 @@ const configs = {
       type: process.env.STORE_STATE_DB_TYPE || 'mongodb',
       database: process.env.STORE_STATE_DB || 'hangman-position',
     },
+    REDIS_SETTINGS: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    },
   },
   development: {},
   production: {
