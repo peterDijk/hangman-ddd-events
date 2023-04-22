@@ -15,6 +15,8 @@ import { UserCreatedEvent } from './Events/UserCreated.event';
 @Injectable()
 export class UserRepository {
   private readonly aggregate = 'user';
+  private instances = new Map<string, User>();
+  private userNameIds = new Map<string, string>();
 
   constructor(
     private readonly eventStore: EventStore,
@@ -24,28 +26,34 @@ export class UserRepository {
 
   async updateOrCreate(user: User): Promise<void> {
     const cacheKey = this.getCacheKey({ userId: user.id });
-    const serializedUser = instanceToPlain(user);
+    this.instances.set(cacheKey, user);
 
-    await this.cacheManager.set(cacheKey, serializedUser);
+    // const serializedUser = instanceToPlain(user);
+    // await this.cacheManager.set(cacheKey, serializedUser);
     this.logger.debug(`set User in cache`);
 
-    await this.cacheManager.set(
-      this.getCacheKey({ username: user.userName.value }),
-      user.id,
-    );
+    // await this.cacheManager.set(
+    //   this.getCacheKey({ username: user.userName.value }),
+    //   user.id,
+    // );
+    this.userNameIds.set(user.userName.value, user.id);
     this.logger.debug(`set username:userId pair in cache`);
   }
 
   async findOneById(aggregateId: string): Promise<User> {
-    const userFromCache = (await this.cacheManager.get(
+    // const userFromCache = (await this.cacheManager.get(
+    //   this.getCacheKey({ userId: aggregateId }),
+    // )) as string;
+
+    const userFromCache = this.instances.get(
       this.getCacheKey({ userId: aggregateId }),
-    )) as string;
+    );
 
     if (userFromCache) {
-      const deserializedUser = plainToInstance(User, userFromCache);
+      // const deserializedUser = plainToInstance(User, userFromCache);
 
       this.logger.debug(`returing User from cache`);
-      return deserializedUser;
+      return userFromCache;
     } else {
       try {
         // build up aggregate from all past aggregate events
@@ -78,7 +86,8 @@ export class UserRepository {
 
   async findUserIdFromCacheOrEvents(username: string): Promise<string> {
     const cacheKey = this.getCacheKey({ username });
-    let userId: string = await this.cacheManager.get(cacheKey);
+    // let userId: string = await this.cacheManager.get(cacheKey);
+    let userId: string = this.userNameIds.get(username);
 
     if (!userId) {
       this.logger.debug(
