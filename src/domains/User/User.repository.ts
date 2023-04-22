@@ -36,7 +36,10 @@ export class UserRepository {
     //   this.getCacheKey({ username: user.userName.value }),
     //   user.id,
     // );
-    this.userNameIds.set(user.userName.value, user.id);
+    this.userNameIds.set(
+      this.getCacheKey({ username: user.userName.value }),
+      user.id,
+    );
     this.logger.debug(`set username:userId pair in cache`);
   }
 
@@ -87,7 +90,7 @@ export class UserRepository {
   async findUserIdFromCacheOrEvents(username: string): Promise<string> {
     const cacheKey = this.getCacheKey({ username });
     // let userId: string = await this.cacheManager.get(cacheKey);
-    let userId: string = this.userNameIds.get(username);
+    let userId: string = this.userNameIds.get(cacheKey);
 
     if (!userId) {
       this.logger.debug(
