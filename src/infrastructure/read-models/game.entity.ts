@@ -39,18 +39,10 @@ export class Game extends BaseEntity {
   lettersGuessed: string[];
 
   @Field()
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   dateCreated: Date;
 
   @Field()
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   dateModified: Date;
 }

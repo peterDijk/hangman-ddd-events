@@ -17,13 +17,19 @@ export class GameResponse {
   status: number;
 
   @Field((type) => String, { nullable: true })
-  loggedInUsername: string;
+  playerFullName: string;
 
   @Field((type) => [String], { nullable: true })
   lettersGuessed: string[];
 
   @Field((type) => String, { nullable: false })
   wordToGuess: string;
+
+  @Field((type) => Date, { nullable: false })
+  dateCreated: Date;
+
+  @Field((type) => Date, { nullable: false })
+  dateModified: Date;
 }
 
 @ObjectType()
@@ -31,8 +37,8 @@ export class AllGamesResponse {
   @Field((type) => Number)
   count: number;
 
-  @Field((type) => [GameProjection], { nullable: true })
-  games: GameProjection[];
+  @Field((type) => [GameResponse], { nullable: true })
+  games: GameResponse[];
 }
 
 @ObjectType()

@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GuessLetterCommand } from '../../domains/Game/Commands/GuessLetter.command';
 import { User } from '../../domains/User/User.aggregate';
 import { Game } from '../../domains/Game/Game.aggregate';
+import { GameResponse } from '../dto/Api.dto';
 
 @Injectable()
 export class GamesService {
@@ -31,7 +32,7 @@ export class GamesService {
         message: 'success',
         status: 201,
         gameId,
-        loggedInUsername: user.userName.value,
+        playerFullName: game.player.userName.value,
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
       };
@@ -42,13 +43,25 @@ export class GamesService {
     }
   }
 
-  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
+  async getAllGames() {
     const games = await this.gamesProjectionRepository.find({
       order: { dateModified: 'DESC' },
     });
+
+    // this.logger.debug(games);
     return {
       count: games.length,
-      games,
+      games: games.map(
+        (game) =>
+          ({
+            gameId: game.id,
+            playerFullName: game.playerName,
+            lettersGuessed: game.lettersGuessed,
+            wordToGuess: game.wordToGuess,
+            dateCreated: game.dateCreated,
+            dateModified: game.dateModified,
+          } as unknown as GameResponse),
+      ),
     };
   }
 
@@ -65,7 +78,7 @@ export class GamesService {
         letter,
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
-        loggedInUsername: loggedInUser.userName.value,
+        playerFullName: game.player.userName.value,
         gameModified: game.dateModified,
         gameCreated: game.dateCreated,
       };

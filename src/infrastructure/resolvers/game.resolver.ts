@@ -20,8 +20,11 @@ export class GamesResolver {
   }
 
   @Query((returns) => AllGamesResponse)
-  async getAllGames(): Promise<{ count: number; games: GameProjection[] }> {
-    return await this.gameService.getAllGames();
+  async getAllGames(): Promise<{ count: number; games: GameResponse[] }> {
+    const result = await this.gameService.getAllGames();
+    return {
+      ...result,
+    };
   }
 
   @UseGuards(GqlAuthGuard)
@@ -30,7 +33,12 @@ export class GamesResolver {
     @Args('input') gameDto: GameDto,
     @CurrentUser() user: User,
   ): Promise<GameResponse> {
-    return await this.gameService.startNewGame(gameDto, user);
+    const result = await this.gameService.startNewGame(gameDto, user);
+    return {
+      ...result,
+      dateCreated: null,
+      dateModified: null,
+    };
   }
 
   @UseGuards(GqlAuthGuard)
@@ -39,10 +47,16 @@ export class GamesResolver {
     @Args('input') guesDto: GuessDto,
     @CurrentUser() user: User,
   ): Promise<GameResponse> {
-    return await this.gameService.makeGuess(
+    const result = await this.gameService.makeGuess(
       guesDto.gameId,
       guesDto.letter,
       user,
     );
+
+    return {
+      ...result,
+      dateCreated: result.gameCreated,
+      dateModified: result.gameModified,
+    };
   }
 }
