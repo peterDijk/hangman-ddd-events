@@ -11,6 +11,7 @@ export class NewGameStartedEventHandler
   async handle(event: NewGameStartedEvent) {
     try {
       this.logger.log(`handling event ${event.eventName}`);
+      // this.repository.updateOrCreate(game);
       // send websocket
     } catch (err) {
       this.logger.error(`cant save to projection: ${err}`);
