@@ -35,6 +35,8 @@ export class GamesService {
         playerFullName: 'game.player.userName.value',
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
+        dateCreated: game.dateCreated,
+        dateModified: game.dateModified,
       };
     } catch (err) {
       this.logger.log(err);
@@ -79,8 +81,8 @@ export class GamesService {
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
         playerFullName: 'game.player.userName.value',
-        gameModified: game.dateModified,
-        gameCreated: game.dateCreated,
+        dateModified: game.dateModified,
+        dateCreated: game.dateCreated,
       };
     } catch (err) {
       this.logger.error(err.name, err.stack);
