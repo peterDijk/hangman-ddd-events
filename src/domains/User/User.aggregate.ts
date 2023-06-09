@@ -79,7 +79,7 @@ export class User extends AggregateRoot {
       this.logger.debug(`newFullName: ${newFullName}`);
 
       const fullName = await FullName.create(newFullName);
-      this.apply(new FullNameChangedEvent(this.id, fullName.value));
+      this.apply(new FullNameChangedEvent(this.id, fullName.value, new Date()));
     } catch (err) {
       throw new Error(err);
     }

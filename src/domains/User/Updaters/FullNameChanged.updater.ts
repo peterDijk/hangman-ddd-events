@@ -23,12 +23,18 @@ export class FullNameChangedUpdater
   async handle(event: FullNameChangedEvent) {
     try {
       this.logger.log(JSON.stringify(event));
+
+      const dateModified = event.dateModified
+        ? new Date(event.dateModified)
+        : null;
+
       await this.userProjectionRepository.update(
         {
           userId: event.id,
         },
         {
           fullName: event.newFullName,
+          dateModified,
         },
       );
     } catch (err) {

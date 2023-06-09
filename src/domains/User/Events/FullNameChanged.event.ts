@@ -4,7 +4,11 @@ export class FullNameChangedEvent extends StorableEvent {
   public readonly eventVersion = 1;
   aggregateName = 'user';
 
-  constructor(public readonly id: string, public readonly newFullName: string) {
+  constructor(
+    public readonly id: string,
+    public readonly newFullName: string,
+    public readonly dateModified: Date,
+  ) {
     super();
   }
 }
