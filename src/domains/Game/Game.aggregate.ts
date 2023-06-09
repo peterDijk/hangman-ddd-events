@@ -101,6 +101,8 @@ export class Game extends AggregateRoot {
   }
 
   async onNewGameStartedEvent(event: NewGameStartedEvent) {
+    this.logger.log('onNewGameStartedEvent');
+
     this.wordToGuess = Word.createReplay(event.wordToGuess);
     this.maxGuesses = MaxGuesses.createReplay(event.maxGuesses);
     this.lettersGuessed = LettersGuessed.createReplay([]);

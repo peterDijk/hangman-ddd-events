@@ -56,6 +56,8 @@ sept 2022
 - [x] Try again revive aggregate from json
 - [x] Use Redis for cache
 - [x] Swap projection database type for mongodb
+- [ ] use internal repository for aggregates (will only work within the single node process. Fallback to redis, then fallback to replay from events?)
+- [ ] Get Player aggregate on replay event in onNewGameStarted
 - [ ] update dependencies
 - [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)
 - [ ] add snapshot functionality to eventstore library
