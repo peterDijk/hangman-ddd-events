@@ -32,7 +32,7 @@ export class GamesService {
         message: 'success',
         status: 201,
         gameId,
-        playerFullName: game.player.userName.value,
+        playerFullName: 'game.player.userName.value',
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
       };

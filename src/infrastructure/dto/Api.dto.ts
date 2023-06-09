@@ -42,10 +42,34 @@ export class AllGamesResponse {
 }
 
 @ObjectType()
+export class UserResponse {
+  @Field((type) => String)
+  userId?: string;
+
+  @Field((type) => String)
+  username?: string;
+
+  @Field((type) => String)
+  fullName?: string;
+
+  @Field((type) => Number, { nullable: true })
+  numberLogins?: number;
+
+  @Field((type) => Date, { nullable: true })
+  lastLoggedIn?: Date;
+
+  @Field((type) => Date)
+  dateCreated?: Date;
+
+  @Field((type) => Date)
+  dateModified?: Date;
+}
+
+@ObjectType()
 export class AllUsersResponse {
   @Field((type) => Number)
   count: number;
 
-  @Field((type) => [UserProjection], { nullable: true })
+  @Field((type) => [UserResponse], { nullable: true })
   users: UserProjection[];
 }
