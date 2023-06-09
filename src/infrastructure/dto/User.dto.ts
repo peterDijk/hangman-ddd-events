@@ -16,17 +16,17 @@ export class UserDto {
   fullName: string;
 }
 
-@ObjectType()
-export class UserResponse {
-  @ApiProperty()
-  @Field((type) => String)
-  userId: string;
+// @ObjectType()
+// export class UserResponse {
+//   @ApiProperty()
+//   @Field((type) => String)
+//   userId: string;
 
-  @ApiProperty()
-  @Field((type) => String)
-  username: string;
+//   @ApiProperty()
+//   @Field((type) => String)
+//   username: string;
 
-  @ApiProperty()
-  @Field((type) => String)
-  message: string;
-}
+//   @ApiProperty()
+//   @Field((type) => String)
+//   message: string;
+// }

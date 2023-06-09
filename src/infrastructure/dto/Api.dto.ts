@@ -17,13 +17,19 @@ export class GameResponse {
   status: number;
 
   @Field((type) => String, { nullable: true })
-  loggedInUsername: string;
+  playerFullName: string;
 
   @Field((type) => [String], { nullable: true })
   lettersGuessed: string[];
 
   @Field((type) => String, { nullable: false })
   wordToGuess: string;
+
+  @Field((type) => Date, { nullable: false })
+  dateCreated: Date;
+
+  @Field((type) => Date, { nullable: false })
+  dateModified: Date;
 }
 
 @ObjectType()
@@ -31,8 +37,32 @@ export class AllGamesResponse {
   @Field((type) => Number)
   count: number;
 
-  @Field((type) => [GameProjection], { nullable: true })
-  games: GameProjection[];
+  @Field((type) => [GameResponse], { nullable: true })
+  games: GameResponse[];
+}
+
+@ObjectType()
+export class UserResponse {
+  @Field((type) => String)
+  userId?: string;
+
+  @Field((type) => String)
+  username?: string;
+
+  @Field((type) => String)
+  fullName?: string;
+
+  @Field((type) => Number, { nullable: true })
+  numberLogins?: number;
+
+  @Field((type) => Date, { nullable: true })
+  lastLoggedIn?: Date;
+
+  @Field((type) => Date)
+  dateCreated?: Date;
+
+  @Field((type) => Date)
+  dateModified?: Date;
 }
 
 @ObjectType()
@@ -40,6 +70,6 @@ export class AllUsersResponse {
   @Field((type) => Number)
   count: number;
 
-  @Field((type) => [UserProjection], { nullable: true })
+  @Field((type) => [UserResponse], { nullable: true })
   users: UserProjection[];
 }

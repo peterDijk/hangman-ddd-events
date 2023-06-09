@@ -1,67 +1,49 @@
-import { Entity, BaseEntity, Column, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Column,
+  PrimaryColumn,
+  ObjectIdColumn,
+  ObjectID,
+} from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
 
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
+
   @Field()
-  @PrimaryColumn({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   userId: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   username: string;
 
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   @Exclude({ toPlainOnly: true })
   password: string;
 
   @Field()
-  @Column({
-    type: 'varchar',
-    nullable: false,
-  })
+  @Column()
   fullName: string;
 
   @Field()
-  @Column({
-    type: 'int',
-    nullable: false,
-    default: 0,
-  })
+  @Column({ default: 0 })
   numberLogins: number;
 
   @Field()
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   lastLoggedIn: Date;
 
   @Field()
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   dateCreated: Date;
 
   @Field()
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   dateModified: Date;
 }

@@ -21,11 +21,14 @@ export class UserCreatedUpdater implements IViewUpdater<UserCreatedEvent> {
 
   async handle(event: UserCreatedEvent) {
     try {
+      console.log(event);
       const user = this.userProjectionRepository.create({
         ...event,
         userId: event.id,
         username: event.userName,
         password: event.password,
+        dateCreated: new Date(event.dateCreated),
+        dateModified: new Date(event.dateModified),
       });
       await user.save();
     } catch (err) {
