@@ -78,7 +78,7 @@ export class GamesService {
         letter,
         wordToGuess: game.wordToGuess.value,
         lettersGuessed: game.lettersGuessed.value.map((l) => l.value),
-        playerFullName: game.player.userName.value,
+        playerFullName: 'game.player.userName.value',
         gameModified: game.dateModified,
         gameCreated: game.dateCreated,
       };

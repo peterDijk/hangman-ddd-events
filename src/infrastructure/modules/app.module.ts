@@ -2,7 +2,6 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { options } from '../../../ormconfig';
 import { GraphQLModule } from '@nestjs/graphql';
 import { EventStoreModule } from '@peterdijk/nestjs-eventstoredb';
 
@@ -43,9 +42,6 @@ import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
       insecure: true,
       lastPositionStorageFactory: MongoPositionStore,
     }),
-    // TypeOrmModule.forRootAsync({
-    //   useFactory: async () => options as any,
-    // }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
       host: process.env.MONGO_HOST,
@@ -57,7 +53,6 @@ import { MongoPositionStore } from '../../mongo/mongo-eventstore-adapter';
       synchronize: true,
       logger: 'debug',
       autoLoadEntities: true,
-      // entities: [`dist/src/**/*.entity{.js}`],
     }),
     GamesModule,
     UserModule,

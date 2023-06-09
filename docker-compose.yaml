@@ -4,14 +4,14 @@ services:
   hangman-projections:
     container_name: hangman-projections
     image: mongo
-    command: mongod --port 27016
+    command: mongod --port ${MONGO_CONTAINER_PORT}
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: hangman-projections
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     ports:
-      - 27016:27016
+      - ${MONGO_HOST_PORT}:${MONGO_CONTAINER_PORT}
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
