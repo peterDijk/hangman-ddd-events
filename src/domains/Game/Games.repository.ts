@@ -20,25 +20,30 @@ export class GamesRepository {
     try {
       const cacheKey = this.getCacheKey(game.id);
 
-      this.logger.debug(`set Game in cache`);
+      this.logger.debug(`set Game in process-cache (private instances)`);
       this.instances.set(cacheKey, game);
 
-      // const serializedGame = instanceToPlain(game);
-      // return this.cacheManager.set(cacheKey, serializedGame);
+      const serializedGame = instanceToPlain(game);
+      this.logger.debug(`set Game in redis-cache`);
+      this.cacheManager.set(cacheKey, serializedGame);
     } catch (error) {
       this.logger.error(error);
     }
   }
 
   async findOneById(aggregateId: string): Promise<Game> {
-    // const gameFromCache = (await this.cacheManager.get(
-    //   this.getCacheKey(aggregateId),
-    // )) as string;
-    const gameFromCache = this.instances.get(this.getCacheKey(aggregateId));
+    let gameFromCache = this.instances.get(this.getCacheKey(aggregateId));
+
+    if (!gameFromCache) {
+      this.logger.debug(`fetching Aggregate from Redis`);
+      const gameFromRedis = (await this.cacheManager.get(
+        this.getCacheKey(aggregateId),
+      )) as string;
+
+      gameFromCache = plainToInstance(Game, gameFromRedis);
+    }
 
     if (gameFromCache) {
-      // const deserializedGame = plainToInstance(Game, gameFromCache);
-
       this.logger.debug(`returing Game from cache`);
 
       return gameFromCache;
