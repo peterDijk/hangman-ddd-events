@@ -8,6 +8,7 @@ import { instanceToPlain, plainToInstance } from 'class-transformer';
 @Injectable()
 export class GamesRepository {
   private readonly aggregate = 'game';
+  private instances = new Map<string, Game>();
 
   constructor(
     private readonly eventStore: EventStore,
@@ -18,25 +19,34 @@ export class GamesRepository {
   async updateOrCreate(game: Game): Promise<void> {
     try {
       const cacheKey = this.getCacheKey(game.id);
+
+      this.logger.debug(`set Game in process-cache (private instances)`);
+      this.instances.set(cacheKey, game);
+
       const serializedGame = instanceToPlain(game);
-      this.logger.debug(`set Game in cache`);
-      return this.cacheManager.set(cacheKey, serializedGame);
+      this.logger.debug(`set Game in redis-cache`);
+      this.cacheManager.set(cacheKey, serializedGame);
     } catch (error) {
       this.logger.error(error);
     }
   }
 
   async findOneById(aggregateId: string): Promise<Game> {
-    const gameFromCache = (await this.cacheManager.get(
-      this.getCacheKey(aggregateId),
-    )) as string;
+    let gameFromCache = this.instances.get(this.getCacheKey(aggregateId));
+
+    if (!gameFromCache) {
+      this.logger.debug(`fetching Aggregate from Redis`);
+      const gameFromRedis = (await this.cacheManager.get(
+        this.getCacheKey(aggregateId),
+      )) as string;
+
+      gameFromCache = plainToInstance(Game, gameFromRedis);
+    }
 
     if (gameFromCache) {
-      const deserializedGame = plainToInstance(Game, gameFromCache);
-
       this.logger.debug(`returing Game from cache`);
 
-      return deserializedGame;
+      return gameFromCache;
     } else {
       const game = new Game(aggregateId);
       const { events } = await this.eventStore.getEventsForAggregate(
