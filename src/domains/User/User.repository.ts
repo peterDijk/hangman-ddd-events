@@ -28,34 +28,40 @@ export class UserRepository {
     const cacheKey = this.getCacheKey({ userId: user.id });
     this.instances.set(cacheKey, user);
 
-    // const serializedUser = instanceToPlain(user);
-    // await this.cacheManager.set(cacheKey, serializedUser);
+    const serializedUser = instanceToPlain(user);
+    await this.cacheManager.set(cacheKey, serializedUser);
     this.logger.debug(`set User in cache`);
 
-    // await this.cacheManager.set(
-    //   this.getCacheKey({ username: user.userName.value }),
-    //   user.id,
-    // );
+    await this.cacheManager.set(
+      this.getCacheKey({ username: user.userName.value }),
+      user.id,
+    );
+
     this.userNameIds.set(
       this.getCacheKey({ username: user.userName.value }),
       user.id,
     );
+
     this.logger.debug(`set username:userId pair in cache`);
   }
 
   async findOneById(aggregateId: string): Promise<User> {
-    // const userFromCache = (await this.cacheManager.get(
-    //   this.getCacheKey({ userId: aggregateId }),
-    // )) as string;
-
-    const userFromCache = this.instances.get(
+    let userFromCache = this.instances.get(
       this.getCacheKey({ userId: aggregateId }),
     );
 
-    if (userFromCache) {
-      // const deserializedUser = plainToInstance(User, userFromCache);
+    if (!userFromCache) {
+      this.logger.debug(`fetching Aggregate from Redis`);
+      const userFromRedis = (await this.cacheManager.get(
+        this.getCacheKey({ userId: aggregateId }),
+      )) as string;
 
+      userFromCache = plainToInstance(User, userFromRedis);
+    }
+
+    if (userFromCache) {
       this.logger.debug(`returing User from cache`);
+
       return userFromCache;
     } else {
       try {
