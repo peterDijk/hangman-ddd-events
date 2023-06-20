@@ -32,8 +32,8 @@ export class NewGameStartedUpdater
         playerId: event.playerId,
         wordToGuess: event.wordToGuess,
         playerName: player.fullName.value,
-        dateCreated: event.dateCreated,
-        dateModified: event.dateModified,
+        dateCreated: new Date(event.dateCreated),
+        dateModified: new Date(event.dateModified),
         lettersGuessed: [],
         maxGuesses: event.maxGuesses,
       });

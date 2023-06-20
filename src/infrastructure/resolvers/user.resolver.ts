@@ -1,9 +1,9 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '../services/user.service';
-import { UserDto, UserResponse } from '../dto/User.dto';
+import { UserDto } from '../dto/User.dto';
 import { User } from '../../domains/User/User.aggregate';
-import { AllUsersResponse } from '../dto/Api.dto';
+import { AllUsersResponse, UserResponse } from '../dto/Api.dto';
 import { User as UserProjection } from '../read-models/user.entity';
 import { CurrentUser, GqlAuthGuard } from '../modules/graphql.guard';
 

@@ -39,7 +39,7 @@ export const UserEventSerializers = {
   UserLoggedOutEvent: ({ id, dateLoggedOut }) => {
     return new UserLoggedOutEvent(id, dateLoggedOut);
   },
-  FullNameChangedEvent: ({ id, newFullName }) => {
-    return new FullNameChangedEvent(id, newFullName);
+  FullNameChangedEvent: ({ id, newFullName, dateModified }) => {
+    return new FullNameChangedEvent(id, newFullName, dateModified);
   },
 };
