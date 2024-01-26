@@ -43,6 +43,7 @@
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.2",
     "graphql": "^16.6.0",
+    "mongodb": "^3.7.4",
     "mongoose": "^6.6.1",
     "mysql2": "^2.3.3",
     "node-nats-streaming": "^0.3.2",

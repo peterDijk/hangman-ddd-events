@@ -92,7 +92,7 @@ services:
     restart: always
     deploy:
       mode: replicated
-      replicas: ${CONTAINER_SCALE}
+      # replicas: ${CONTAINER_SCALE}
       # above is ignored by dc up and dc run (only when deploy to swarm with docker stack deploy)
     depends_on:
       - hangman-projections
