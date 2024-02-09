@@ -28,7 +28,7 @@ export class UserFullNameChangedUpdater
           playerId: event.id,
         },
         {
-          playerName: event.newFullName,
+          playerName: 'event.newFullName',
         },
       );
     } catch (err) {

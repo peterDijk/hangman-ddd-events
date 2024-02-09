@@ -21,17 +21,26 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
 
   async handle(event: LetterGuessedEvent) {
     try {
-      const game: Game = await this.gamesRepository.findOneById(event.id);
+      // const game: Game = await this.gamesRepository.findOneById(event.id);
+
+      // if (game.id === '3b5ae88a-1aa4-47e3-be99-6187963e488c') {
+      // console.log(game.lettersGuessed);
+
+      // const guessFlatArray = game.lettersGuessed.value.map(
+      //   (letter) => letter.value,
+      // );
+      // console.log({ guessFlatArray });
+      // }
+
+      console.log({ event });
 
       await this.gamesProjectionRepository.update(
         {
           gameId: event.id,
         },
         {
-          lettersGuessed: game.lettersGuessed.value.map(
-            (letter) => letter.value,
-          ),
-          dateModified: new Date(event.dateModified),
+          lettersGuessed: ['g'],
+          // dateModified: new Date(event.dateModified),
         },
       );
     } catch (error) {
