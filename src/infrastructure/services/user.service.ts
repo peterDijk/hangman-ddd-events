@@ -62,6 +62,7 @@ export class UserService {
     const users = await this.usersProjectionRepository.find({
       order: { dateModified: 'DESC' },
     });
+
     return {
       count: users.length,
       users,

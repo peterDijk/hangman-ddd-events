@@ -26,8 +26,8 @@ export class UserLoggedInUpdater implements IViewUpdater<UserLoggedInEvent> {
         },
         {
           numberLogins: event.numberLogins,
-          lastLoggedIn: event.dateLoggedIn,
-          dateModified: event.dateModified,
+          lastLoggedIn: new Date(event.dateLoggedIn),
+          dateModified: new Date(event.dateModified),
         },
       );
     } catch (err) {

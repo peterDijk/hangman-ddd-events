@@ -31,7 +31,7 @@ export class LetterGuessedUpdater implements IViewUpdater<LetterGuessedEvent> {
           lettersGuessed: game.lettersGuessed.value.map(
             (letter) => letter.value,
           ),
-          dateModified: event.dateModified,
+          dateModified: new Date(event.dateModified),
         },
       );
     } catch (error) {
