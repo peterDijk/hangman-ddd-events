@@ -95,6 +95,7 @@ export class UserRepository {
 
   async findUserIdFromCacheOrEvents(username: string): Promise<string> {
     const cacheKey = this.getCacheKey({ username });
+    // let userId: string = await this.cacheManager.get(cacheKey);
     let userId: string = this.userNameIds.get(cacheKey);
 
     if (!userId) {
