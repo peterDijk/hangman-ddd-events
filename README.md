@@ -55,7 +55,7 @@ sept 2022
 - [x] eventstore lib: Fix uncaught in promise on game-id not found
 - [x] Try again revive aggregate from json
 - [x] Use Redis for cache
-- [ ] update dependencies
+- [x] use internal repository for aggregates (will only work within the single node process. Fallback to redis, then fallback to replay from events)
 - [ ] Swap projection database type for mongodb
 - [ ] Store last read position for each projection. Able to add a new projection and rebuild only that one (not overwrite the others)
 - [ ] add snapshot functionality to eventstore library
