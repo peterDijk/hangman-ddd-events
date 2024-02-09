@@ -63,7 +63,6 @@ export class UserService {
       order: { dateModified: 'DESC' },
     });
 
-    console.log('is Date', users[0].dateCreated instanceof Date);
     return {
       count: users.length,
       users,

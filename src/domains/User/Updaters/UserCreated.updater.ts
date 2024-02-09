@@ -21,7 +21,6 @@ export class UserCreatedUpdater implements IViewUpdater<UserCreatedEvent> {
 
   async handle(event: UserCreatedEvent) {
     try {
-      console.log(event);
       const user = this.userProjectionRepository.create({
         ...event,
         userId: event.id,
