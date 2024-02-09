@@ -81,6 +81,8 @@ export class Game extends AggregateRoot {
     // TODO: validate guess
     // validation is done in LettersGuessed VA (length) and Letter VA (string, 1 char)
 
+    console.log(this.id, this.maxGuesses, this.lettersGuessed);
+
     try {
       const newLetter = await Letter.create(letter);
       await LettersGuessed.create(

@@ -21,12 +21,13 @@ export class UserResolver {
     return await this.userService.createUser(userDto);
   }
 
-  @Mutation((returns) => UserResponse)
   @UseGuards(GqlAuthGuard)
+  @Mutation((returns) => UserResponse)
   async changeFullName(
     @Args('newFullName') newFullName: string,
     @CurrentUser() user: User,
   ): Promise<UserResponse> {
+    console.log({ user });
     return await this.userService.changeFullName(user, newFullName);
   }
 

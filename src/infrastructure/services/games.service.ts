@@ -56,7 +56,7 @@ export class GamesService {
       games: games.map(
         (game) =>
           ({
-            gameId: game.id,
+            gameId: game.gameId,
             playerFullName: game.playerName,
             lettersGuessed: game.lettersGuessed,
             wordToGuess: game.wordToGuess,
@@ -72,6 +72,8 @@ export class GamesService {
       const game: Game = await this.commandBus.execute(
         new GuessLetterCommand(gameId, letter, loggedInUser),
       );
+
+      console.log({ game });
 
       return {
         message: 'success',
